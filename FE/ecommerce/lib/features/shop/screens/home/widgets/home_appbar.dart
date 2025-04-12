@@ -1,0 +1,112 @@
+import 'package:ecommerce/common/widgets/appbar/appbar.dart';
+import 'package:ecommerce/utils/constants/colors.dart';
+import 'package:ecommerce/utils/constants/sizes.dart';
+import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+
+class CHomeAppBar extends StatelessWidget {
+  const CHomeAppBar({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CAppBar(
+      title: Column(
+        children: [
+          // Searchbar
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 0),
+          //   child: Container(
+          //     // width: CDeviceUtils.getScreenWidth(context),
+          //     padding: EdgeInsets.all(CSizes.sm),
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.circular(CSizes.borderRadiusMd),
+          //       border: Border.all(color: CColors.grey)
+          //     ),
+          //     child: Row(
+          //       children: [
+          //         Icon(Icons.search, color: CColors.grey,),
+          //         SizedBox(width: CSizes.spaceBtwItems,),
+          //         Text('Search in Store', style: Theme.of(context).textTheme.bodySmall, )
+          //       ],
+          //     ),
+          //   ),
+          // ), 
+          TextFormField(
+            decoration: InputDecoration(
+              hintText: 'Search in store',
+              filled: true,
+              fillColor: CColors.textWhite,
+              prefixIcon: Icon(Icons.search, color: CColors.grey,) ,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(CSizes.borderRadiusLg),
+                // borderSide: BorderSide(color: CColors.grey)
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: CColors.grey.withValues(alpha: 0.2),),
+                // borderRadius: BorderRadius.circular(CSizes.borderRadiusMd),
+              )
+            ),
+            
+          )
+        ],
+      ),
+      actions: [
+        Stack(
+          children: [
+            // Chat icon: only display when user login
+            IconButton(
+              onPressed: (){}, 
+              icon: Icon(Icons.chat, color: CColors.textWhite,)
+            ),
+            Positioned(
+              right: 0,
+              child: Container(
+                width: 18,
+                height: 18,
+                decoration: BoxDecoration(
+                  color: CColors.dark.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(100)
+                ),
+                child: Center(
+                  child: Text(
+                    '2',
+                    style: Theme.of(context).textTheme.labelLarge!.apply(color: CColors.textWhite),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Stack(
+          children: [
+            IconButton(
+              onPressed: (){}, 
+              icon: Icon(Iconsax.shopping_bag, color: CColors.textWhite,)
+            ),
+            Positioned(
+              right: 0,
+              child: Container(
+                width: 18,
+                height: 18,
+                decoration: BoxDecoration(
+                  color: CColors.dark.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(100)
+                ),
+                child: Center(
+                  child: Text(
+                    '2',
+                    style: Theme.of(context).textTheme.labelLarge!.apply(color: CColors.textWhite),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        
+      ],
+    );
+  }
+}
