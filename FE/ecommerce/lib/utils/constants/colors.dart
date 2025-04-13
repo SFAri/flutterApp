@@ -20,14 +20,13 @@ class CColors {
 
   // Gradient colors:
   static const Gradient linearGradient = LinearGradient(
-    begin: Alignment(0.0, 0.0),
-    end: Alignment(0.707, -0.707),
-    colors: [
-      Color(0xffff9a9e),
-      Color(0xfffad0c4),
-      Color(0xfffad0c4),
-    ]
-  );
+      begin: Alignment(0.0, 0.0),
+      end: Alignment(0.707, -0.707),
+      colors: [
+        Color(0xffff9a9e),
+        Color(0xfffad0c4),
+        Color(0xfffad0c4),
+      ]);
 
   // Background container colors:
   static const Color lightContainer = Color(0xFFF6F6F6);
@@ -37,7 +36,7 @@ class CColors {
 
   // Border colors:
   static const Color grey = Colors.grey;
+  static const Color lightGrey = Color(0xFFF6F6F6);
 
   // Error and Validation colors:
-
 }
