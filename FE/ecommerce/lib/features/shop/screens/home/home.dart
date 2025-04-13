@@ -1,8 +1,11 @@
 import 'package:ecommerce/common/widgets/custom_shapes/curved_edges.dart';
-import 'package:ecommerce/common/widgets/texts/section_heading.dart';
+import 'package:ecommerce/common/widgets/layout/custom_carousel_slider.dart';
+import 'package:ecommerce/common/widgets/layout/custom_gridview.dart';
 import 'package:ecommerce/features/shop/screens/home/widgets/circular_container.dart';
 import 'package:ecommerce/features/shop/screens/home/widgets/home_appbar.dart';
+import 'package:ecommerce/features/shop/screens/home/widgets/home_categories.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
+import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 // import 'package:get/get_connect/http/src/utils/utils.dart';
@@ -12,9 +15,22 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, String>> products = [
+      {
+        "name": "Macbook air 14", "brand": "Apple", "imageUrl": CImages.macImage, "price": "27.000.000",
+      },
+      {
+        "name": "Macbook pro 14", "brand": "Apple", "imageUrl": CImages.macImage, "price": "32.536.000", "salePrice": "11"
+      },
+      {
+        "name": "Lenovo Ideapad 3", "brand": "Lenovo", "imageUrl": CImages.macImage, "price": "19.330.000",
+      },
+    ];
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipPath(
               clipper: CCustomCurvedEdges(),
@@ -22,7 +38,7 @@ class HomeScreen extends StatelessWidget {
                 color: CColors.primary,
                 padding: EdgeInsets.all(0),
                 child: SizedBox(
-                  height: 400,
+                  height: 270,
                   width: double.infinity,
                   child: Stack(
                     children: [
@@ -43,78 +59,71 @@ class HomeScreen extends StatelessWidget {
                       Column(
                         spacing: CSizes.defaultSpace,
                         children: [
+                          SizedBox(height: 2),
                           // Appbar
                           CHomeAppBar(),
 
                           // Categories
-                          Padding(
-                            padding: EdgeInsets.only(left: CSizes.defaultSpace),
-                            child: Column(
-                              spacing: 12,
-                              children: [
-                                // Heading sector:
-                                CSectorHeading(
-                                  title: 'Popular Categories',
-                                  showActionButton: false,
-                                ),
-
-                                // Cates:
-                                SizedBox(
-                                  height: 80,
-                                  child: ListView.builder(
-                                    itemCount: 6,
-                                    
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (_, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(right: CSizes.spaceBtwItems),
-                                        child: Column(
-                                          spacing: 12,
-                                          children: [
-                                            Container(
-                                              width: 50,
-                                              height: 50,
-                                              padding: EdgeInsets.all(CSizes.sm),
-                                              decoration: BoxDecoration(
-                                                color: CColors.textWhite,
-                                                borderRadius: BorderRadius.circular(100)
-                                              ),
-                                              child: Center(
-                                                child: Image(image: AssetImage(''), fit: BoxFit.cover, color: CColors.dark,)
-                                              ),
-                                            ),
-                                        
-                                            // Text:
-                                            SizedBox(
-                                              width: 55, 
-                                              child: Text(
-                                                'Computer', 
-                                                style: Theme.of(context).textTheme.labelMedium,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // Filter
+                          CHomeCategory(),
                         ],
                       )
                     ],
                   ),
                 ),
               ),
-            )
+            ),
+
+            // BODY------------
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                'Promoting products: ', 
+                style: TextStyle(
+                  fontSize: CSizes.fontSizeLg,
+                  fontWeight: FontWeight.w600
+                )
+              ),
+            ),
+            SizedBox(height: 8),
+            Container(
+              // padding: EdgeInsets.only(left: 10, right: 10),
+              // height: 230,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(CSizes.md),
+              ),
+              child: CCarouselSliderWithDot()
+            ),
+
+            // Product Gridview:
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Popular products: ', 
+                    style: TextStyle(
+                      fontSize: CSizes.fontSizeLg,
+                      fontWeight: FontWeight.w600
+                    )
+                  ),
+                  TextButton(
+                    onPressed: (){}, 
+                    child: Text('View all')
+                  )
+                ],
+              ),
+            ),
+            CGridView(items: products),
           ],
         ),
       ),
     );
   }
 }
+
+
+
+
+
+

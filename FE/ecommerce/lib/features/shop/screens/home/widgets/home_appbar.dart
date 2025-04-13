@@ -14,26 +14,7 @@ class CHomeAppBar extends StatelessWidget {
     return CAppBar(
       title: Column(
         children: [
-          // Searchbar
-          // Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 0),
-          //   child: Container(
-          //     // width: CDeviceUtils.getScreenWidth(context),
-          //     padding: EdgeInsets.all(CSizes.sm),
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(CSizes.borderRadiusMd),
-          //       border: Border.all(color: CColors.grey)
-          //     ),
-          //     child: Row(
-          //       children: [
-          //         Icon(Icons.search, color: CColors.grey,),
-          //         SizedBox(width: CSizes.spaceBtwItems,),
-          //         Text('Search in Store', style: Theme.of(context).textTheme.bodySmall, )
-          //       ],
-          //     ),
-          //   ),
-          // ), 
+          // Search bar:
           TextFormField(
             decoration: InputDecoration(
               hintText: 'Search in store',

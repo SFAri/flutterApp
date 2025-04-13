@@ -5,7 +5,7 @@ class CColors {
 
   // App basic colors:
   static const Color primary = Colors.blue;
-  static const Color secondary = Colors.black;
+  static const Color secondary = Color.fromARGB(255, 240, 255, 75);
   static const Color accent = Colors.black;
 
   // Text colors:
@@ -30,6 +30,8 @@ class CColors {
   );
 
   // Background container colors:
+  static const Color lightContainer = Color(0xFFF6F6F6);
+  // static const Color darkContainer = CColors.white.withValues(alpha: 0.1)
 
   // Button colors:
 
