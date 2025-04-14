@@ -51,4 +51,8 @@ class CSizes {
   static const double inputFieldRadius = 12.0;
   static const double spaceBtwInputField = 16.0;
 
+  // Image Sizes
+  static const double imageThumb = 80.0;
+  static const double imageBanner = 240.0;
+  static const double imageFull = 400.0;
 }
