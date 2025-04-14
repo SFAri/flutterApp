@@ -1,10 +1,8 @@
-import 'package:ecommerce/common/widgets/custom_shapes/curved_edges.dart';
 import 'package:ecommerce/common/widgets/layout/custom_carousel_slider.dart';
+import 'package:ecommerce/common/widgets/layout/custom_clippath_appbar.dart';
 import 'package:ecommerce/common/widgets/layout/custom_gridview.dart';
-import 'package:ecommerce/features/shop/screens/home/widgets/circular_container.dart';
 import 'package:ecommerce/features/shop/screens/home/widgets/home_appbar.dart';
 import 'package:ecommerce/features/shop/screens/home/widgets/home_categories.dart';
-import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -32,45 +30,12 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipPath(
-              clipper: CCustomCurvedEdges(),
-              child: Container(
-                color: CColors.primary,
-                padding: EdgeInsets.all(0),
-                child: SizedBox(
-                  height: 270,
-                  width: double.infinity,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: -150,
-                        right: -250,
-                        child: CCircularContainer(
-                          backgroundColor: CColors.textWhite.withValues(alpha: 0.1),
-                        ),
-                      ),
-                      Positioned(
-                        top: 100,
-                        right: 300,
-                        child: CCircularContainer(
-                          backgroundColor: CColors.textWhite.withValues(alpha: 0.1),
-                        ),
-                      ),
-                      Column(
-                        spacing: CSizes.defaultSpace,
-                        children: [
-                          SizedBox(height: 2),
-                          // Appbar
-                          CHomeAppBar(),
-
-                          // Categories
-                          CHomeCategory(),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
+            CClipPathAppBar(
+              listWidgets: [
+                SizedBox(height: 2),
+                CHomeAppBar(),
+                CHomeCategory()
+              ],
             ),
 
             // BODY------------
@@ -121,9 +86,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-

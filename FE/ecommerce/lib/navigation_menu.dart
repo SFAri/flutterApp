@@ -1,23 +1,31 @@
+import 'package:ecommerce/features/shop/screens/category/category.dart';
 import 'package:ecommerce/features/shop/screens/home/home.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class NavigationMenu extends StatelessWidget {
+class NavigationMenu extends StatefulWidget {
   const NavigationMenu({super.key});
-  
 
   @override
+  State<NavigationMenu> createState() => _NavigationMenuState();
+}
+
+class _NavigationMenuState extends State<NavigationMenu> {
+  int selectedIndex = 0;
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(NavigationController());
+    // final controller = Get.put(NavigationController());
     final darkMode = CHelperFunctions.isDarkMode(context);
     return Scaffold(
-      bottomNavigationBar: Obx(
-        () => NavigationBar(
+      bottomNavigationBar: NavigationBar(
           height: 80,
           elevation: 0,
-          selectedIndex: controller.selectedIndex.value,
-          onDestinationSelected: (index) => controller.selectedIndex.value = index,
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (index) {
+            setState(() {
+              selectedIndex = index;
+            });
+          },
           backgroundColor: darkMode ? Colors.black : Colors.white,
           indicatorColor: darkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.1),
           destinations: [
@@ -26,18 +34,20 @@ class NavigationMenu extends StatelessWidget {
             NavigationDestination(icon: Icon(Icons.account_box), label: 'Profile'),
           ]
         ),
-      ),
-      body: Obx(() => controller.screens[controller.selectedIndex.value]),
+      body: _getBody(),
     );
   }
-}
 
-class NavigationController extends GetxController{
-  final Rx<int> selectedIndex = 0.obs;
-
-  final screens = [
-    HomeScreen(), 
-    Container(color: Colors.orange), 
-    Container(color: Colors.blue), 
-  ];
+  Widget _getBody() {
+    switch (selectedIndex) {
+      case 0:
+        return HomeScreen(); // Màn hình chính
+      case 1:
+        return CategoryHomeScreen(); // Màn hình danh mục
+      case 2:
+        return Container(color: Colors.blue); // Màn hình hồ sơ
+      default:
+        return Container();
+    }
+  }
 }

@@ -20,29 +20,27 @@ class CHomeCategory extends StatelessWidget {
       {"image": CImages.osIcon, "label": "Phần mềm"},
     ];
     
-    return Padding(
-      padding: EdgeInsets.only(left: CSizes.defaultSpace, right: CSizes.defaultSpace),
-      child: Column(
-        spacing: 12,
-        children: [
-          // Heading sector:
-          CSectorHeading(
-            title: 'Popular Categories',
-            showActionButton: false,
+    return Column(
+      spacing: 12,
+      children: [
+        // Heading sector:
+        CSectorHeading(
+          title: 'Popular Categories',
+          showActionButton: false,
+        ),
+        // Categories :
+        Container(
+          height: 80,
+          padding: EdgeInsets.only(left: CSizes.defaultSpace, right: CSizes.defaultSpace),
+          child: ListView.builder(
+            itemCount: categories.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (_, index) {
+              return CVerticalItem(titleName: categories[index]["label"]!, imageString: categories[index]["image"]!, onTapAction: (){},);
+            }
           ),
-          // Categories :
-          SizedBox(
-            height: 80,
-            child: ListView.builder(
-              itemCount: categories.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (_, index) {
-                return CVerticalItem(titleName: categories[index]["label"]!, imageString: categories[index]["image"]!, onTapAction: (){},);
-              }
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

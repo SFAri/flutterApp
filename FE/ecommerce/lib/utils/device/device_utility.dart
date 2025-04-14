@@ -4,8 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-// import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class CDeviceUtils {
@@ -33,20 +31,20 @@ class CDeviceUtils {
     SystemChrome.setEnabledSystemUIMode(enable ? SystemUiMode.immersiveSticky : SystemUiMode.edgeToEdge);
   }
 
-  static double getScreenHeight() {
-    return MediaQuery.of(Get.context!).size.height;
+  static double getScreenHeight(BuildContext context) {
+    return MediaQuery.of(context).size.height;
   }
 
   static double getScreenWidth(BuildContext context) {
-    return MediaQuery.of(Get.context!).size.width;
+    return MediaQuery.of(context).size.width;
   }
 
-  static double getPixelRatio(){
-    return MediaQuery.of(Get.context!).devicePixelRatio;
+  static double getPixelRatio(BuildContext context){
+    return MediaQuery.of(context).devicePixelRatio;
   }
   
-  static double getStatusBarHeight(){
-    return MediaQuery.of(Get.context!).padding.top;
+  static double getStatusBarHeight(BuildContext context){
+    return MediaQuery.of(context).padding.top;
   }
 
   static double getBottomNavigationBarHeight(){
@@ -57,8 +55,8 @@ class CDeviceUtils {
     return kToolbarHeight;
   }
 
-  static double getKeyboardHeight(){
-    final viewInsets = MediaQuery.of(Get.context!).viewInsets;
+  static double getKeyboardHeight(BuildContext context){
+    final viewInsets = MediaQuery.of(context).viewInsets;
     return viewInsets.bottom;
   }
 

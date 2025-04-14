@@ -12,7 +12,7 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leadingIcon,
     this.leadingOnPressed,
-    this.showBackArrows = false
+    this.showBackArrows = false,
   });
 
   final Widget? title;
@@ -28,17 +28,24 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        leading: showBackArrows 
-          ? IconButton(onPressed: () => Get.back(), icon: Icon(Icons.arrow_back)) 
-          : leadingIcon != null ?  IconButton(onPressed: leadingOnPressed, icon: Icon(leadingIcon)) : null,
+        leading:
+            showBackArrows
+                ? IconButton(
+                  onPressed: () => Get.back(),
+                  icon: Icon(Icons.arrow_back),
+                )
+                : leadingIcon != null
+                ? IconButton(
+                  onPressed: leadingOnPressed,
+                  icon: Icon(leadingIcon),
+                )
+                : null,
         title: title,
         actions: actions,
       ),
     );
   }
-  
+
   @override
   Size get preferredSize => Size.fromHeight(CDeviceUtils.getAppBarHeight());
-
-  
 }
