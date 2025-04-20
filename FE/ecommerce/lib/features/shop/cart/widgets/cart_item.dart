@@ -6,17 +6,16 @@ import 'package:ecommerce/common/widgets/images/rounded_image.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 
-import 'package:ecommerce/features/shop/cart/models/Cart.dart';
 import 'package:ecommerce/features/shop/cart/models/Product.dart';
 
-class TCartItem extends StatelessWidget {
-  final Product product;
-  final CartModel cart;
+class CCartItem extends StatelessWidget {
+  final Product item;
+  final bool showButtonRemove;
 
-  const TCartItem({
+  const CCartItem({
     super.key,
-    required this.product,
-    required this.cart,
+    required this.item,
+    this.showButtonRemove = true,
   });
 
   @override
@@ -26,7 +25,7 @@ class TCartItem extends StatelessWidget {
       children: [
         // Image
         CRoundedImage(
-          imageUrl: product.image,
+          imageUrl: item.image,
           width: 70,
           height: 70,
           padding: const EdgeInsets.all(CSizes.sm),
@@ -47,30 +46,32 @@ class TCartItem extends StatelessWidget {
                   // Title
                   Expanded(
                     child: Text(
-                      product.name,
+                      item.name,
                       style: Theme.of(context).textTheme.titleMedium,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   // Remove Button
-                  TCircularIcon(
-                      icon: Icons.delete_outline,
-                      width: 32,
-                      height: 32,
-                      color: CColors.dark,
-                      backgroundColor: CHelperFunctions.isDarkMode(context)
-                          ? CColors.grey
-                          : CColors.lightGrey,
-                      onPressed: () {
-                        cart.remove(product);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Removed from cart'),
-                            duration: Duration(seconds: 1),
-                          ),
-                        );
-                      }),
+                  showButtonRemove
+                      ? TCircularIcon(
+                          icon: Icons.delete_outline,
+                          width: 32,
+                          height: 32,
+                          color: CColors.dark,
+                          backgroundColor: CHelperFunctions.isDarkMode(context)
+                              ? CColors.grey
+                              : CColors.lightGrey,
+                          onPressed: () {
+                            // cart.remove(item);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Removed from cart'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          })
+                      : const SizedBox.shrink(),
                 ],
               ),
               Row(
@@ -113,7 +114,7 @@ class TCartItem extends StatelessWidget {
                 ],
               ),
               Text(
-                CFormatFunction.formatCurrency(product.price),
+                CFormatFunction.formatCurrency(item.price),
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       color: CColors.primary,
                       fontWeight: FontWeight.bold,

@@ -44,8 +44,8 @@ flutter:
   assets:
     - assets/images/promotions/
     - assets/images/products/
-    - assets/fonts/
-    - assets/logos/
+    - assets/images/order/
+    - assets/images/payments/
     - assets/icons/categories/
 
   # fonts:

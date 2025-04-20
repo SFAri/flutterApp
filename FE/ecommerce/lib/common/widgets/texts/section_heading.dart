@@ -24,6 +24,7 @@ class CSectorHeading extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: padding),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title, style: Theme.of(context).textTheme.headlineSmall!.apply(color: textColor), maxLines: 1, overflow: TextOverflow.ellipsis,),
           if(showActionButton) 

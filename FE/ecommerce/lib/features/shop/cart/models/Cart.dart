@@ -27,4 +27,8 @@ class CartModel extends ChangeNotifier {
     _cartItems.clear();
     notifyListeners();
   }
+
+  int getQuantity(Product product) {
+    return _cartItems.where((item) => item == product).length;
+  }
 }
