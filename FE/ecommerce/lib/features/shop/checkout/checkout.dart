@@ -4,7 +4,7 @@ import 'package:ecommerce/features/shop/cart/widgets/cart_items.dart';
 import 'package:ecommerce/features/shop/checkout/widgets/billing_information.dart';
 import 'package:ecommerce/features/shop/checkout/widgets/coupon_code.dart';
 import 'package:ecommerce/features/shop/checkout/widgets/success_screen.dart';
-import 'package:ecommerce/features/shop/screens/home/home.dart';
+import 'package:ecommerce/navigation_menu.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce/features/shop/cart/models/Cart.dart';
@@ -157,7 +157,7 @@ class CheckoutScreen extends StatelessWidget {
                     onPressed: () => Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const HomeScreen(),
+                        builder: (_) => const NavigationMenu(),
                       ),
                       (route) => false,
                     ),
