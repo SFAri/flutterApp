@@ -3,7 +3,9 @@ import 'package:ecommerce/common/widgets/layout/custom_gridview.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
 import 'package:ecommerce/features/shop/screens/home/widgets/home_appbar.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
+import 'package:ecommerce/utils/device/device_utility.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class CategoryHomeScreen extends StatefulWidget {
 
@@ -14,13 +16,14 @@ class CategoryHomeScreen extends StatefulWidget {
 }
 
 class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
-    List<String> selectedBrands = [];
-    List<String> selectedCategories = [];
-    RangeValues selectedRange = RangeValues(1000, 99000000);
+    late List<String> selectedBrands;
+    late List<String> selectedCategories;
+    late RangeValues selectedRange;
+    late double rating;
 
-    final List<String> brands = ['Brand A', 'Brand B', 'Brand C'];
+    final List<String> brands = ['MAC', 'ASUS', 'Lenovo', 'Samsung', 'Dell', 'E-Dra', 'HP'];
 
-    final List<String> categories = ['Category 1', 'Category 2', 'Category 3'];
+    final List<String> categories = ['Best sellers', 'Popular products', 'New products', 'Laptop', 'PC', 'Accessory', 'Switch/hub', 'Software/OS'];
     List<Map<String, String>> products = [
       {
         "name": "Macbook air 14", "brand": "Apple", "imageUrl": CImages.macImage, "price": "27.000.000",
@@ -32,6 +35,21 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
         "name": "Lenovo Ideapad 3", "brand": "Lenovo", "imageUrl": CImages.macImage, "price": "19.330.000",
       },
     ];
+
+    @override
+  void initState() {
+    selectedBrands = [];
+    selectedCategories =[];
+    selectedRange = RangeValues(1000000, 99000000);
+    rating = 0;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    
+    super.dispose();
+  }
 
     @override
     Widget build(BuildContext context) {
@@ -49,30 +67,33 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
                   // Tiêu chí lọc:
                   CSectorHeading(title: 'Tiêu chí lọc'),
                   // Lọc cho PC và laptop: brand, CPU, dung lượng RAM ,giá, rate
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      spacing: 14,
-                      children: [
-                        // Category:
-                        CFilterButton(title: 'Danh mục', onPressed: () => _showFilterModal(context, 'Danh mục', categories)),
-
-                        // Brand:
-                        CFilterButton(title: 'Hãng', onPressed: (){}),
+                  Container(
+                    padding: EdgeInsets.only(left: 14, right: 14),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      // padding: EdgeInsets.only(left: 14, right: 20),
+                      child: Row(
+                        spacing: 14,
+                        children: [
+                          // Category:
+                          CFilterButton(title: 'Danh mục', onPressed: () => _showFilterModal('Danh mục', categories, selectedCategories)),
                     
-                        // Gía:
-                        CFilterButton(title: 'Mức giá', onPressed: (){},),
-                    
-                        // Rate:
-                        CFilterButton(title: 'Đánh giá', onPressed: (){},),
-                    
-                        // CPU:
-                        CFilterButton(title: 'CPU', onPressed: (){},),
-                    
-                        // RAM:
-                        CFilterButton(title: 'RAM', onPressed: (){},),
-                      ],
+                          // Brand:
+                          CFilterButton(title: 'Hãng', onPressed: () => _showFilterModal('Hãng', brands, selectedBrands)),
+                      
+                          // Gía:
+                          CFilterButton(title: 'Mức giá', onPressed: () => _showFilterMoney('Mức giá')),
+                      
+                          // Rate:
+                          CFilterButton(title: 'Đánh giá', onPressed: () => _showFilterRate('Đánh giá'),),
+                      
+                          // CPU:
+                          CFilterButton(title: 'CPU', onPressed: (){},),
+                      
+                          // RAM:
+                          CFilterButton(title: 'RAM', onPressed: (){},),
+                        ],
+                      ),
                     ),
                   ),
 
@@ -80,21 +101,24 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
 
                   // Sắp xếp:
                   CSectorHeading(title: 'Sắp xếp'),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      spacing: 14,
-                      children: [
-                        // Gía cao - thấp:
-                        CSortButton(title: 'Giá cao - thấp', icon: Icon(Icons.filter_list), onPressed: (){},),
+                  Container(
+                    padding: EdgeInsets.only(left: 14, right: 14),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      // padding: EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        spacing: 14,
+                        children: [
+                          // Gía cao - thấp:
+                          CSortButton(title: 'Giá cao - thấp', icon: Icon(Icons.filter_list), onPressed: (){},),
+                      
+                          // Gía thấp - cao:
+                          CSortButton(title: 'Giá thấp - cao', icon: Icon(Icons.filter_list), onPressed: (){}),
                     
-                        // Gía thấp - cao:
-                        CSortButton(title: 'Giá thấp - cao', icon: Icon(Icons.filter_list), onPressed: (){}),
-
-                        // Khuyến mãi hot:
-                        CSortButton(title: 'Khuyến mãi hot', icon: Icon(Icons.discount), onPressed: (){}),
-                      ],
+                          // Khuyến mãi hot:
+                          CSortButton(title: 'Khuyến mãi hot', icon: Icon(Icons.discount), onPressed: (){}),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -106,182 +130,190 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
       );
     }
 
-    void _showFilterModal(BuildContext context, String title, List items) {
+    void _showFilterModal(String title, List<String> items, List<String> selected) {
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          List<String> currentSelection = []; // Danh sách lưu trữ lựa chọn hiện tại
-
-          // Tùy chọn cho từng tiêu đề
-          switch (title) {
-            case 'Hãng':
-              currentSelection = List.from(selectedBrands);
-              break;
-            case 'Danh mục':
-              currentSelection = List.from(selectedCategories);
-              break;
-            default:
-          }
-
-          return Container(
-            padding: EdgeInsets.all(16.0),
-            height: 400,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                SizedBox(height: 20),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      return CheckboxListTile(
-                        title: Text(items[index]),
-                        value: currentSelection.contains(items[index]),
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (value == true) {
-                              currentSelection.add(items[index]); // Thêm vào danh sách nếu được chọn
-                            } else {
-                              currentSelection.remove(items[index]); // Bỏ nếu không được chọn
-                            }
-                          });
+          return StatefulBuilder(
+            builder: (BuildContext innerContext, StateSetter innerSetState) {
+              List selectedItems = selected;
+              return Container(
+                padding: EdgeInsets.all(16.0),
+                height: 400,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    SizedBox(height: 20),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return CheckboxListTile(
+                            title: Text(items[index]),
+                            value: selected.contains(items[index]),
+                            onChanged: (bool? value) {
+                              innerSetState(() {
+                                  // Kiểm tra nếu item chưa có trong currentSelection
+                                  if (!selectedItems.contains(items[index])) {
+                                    selectedItems.add(items[index]); // Thêm vào danh sách nếu được chọn
+                                    print('${items[index]} added to current selection');
+                                    print('Current Selection: ${selectedItems.toString()}');
+                                  }
+                                  else {
+                                    selectedItems.remove(items[index]); // Bỏ nếu không được chọn
+                                    print('${items[index]} removed from current selection');
+                                    print('Current Selection: ${selectedItems.toString()}');
+                                  }
+                              });
+                            },
+                          );
                         },
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          margin: EdgeInsets.all(5),
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            child: Text("Áp dụng"),
+                            onPressed: () {
+                              setState(() {
+                                selected = List.from(selectedItems);
+                              });
+                              Navigator.pop(context); // Đóng modal
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  child: Text("Xác nhận"),
-                  onPressed: () {
-                    setState(() {
-                      selectedBrands = List.from(currentSelection); // Cập nhật danh sách đã chọn
-                    });
-                    Navigator.pop(context); // Đóng modal
-                  },
-                ),
-              ],
-            ),
+              );
+            }
           );
-        },
+        }
       );
     }
 
-  // void _showFilterBottomSheet(BuildContext context) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     builder: (context) {
-  //       return StatefulBuilder(
-  //       builder: (BuildContext innerContext, StateSetter innerSetState) {
-  //         return Container(
-  //           height: MediaQuery.of(context).size.height * 0.7,
-  //           width: CDeviceUtils.getScreenWidth(context),
-  //           padding: const EdgeInsets.all(16.0),
-  //           child: Column(
-  //             spacing: 10,
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text(
-  //                 'Bộ lọc sản phẩm',
-  //                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-  //               ),
-  //               // Lọc brand
-  //               Text('Thương hiệu', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
-  //               GestureDetector(
-  //                 onTap: (){
-  //                   print('Tap!');
-  //                 },
-  //                 child: Container(
-  //                   padding: EdgeInsets.all(10),
-  //                   decoration: BoxDecoration(
-  //                     borderRadius: BorderRadius.circular(12),
-  //                     border: Border.all(
-                        
-  //                     )
-  //                   ),
-  //                   child: Row(
-  //                     children: [
-  //                       Icon(Icons.search),
-  //                       Text('Tìm kiếm thương hiệu')
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //               // Lọc category
-  //               Text('Danh mục', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
-  //               GestureDetector(
-  //                 onTap: (){
-  //                   print('Tap!');
-  //                 },
-  //                 child: Container(
-  //                   padding: EdgeInsets.all(10),
-  //                   decoration: BoxDecoration(
-  //                     borderRadius: BorderRadius.circular(12),
-  //                     border: Border.all(
-                        
-  //                     )
-  //                   ),
-  //                   child: Row(
-  //                     children: [
-  //                       Icon(Icons.search),
-  //                       Text('Tìm kiếm danh mục')
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //               // Lọc giá tiền
-  //               Text(
-  //                 'Khoảng giá',
-  //                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  //               ),
-  //               RangeSlider(
-  //                   values: selectedRange, // Use the observable value
-  //                   min: 0,
-  //                   max: 100000000,
-  //                   divisions: 100,
-  //                   labels: RangeLabels('${selectedRange.start}', '${selectedRange.end}'),
-  //                   onChanged: (RangeValues values) {
-  //                     innerSetState(() {
-  //                       selectedRange = values; // Cập nhật giá trị khoảng giá
-  //                     });
-  //                   },
-  //                 ),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   Text(selectedRange.start.toStringAsFixed(0)),
-  //                   Text(selectedRange.end.toStringAsFixed(0)),
-  //                 ],
-  //               ),
-  //               // Lọc rate
-  //               // Nút áp dụng filter
-  //               Expanded(
-  //                 child: Align(
-  //                   alignment: Alignment.bottomCenter,
-  //                   child: Container(
-  //                     margin: EdgeInsets.all(5),
-  //                     width: double.infinity,
-  //                     child: ElevatedButton(
-  //                       onPressed: () {
-  //                         // Xử lý khi nhấn nút áp dụng
-  //                         Navigator.pop(context);
-  //                       },
-  //                       child: Text('Áp dụng'),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-        
-  //         );
-  //       });
-  //   });
-  // }
+    void _showFilterMoney(String title) {
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          RangeValues innerValues = selectedRange;
+          
+          return StatefulBuilder(
+            builder: (BuildContext innerContext, StateSetter innerSetState) {
+              
+              return Container(
+                padding: EdgeInsets.all(16.0),
+                height: 400,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    SizedBox(height: 20),
+                    Expanded(
+                      child: RangeSlider(
+                        values: innerValues, // Use the observable value
+                        min: 0,
+                        max: 100000000,
+                        divisions: 100,
+                        labels: RangeLabels('${innerValues.start}', '${innerValues.end}'),
+                        onChanged: (RangeValues values) {
+                          print('===== fi $innerValues');
+                          print('===== $innerValues');
+                          print('$values');
+                          innerSetState(() {
+                            innerValues = values; // Cập nhật giá trị khoảng giá
+                          });
+                        },
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${innerValues.start}'),
+                        Text('${innerValues.end}'),
+                      ]
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          margin: EdgeInsets.all(5),
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            child: Text("Áp dụng"),
+                            onPressed: () {
+                              print('===== butotn: $innerValues');
+                              setState(() {
+                                selectedRange = innerValues;
+                              });
+                              Navigator.pop(context); // Đóng modal
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          );
+        }
+      );
+    }
+
+    void _showFilterRate(String title) {
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext innerContext, StateSetter innerSetState) {
+              return Container(
+                padding: EdgeInsets.all(16.0),
+                width: CDeviceUtils.getScreenWidth(context),
+                height: 400,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                      child: Expanded(
+                        child: RatingBar.builder(
+                          itemCount: 5,
+                          initialRating: rating,
+                          itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber), 
+                          onRatingUpdate: (value){
+                            setState(() {
+                              rating = value;
+                              Navigator.pop(context);
+                            });
+                          }
+                        )
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          );
+        }
+      );
+    }
 }
 
 
@@ -301,7 +333,7 @@ class CSortButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => onPressed, 
+      onPressed: () => onPressed(), 
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
@@ -309,8 +341,8 @@ class CSortButton extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.filter_list),
-          Text('Giá cao - thấp'),
+          icon,
+          Text(title),
         ],
       )
     );
@@ -330,7 +362,7 @@ class CFilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => onPressed, 
+      onPressed: () => onPressed(), 
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,

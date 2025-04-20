@@ -8,8 +8,28 @@ import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 // import 'package:get/get_connect/http/src/utils/utils.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+  late TabController tabController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    tabController = TabController(length: 6, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,35 +71,130 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Container(
-              // padding: EdgeInsets.only(left: 10, right: 10),
-              // height: 230,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(CSizes.md),
               ),
               child: CCarouselSliderWithDot()
             ),
 
-            // Product Gridview:
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Popular products: ', 
-                    style: TextStyle(
-                      fontSize: CSizes.fontSizeLg,
-                      fontWeight: FontWeight.w600
-                    )
-                  ),
-                  TextButton(
-                    onPressed: (){}, 
-                    child: Text('View all')
-                  )
-                ],
-              ),
+            SizedBox(height: 8),
+
+            // Tabbar:
+            TabBar(
+              padding: EdgeInsets.zero,
+              isScrollable:  true,
+              indicatorColor: Colors.blue,
+              tabAlignment: TabAlignment.center,
+              unselectedLabelColor: Colors.grey.shade600,
+              labelColor: Colors.blue,
+              controller: tabController,
+              tabs: [
+                Tab(child: Text('Popular products')),
+                Tab(child: Text('New products')),
+                Tab(child: Text('Best sellers')),
+                Tab(child: Text('Laptop')),
+                Tab(child: Text('PC')),
+                Tab(child: Text('Hard drives')),
+              ]
             ),
-            CGridView(items: products),
+            SizedBox(
+              height: 600,
+              child: TabBarView(
+                controller: tabController,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        CGridView(items: products),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: (){}, 
+                            child: Text('View all >>>')
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        CGridView(items: products),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: (){}, 
+                            child: Text('View all >>>')
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        CGridView(items: products),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: (){}, 
+                            child: Text('View all >>>')
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        CGridView(items: products),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: (){}, 
+                            child: Text('View all >>>')
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        CGridView(items: products),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: (){}, 
+                            child: Text('View all >>>')
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        CGridView(items: products),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: (){}, 
+                            child: Text('View all >>>')
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]
+              ),
+            )
           ],
         ),
       ),
