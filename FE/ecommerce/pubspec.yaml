@@ -11,10 +11,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  google_sign_in: ^6.1.5
   # Icons:
   iconsax_flutter: ^1.0.0
   cupertino_icons: ^1.0.8
+  font_awesome_flutter: ^10.7.0
 
   # Utility packages:
   http: ^1.3.0
