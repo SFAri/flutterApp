@@ -16,8 +16,9 @@ class CGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0),
       child: GridView.builder(
+        padding: EdgeInsets.all(10),
         itemCount: items.length,
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),

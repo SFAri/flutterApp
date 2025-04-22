@@ -98,99 +98,81 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ]
             ),
             SizedBox(
-              height: 600,
+              height: 550,
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        CGridView(items: products),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: (){}, 
-                            child: Text('View all >>>')
-                          ),
+                  Column(
+                    children: [
+                      CGridView(items: products),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: (){}, 
+                          child: Text('View all >>>')
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        CGridView(items: products),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: (){}, 
-                            child: Text('View all >>>')
-                          ),
+                  Column(
+                    children: [
+                      CGridView(items: products),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: (){}, 
+                          child: Text('View all >>>')
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        CGridView(items: products),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: (){}, 
-                            child: Text('View all >>>')
-                          ),
+                  Column(
+                    children: [
+                      CGridView(items: products),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: (){}, 
+                          child: Text('View all >>>')
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        CGridView(items: products),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: (){}, 
-                            child: Text('View all >>>')
-                          ),
+                  Column(
+                    children: [
+                      CGridView(items: products),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: (){}, 
+                          child: Text('View all >>>')
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        CGridView(items: products),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: (){}, 
-                            child: Text('View all >>>')
-                          ),
+                  Column(
+                    children: [
+                      CGridView(items: products),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: (){}, 
+                          child: Text('View all >>>')
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        CGridView(items: products),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: (){}, 
-                            child: Text('View all >>>')
-                          ),
+                  Column(
+                    children: [
+                      CGridView(items: products),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: (){}, 
+                          child: Text('View all >>>')
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ]
               ),

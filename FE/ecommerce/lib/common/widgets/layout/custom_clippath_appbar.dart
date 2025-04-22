@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class CClipPathAppBar extends StatelessWidget {
   const CClipPathAppBar({
     super.key,
-    this.height = 270,
+    this.height = 280,
     required this.listWidgets
   });
 
@@ -20,7 +20,7 @@ class CClipPathAppBar extends StatelessWidget {
       clipper: CCustomCurvedEdges(),
       child: Container(
         color: CColors.primary,
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.only(bottom: 12),
         child: SizedBox(
           height: height,
           width: double.infinity,
@@ -41,7 +41,7 @@ class CClipPathAppBar extends StatelessWidget {
                 ),
               ),
               Column(
-                spacing: 14,
+                spacing: 8,
                 children: listWidgets
               )
             ],

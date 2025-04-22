@@ -1,4 +1,5 @@
 import 'package:ecommerce/common/styles/widget_style.dart';
+import 'package:ecommerce/features/shop/screens/product_details/product_detail.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
@@ -25,7 +26,14 @@ class CProductCard extends StatelessWidget {
     final bool dark = CHelperFunctions.isDarkMode(context);
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ProductDetail(),
+          ),
+        );
+      },
       child: Container(
         width: 170,
         padding: EdgeInsets.all(1),
