@@ -5,40 +5,21 @@ import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
-class CHomeAppBar extends StatelessWidget {
-  const CHomeAppBar({
+class CDetailAppBar extends StatelessWidget {
+  const CDetailAppBar({
     super.key,
     this.isBack = false,
+    this.title = 'Product Detail'
   });
 
   final bool isBack;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     return CAppBar(
       showBackArrows: isBack,
-      title: Column(
-        children: [
-          // Search bar:
-          TextFormField(
-            decoration: InputDecoration(
-              hintText: 'Search in store',
-              filled: true,
-              fillColor: CColors.textWhite,
-              prefixIcon: Icon(Icons.search, color: CColors.grey,) ,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(CSizes.borderRadiusLg),
-                // borderSide: BorderSide(color: CColors.grey)
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: CColors.grey.withValues(alpha: 0.2),),
-                // borderRadius: BorderRadius.circular(CSizes.borderRadiusMd),
-              )
-            ),
-            
-          )
-        ],
-      ),
+      title: Text(title, style: TextStyle(color: Colors.white, fontSize: 18),),
       actions: [
         Stack(
           children: [

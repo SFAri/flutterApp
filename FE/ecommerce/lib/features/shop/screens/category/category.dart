@@ -59,7 +59,6 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CClipPathAppBar(
-                height: 330,
                 listWidgets: [
                   SizedBox(height: 2),
                   CHomeAppBar(),

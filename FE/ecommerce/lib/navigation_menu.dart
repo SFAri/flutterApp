@@ -34,7 +34,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
             NavigationDestination(icon: Icon(Icons.account_box), label: 'Profile'),
           ]
         ),
-      body: _getBody(),
+      body: SafeArea(child: _getBody()),
     );
   }
 

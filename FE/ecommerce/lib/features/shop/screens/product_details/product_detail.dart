@@ -1,6 +1,15 @@
 
+import 'package:ecommerce/common/widgets/layout/custom_clippath_appbar.dart';
 import 'package:ecommerce/common/widgets/products/product_card.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
+import 'package:ecommerce/features/auth/login_page.dart';
+import 'package:ecommerce/features/shop/screens/home/widgets/home_appbar.dart';
+import 'package:ecommerce/features/shop/screens/product_details/widgets/comment_piece.dart';
+import 'package:ecommerce/features/shop/screens/product_details/widgets/detail_appbar.dart';
+import 'package:ecommerce/features/shop/screens/product_details/widgets/filter_button.dart';
+import 'package:ecommerce/features/shop/screens/product_details/widgets/rating_progress.dart';
+import 'package:ecommerce/features/shop/screens/product_details/widgets/review_piece.dart';
+import 'package:ecommerce/features/shop/screens/product_details/widgets/variant_image.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:ecommerce/utils/device/device_utility.dart';
@@ -43,17 +52,29 @@ class ProductDetailState extends State<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Product Details', style: TextStyle(fontSize: 18)),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
+      // appBar: AppBar(
+      //   // title: Text('Product Details', style: TextStyle(fontSize: 18)),
+      //   title: CClipPathAppBar(
+      //     listWidgets: [
+      //       SizedBox(height: 2),
+      //       CHomeAppBar(),
+      //     ],
+      //   ),
+      //   backgroundColor: Colors.blue,
+      //   foregroundColor: Colors.white,
+      // ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           // mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.blue
+              ),
+              child: CDetailAppBar(isBack: true)
+            ),
             // Product Image:
             SizedBox(
               height: 300,
@@ -172,7 +193,6 @@ class ProductDetailState extends State<ProductDetail> {
               ]
             ),
             Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               spacing: 10,
               children: [
                 Row(
@@ -250,12 +270,6 @@ class ProductDetailState extends State<ProductDetail> {
             ),
 
             SizedBox(height: 10),
-
-            // Container(
-            //   margin: EdgeInsets.symmetric(vertical: 15),
-            //   padding: EdgeInsets.symmetric(horizontal: 10),
-            //   child: Divider(height: 1)
-            // ),
             // 2.Config
             Text('Config', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
             Wrap(
@@ -303,13 +317,26 @@ class ProductDetailState extends State<ProductDetail> {
                   ),
               ],
             ),
+
             Container(
               margin: EdgeInsets.symmetric(vertical: 15),
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Divider(height: 1)
             ),
             // Reviews:
-            Text('Reviews (899)', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Reviews (899)', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.black
+                  ),
+                  onPressed: (){}, 
+                  child: Icon(Icons.arrow_forward_ios, size: 14)
+                )
+              ],
+            ),
             Text('Belows are the rate for this product'),
             // Rating illustration
             Row(
@@ -333,88 +360,13 @@ class ProductDetailState extends State<ProductDetail> {
                   ],
                 ),
                 Column(
-                  // mainAxisSize: MainAxisSize.min,
+                  spacing: 5,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('5', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Icon(Icons.star),
-                        SizedBox(
-                          width: CDeviceUtils.getScreenWidth(context) * 0.45,                          
-                          child: LinearProgressIndicator(
-                            value: 0.9,
-                            minHeight: 10,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        Text('90%')
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('4', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Icon(Icons.star),
-                        SizedBox(
-                          width: CDeviceUtils.getScreenWidth(context) * 0.45,                          
-                          child: LinearProgressIndicator(
-                            value: 0.1,
-                            minHeight: 10,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        Text('10%')
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('3', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Icon(Icons.star),
-                        SizedBox(
-                          width: CDeviceUtils.getScreenWidth(context) * 0.45,                          
-                          child: LinearProgressIndicator(
-                            value: 0.0,
-                            minHeight: 10,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        Text('0%')
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('2', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Icon(Icons.star),
-                        SizedBox(
-                          width: CDeviceUtils.getScreenWidth(context) * 0.45,                          
-                          child: LinearProgressIndicator(
-                            value: 0.0,
-                            minHeight: 10,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        Text('0%')
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('1', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Icon(Icons.star),
-                        SizedBox(
-                          width: CDeviceUtils.getScreenWidth(context) * 0.45,                          
-                          child: LinearProgressIndicator(
-                            value: 0.0,
-                            minHeight: 10,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        Text('0%')
-                      ],
-                    ),
+                    WRatingProgress(label: '5', progress: 90),
+                    WRatingProgress(label: '4', progress: 10),
+                    WRatingProgress(label: '3', progress: 0),
+                    WRatingProgress(label: '2', progress: 0),
+                    WRatingProgress(label: '1', progress: 0),
                   ],
                 )
               ]
@@ -431,234 +383,31 @@ class ProductDetailState extends State<ProductDetail> {
               direction: Axis.horizontal,
               spacing: 10,
               children: [
-                TextButton(
-                  style: TextButton.styleFrom(
-                    fixedSize: Size(30, 20),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    foregroundColor: Colors.black,
-                    iconColor: Colors.amberAccent,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10)
-                    )
-                  ),
-                  onPressed: (){}, 
-                  child: Row(
-                    spacing: 5,
-                    children: [
-                      Icon(Icons.star),
-                      Text('5'),
-                    ],
-                  )
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    fixedSize: Size(30, 20),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    foregroundColor: Colors.black,
-                    iconColor: Colors.amberAccent,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10)
-                    )
-                  ),
-                  onPressed: (){}, 
-                  child: Row(
-                    spacing: 5,
-                    children: [
-                      Icon(Icons.star),
-                      Text('4'),
-                    ],
-                  )
-                )
+                WFilterButton(label: '5', icon: Icon(Icons.star)),
+                WFilterButton(label: '4', icon: Icon(Icons.star)),
+                WFilterButton(label: '3', icon: Icon(Icons.star)),
+                WFilterButton(label: '2', icon: Icon(Icons.star)),
+                WFilterButton(label: '1', icon: Icon(Icons.star)),
               ],
             ),
+            SizedBox(height: 10),
             // List of reviews:
             Column(
               spacing: 10,
               children: [
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      width: 1,
-                      color: Colors.grey
-                    )
-                  ),
-                  child: Column(
-                    children: [
-                      Column(
-                        spacing: 10,
-                        children: [
-                          Row(
-                            spacing: 20,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.green,
-                                radius: 23,
-                                foregroundColor: Colors.white,
-                                child: Text('A'),
-                              ),
-                              Text('Name user', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              RatingBarIndicator(
-                                itemCount: 5,
-                                itemSize: 16,
-                                rating: 5,
-                                itemBuilder: (context, index) => Icon(Icons.star),
-                              ),
-                              SizedBox(width: 20),
-                              Icon(Icons.history, color: Colors.grey.shade500),
-                              Text('01/04/2025', style: TextStyle(color: Colors.grey.shade500),)
-                            ],
-                          ),
-                          Text(
-                            'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.',
-                            softWrap: true,
-                            maxLines: 100000,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      width: 1,
-                      color: Colors.grey
-                    )
-                  ),
-                  child: Column(
-                    children: [
-                      Column(
-                        spacing: 10,
-                        children: [
-                          Row(
-                            spacing: 20,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.green,
-                                radius: 23,
-                                foregroundColor: Colors.white,
-                                child: Text('A'),
-                              ),
-                              Text('Name user', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              RatingBarIndicator(
-                                itemCount: 5,
-                                itemSize: 16,
-                                rating: 5,
-                                itemBuilder: (context, index) => Icon(Icons.star),
-                              ),
-                              SizedBox(width: 20),
-                              Icon(Icons.history, color: Colors.grey.shade500),
-                              Text('01/04/2025', style: TextStyle(color: Colors.grey.shade500),)
-                            ],
-                          ),
-                          Text(
-                            'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.',
-                            softWrap: true,
-                            maxLines: 100000,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      width: 1,
-                      color: Colors.grey
-                    )
-                  ),
-                  child: Column(
-                    children: [
-                      Column(
-                        spacing: 10,
-                        children: [
-                          Row(
-                            spacing: 20,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.green,
-                                radius: 23,
-                                foregroundColor: Colors.white,
-                                child: Text('A'),
-                              ),
-                              Text('Name user', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              RatingBarIndicator(
-                                itemCount: 5,
-                                itemSize: 16,
-                                rating: 5,
-                                itemBuilder: (context, index) => Icon(Icons.star),
-                              ),
-                              SizedBox(width: 20),
-                              Icon(Icons.history, color: Colors.grey.shade500),
-                              Text('01/04/2025', style: TextStyle(color: Colors.grey.shade500),)
-                            ],
-                          ),
-                          Text(
-                            'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.',
-                            softWrap: true,
-                            maxLines: 100000,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                WReviewPiece(userName: 'Tran Van Thanh', time: '01/04/2025', review: 'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.', rating: 5),
+                WReviewPiece(userName: 'Tran Van Thanh', time: '01/04/2025', review: 'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.', rating: 5),
+                WReviewPiece(userName: 'Tran Van Thanh', time: '01/04/2025', review: 'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.', rating: 5),
                 // Button to rate
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(10),
                   child: ElevatedButton(
                     // Here will pop a new page to rate that product or show an alert that user must login before rate.
-                    onPressed: (){}, 
+                    onPressed: () => showDialogLogin(), 
                     child: Text('Click here to rate this product!')
                   ),
                 )
-                // Row(
-                //   children: [
-                //     SizedBox(
-                //       width: CDeviceUtils.getScreenWidth(context)*0.8,
-                //       child: TextFormField(
-                //         decoration: InputDecoration(
-                //           hintText: 'Enter your'
-                //         ),
-                //         // decoration: InputDecoration(
-                //         //   border: OutlineInputBorder(
-                //         //     borderSide: BorderSide(),
-
-                //         //   )
-                //         // ),
-                //       ),
-                //     ),
-                //     IconButton(
-                //       onPressed: (){}, 
-                //       icon: Icon(Icons.send),
-                //     )
-                //   ]
-                // )
               ],
             ),
             
@@ -668,59 +417,21 @@ class ProductDetailState extends State<ProductDetail> {
               child: Divider(height: 1)
             ),
             // Comments:
-            Text('Comments (200)', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      width: 1,
-                      color: Colors.grey
-                    )
+                Text('Comments (200)', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.black
                   ),
-                  child: Column(
-                    children: [
-                      Column(
-                        spacing: 10,
-                        children: [
-                          Row(
-                            spacing: 10,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.green,
-                                radius: 23,
-                                foregroundColor: Colors.white,
-                                child: Text('A'),
-                              ),
-                              Column(
-                                children: [
-                                  Text('Name user', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.history, color: Colors.grey.shade500),
-                                      Text('01/04/2025', style: TextStyle(color: Colors.grey.shade500))
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Text(
-                            'I wonder whether why I didnt know this product earlier!',
-                            softWrap: true,
-                            maxLines: 100000,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                  onPressed: (){}, 
+                  child: Icon(Icons.arrow_forward_ios, size: 14)
+                )
               ],
-            )
+            ),
+            SizedBox(height: 10),
+            WCommentPiece(userName: 'Van A', time: '01/04/2025', comment: 'I wonder whether why I didnt know this product earlier!')
           ],
         ),
       ),
@@ -782,103 +493,33 @@ class ProductDetailState extends State<ProductDetail> {
       ),
     );
   }
-  
-}
 
-class VariantWithImage extends StatelessWidget {
-  const VariantWithImage({
-    super.key,
-    this.images = '',
-    required this.isSelected,
-    required this.onSelect,
-    this.title = 'Grey',
-    this.price = '20.000.000 VNĐ'
-  });
-
-  final String images;
-  final bool isSelected;
-  final String title;
-  final String price;
-  final VoidCallback onSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(8),
-      child: ChoiceChip(
-        padding: EdgeInsets.symmetric(vertical: 5),
-        label: Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+  void showDialogLogin() {
+    showDialog<String>(
+      context: context,
+      builder:
+          (BuildContext context) => AlertDialog(
+            title: const Text('Rating alert'),
+            content: const Text('You have to login before left rating. Go back to login page?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 10,
-                children: [
-                  // Image:
-                  if (images.isNotEmpty)
-                    SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          images,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, 'OK');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LoginPage(),
                     ),
-            
-                  // Column includes name color and price:
-                  Column(
-                    spacing: 5,
-                    children: [
-                      Text(
-                        title,
-                        maxLines: 3, // Số dòng tối đa
-                        textAlign: TextAlign.center,
-                        // overflow: TextOverflow.visible
-                      ),
-                      Row(
-                        spacing: 5,
-                        children: [
-                          Text(
-                            price,
-                            style: TextStyle(
-                              fontSize: CSizes.fontSizeSm,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  )
-                ],
+                  );
+                } ,
+                child: const Text('OK'),
               ),
-            ),
-            if (isSelected) // Hiển thị checkmark khi được chọn
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                  size: 24, // Điều chỉnh kích thước checkmark
-                ),
-              ),
-          ]
-        ), 
-        selected: isSelected,
-        selectedColor: Colors.transparent,
-        onSelected: (value) {
-          onSelect();
-        },
-        disabledColor: Colors.white,
-        showCheckmark: false,
-      ),
+            ],
+          ),
     );
   }
 }

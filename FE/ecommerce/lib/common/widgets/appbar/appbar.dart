@@ -24,15 +24,15 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: CSizes.md),
+      padding: EdgeInsets.symmetric(horizontal: 5),
       child: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading:
             showBackArrows
                 ? IconButton(
-                  onPressed: () => Get.back(),
-                  icon: Icon(Icons.arrow_back),
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
                 )
                 : leadingIcon != null
                 ? IconButton(
