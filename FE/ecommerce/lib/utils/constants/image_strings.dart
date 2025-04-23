@@ -1,9 +1,10 @@
 class CImages {
   // App logos:
-  static const String darkAppLogo = "";
-  static const String lightAppLogo = "";
+  static const String darkAppLogo = "assets/logos/logo_dark.png";
+  static const String lightAppLogo = "assets/logos/logo.png";
 
   // Default Images.... avatar,...
+  static const String avatar = "assets/images/admin.png";
 
   // Promotion images:
   static const String blackFridayLaptop = "assets/images/promotions/blackFridayLaptop.jpg";
