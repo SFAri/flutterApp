@@ -15,6 +15,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final List<String> list = <String>['This Year', 'This month', 'This week', 'Custom'];
   late String dropdownValue;
+  
 
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
@@ -24,6 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // For bar graph:
   int touchedIndex = -1;
+  final DataTableSource _data = MyData();
 
   void updateStartDate (DateTime newValue) {
     setState(() {
@@ -297,86 +299,104 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
 
             // Table data of products sold:
+            // Padding(
+            //   padding: EdgeInsets.all(15),
+            //   child: Table(
+            //     border: TableBorder.all(color: Colors.white30),
+            //     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            //     children: [
+            //       const TableRow(
+            //         decoration: BoxDecoration(
+            //           color: Colors.redAccent,
+            //         ),
+            //         children: [
+            //           TableCell(
+            //             verticalAlignment: TableCellVerticalAlignment.middle,
+            //             child: Padding(
+            //               padding: EdgeInsets.all(8.0),
+            //               child: Text('Title 1'),
+            //             ),
+            //           ),
+            //           TableCell(
+            //             verticalAlignment: TableCellVerticalAlignment.middle,
+            //             child: Padding(
+            //               padding: EdgeInsets.all(8.0),
+            //               child: Text('Title 2'),
+            //             ),
+            //           ),
+            //           TableCell(
+            //             verticalAlignment: TableCellVerticalAlignment.middle,
+            //             child: Padding(
+            //               padding: EdgeInsets.all(8.0),
+            //               child: Text('Title 3'),
+            //             ),
+            //           ),
+            //           TableCell(
+            //             verticalAlignment: TableCellVerticalAlignment.middle,
+            //             child: Padding(
+            //               padding: EdgeInsets.all(8.0),
+            //               child: Text('Title 4'),
+            //             ),
+            //           ),
+            //         ]
+            //       ),
+            //       // Data display here:
+            //       ...List.generate(
+            //         20, 
+            //         (index) => const TableRow(
+            //           children: [
+            //             TableCell(
+            //               verticalAlignment: TableCellVerticalAlignment.middle,
+            //               child: Padding(
+            //                 padding: EdgeInsets.all(8.0),
+            //                 child: Text('Cell1'),
+            //               ),
+            //             ),
+            //             TableCell(
+            //               verticalAlignment: TableCellVerticalAlignment.middle,
+            //               child: Padding(
+            //                 padding: EdgeInsets.all(8.0),
+            //                 child: Text('Cell2'),
+            //               ),
+            //             ),
+            //             TableCell(
+            //               verticalAlignment: TableCellVerticalAlignment.middle,
+            //               child: Padding(
+            //                 padding: EdgeInsets.all(8.0),
+            //                 child: Text('Cell3'),
+            //               ),
+            //             ),
+            //             TableCell(
+            //               verticalAlignment: TableCellVerticalAlignment.middle,
+            //               child: Padding(
+            //                 padding: EdgeInsets.all(8.0),
+            //                 child: Text('Cell4'),
+            //               ),
+            //             ),
+            //           ]
+            //         )
+            //       )
+            //     ],
+            //   ),
+            // )
             Padding(
-              padding: EdgeInsets.all(15),
-              child: Table(
-                border: TableBorder.all(color: Colors.white30),
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: [
-                  const TableRow(
-                    decoration: BoxDecoration(
-                      color: Colors.redAccent,
-                    ),
-                    children: [
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Title 1'),
-                        ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Title 2'),
-                        ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Title 3'),
-                        ),
-                      ),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Title 4'),
-                        ),
-                      ),
-                    ]
-                  ),
-                  // Data display here:
-                  ...List.generate(
-                    20, 
-                    (index) => const TableRow(
-                      children: [
-                        TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Cell1'),
-                          ),
-                        ),
-                        TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Cell2'),
-                          ),
-                        ),
-                        TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Cell3'),
-                          ),
-                        ),
-                        TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Cell4'),
-                          ),
-                        ),
-                      ]
-                    )
-                  )
-                ],
-              ),
-            )
+              padding: EdgeInsets.all(20),
+              child: Container(
+                width: 1000,
+                child: PaginatedDataTable(
+                  rowsPerPage: 10,
+                  source: _data,
+                  columns: [
+                    DataColumn(label: Text('OrderId')),
+                    DataColumn(label: Text('User')),
+                    DataColumn(label: Text('Date')),
+                    DataColumn(label: Text('Total')),
+                    DataColumn(label: Text('Actions')),
+                  ], 
+                  header: const Center(child: Text('List Order')),
+                ),
+              )
+            ),
           ],
         ),
       ),
@@ -626,4 +646,107 @@ class _DashboardScreenState extends State<DashboardScreen> {
       }
     });
   }
+}
+
+class MyData extends DataTableSource {
+  final List<Map<String, dynamic>> orders = [
+  {
+    'orderId': 1,
+    'user': 'John Doe',
+    'date': DateTime(2023, 4, 20),
+    'total': 29.99,
+  },
+  {
+    'orderId': 2,
+    'user': 'Jane Smith',
+    'date': DateTime(2023, 4, 21),
+    'total': 49.50,
+  },
+  {
+    'orderId': 3,
+    'user': 'Mike Johnson',
+    'date': DateTime(2023, 4, 22),
+    'total': 15.75,
+  },
+  {
+    'orderId': 4,
+    'user': 'Emily Davis',
+    'date': DateTime(2023, 4, 23),
+    'total': 99.99,
+  },
+  {
+    'orderId': 5,
+    'user': 'Chris Lee',
+    'date': DateTime(2023, 4, 24),
+    'total': 5.00,
+  },
+  {
+    'orderId': 6,
+    'user': 'Sarah Brown',
+    'date': DateTime(2023, 4, 25),
+    'total': 75.20,
+  },
+  {
+    'orderId': 7,
+    'user': 'David Wilson',
+    'date': DateTime(2023, 4, 26),
+    'total': 34.10,
+  },
+  {
+    'orderId': 8,
+    'user': 'Jessica Taylor',
+    'date': DateTime(2023, 4, 27),
+    'total': 89.99,
+  },
+  {
+    'orderId': 9,
+    'user': 'Daniel Martinez',
+    'date': DateTime(2023, 4, 28),
+    'total': 42.00,
+  },
+  {
+    'orderId': 10,
+    'user': 'Laura Garcia',
+    'date': DateTime(2023, 4, 29),
+    'total': 60.00,
+  },
+];
+
+  @override
+  DataRow? getRow(int index) {
+    return DataRow(
+      cells: [
+        DataCell(Text(orders[index]['orderId'].toString())),
+        DataCell(Text(orders[index]['user'])),
+        DataCell(Text(orders[index]['date'].toString())),
+        DataCell(Text(orders[index]['total'].toString())),
+        DataCell(
+          Row(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: (){},
+                icon: Icon(Icons.remove_red_eye)
+              ),
+              IconButton(
+                onPressed: (){},
+                icon: Icon(Icons.delete)
+              )
+            ]
+          ),
+        ),
+      ]
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => orders.length;
+
+  @override
+  // TODO: implement selectedRowCount
+  int get selectedRowCount => 0;
+  
 }
