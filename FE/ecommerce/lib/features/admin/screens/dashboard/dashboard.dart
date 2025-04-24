@@ -1,11 +1,9 @@
-import 'package:ecommerce/features/admin/controller/menu_controller.dart';
-import 'package:ecommerce/features/admin/responsive.dart';
-import 'package:ecommerce/utils/constants/colors.dart';
-import 'package:ecommerce/utils/constants/image_strings.dart';
+import 'package:ecommerce/features/admin/screens/dashboard/widgets/block_simple.dart';
+import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
+import 'package:ecommerce/features/admin/screens/dashboard/widgets/indicator.dart';
 import 'package:ecommerce/utils/formatters/formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -72,10 +70,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: EdgeInsets.all(10),
         child: Column(
           spacing: 20,
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header:
             Header(),
+            Divider(),
 
             // Main board
             // 1. Filter row:
@@ -122,7 +120,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${CFormatter.formatDate(startDate)}'),
+                        Text(CFormatter.formatDate(startDate)),
                         Icon(Icons.date_range)
                       ],
                     )
@@ -141,7 +139,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${CFormatter.formatDate(endDate)}'),
+                        Text(CFormatter.formatDate(endDate)),
                         Icon(Icons.date_range)
                       ],
                     )
@@ -184,7 +182,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SizedBox(
                   // color: Colors.blueGrey[900],
                   height: 450,
-                  width: 400,
+                  width: 500,
                   child: Column(
                     children: [
                       SizedBox(
@@ -299,86 +297,84 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
 
             // Table data of products sold:
-            Container(
-              child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Table(
-                  border: TableBorder.all(color: Colors.white30),
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    const TableRow(
-                      decoration: BoxDecoration(
-                        color: Colors.redAccent,
+            Padding(
+              padding: EdgeInsets.all(15),
+              child: Table(
+                border: TableBorder.all(color: Colors.white30),
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                children: [
+                  const TableRow(
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                    ),
+                    children: [
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Title 1'),
+                        ),
                       ),
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Title 2'),
+                        ),
+                      ),
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Title 3'),
+                        ),
+                      ),
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Title 4'),
+                        ),
+                      ),
+                    ]
+                  ),
+                  // Data display here:
+                  ...List.generate(
+                    20, 
+                    (index) => const TableRow(
                       children: [
                         TableCell(
                           verticalAlignment: TableCellVerticalAlignment.middle,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text('Title 1'),
+                            child: Text('Cell1'),
                           ),
                         ),
                         TableCell(
                           verticalAlignment: TableCellVerticalAlignment.middle,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text('Title 2'),
+                            child: Text('Cell2'),
                           ),
                         ),
                         TableCell(
                           verticalAlignment: TableCellVerticalAlignment.middle,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text('Title 3'),
+                            child: Text('Cell3'),
                           ),
                         ),
                         TableCell(
                           verticalAlignment: TableCellVerticalAlignment.middle,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text('Title 4'),
+                            child: Text('Cell4'),
                           ),
                         ),
                       ]
-                    ),
-                    // Data display here:
-                    ...List.generate(
-                      20, 
-                      (index) => const TableRow(
-                        children: [
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Cell1'),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Cell2'),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Cell3'),
-                            ),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Cell4'),
-                            ),
-                          ),
-                        ]
-                      )
                     )
-                  ],
-                ),
+                  )
+                ],
               ),
             )
           ],
@@ -629,132 +625,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
           throw Error();
       }
     });
-  }
-}
-
-class Header extends StatelessWidget {
-  const Header({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        if (!Responsive.isDesktop(context))
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: context.read<MenuAppController>().controlMenu,
-          ),
-        
-        Text(
-          'Dashboard',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        if (!Responsive.isMobile(context))
-          Spacer(flex: Responsive.isDesktop(context) ? 2 : 1),
-        Row(
-          spacing: 10,
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage(CImages.avatar),
-            ),
-            if (!Responsive.isMobile(context))
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text('Admin'),
-              ),
-            Icon(Icons.keyboard_arrow_down)
-          ],
-        )
-      ],
-    );
-  }
-}
-
-  
-
-
-
-class CBlockSimple extends StatelessWidget {
-  const CBlockSimple({
-    super.key,
-    required this.title,
-    required this.description,
-    this.isMoney = false,
-    this.isProfit = false,
-  });
-
-  final String title;
-  final double description;
-  final bool isMoney;
-  final bool isProfit;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(),
-        borderRadius: BorderRadius.circular(10)
-        // boxShadow: 
-      ),
-      padding: EdgeInsets.all(10),
-      width: 150,
-      height: 80,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 10,
-        children: [
-          Text(title, style: TextStyle(color: Colors.grey)),
-          Text(isMoney ? '${description} VND' : description.toString(), style: TextStyle(color: isProfit? Colors.red : Colors.blue),)
-        ],
-      ),
-    );
-  }
-}
-
-class Indicator extends StatelessWidget {
-  const Indicator({
-    super.key,
-    required this.color,
-    required this.text,
-    required this.isSquare,
-    this.size = 16,
-    this.textColor,
-  });
-  final Color color;
-  final String text;
-  final bool isSquare;
-  final double size;
-  final Color? textColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: isSquare ? BoxShape.rectangle : BoxShape.circle,
-            color: color,
-          ),
-        ),
-        const SizedBox(
-          width: 4,
-        ),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: textColor,
-          ),
-        )
-      ],
-    );
   }
 }

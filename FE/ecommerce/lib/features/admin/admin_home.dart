@@ -14,22 +14,31 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
+
+  Widget _currentScreen = DashboardScreen();
+
+  void _selectScreen(Widget screen) {
+    setState(() {
+      _currentScreen = screen; // Cập nhật trang hiện tại
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: context.read<MenuAppController>().scaffoldKey,
-      drawer: SideDrawer(),
+      drawer: SideDrawer(onSelectScreen: _selectScreen),
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (Responsive.isDesktop(context))
               Expanded(
-                child: SideDrawer(),
+                child: SideDrawer(onSelectScreen: _selectScreen),
               ),
             Expanded(
               flex: 5,
-              child: DashboardScreen()
+              child: _currentScreen
             ),
           ],
         )

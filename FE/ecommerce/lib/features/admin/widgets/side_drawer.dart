@@ -1,8 +1,12 @@
+import 'package:ecommerce/features/admin/screens/dashboard/dashboard.dart';
+import 'package:ecommerce/features/admin/screens/userManagement/user_management.dart/users.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 
 class SideDrawer extends StatelessWidget {
-  const SideDrawer({super.key});
+  const SideDrawer({super.key, required this.onSelectScreen});
+
+  final Function(Widget) onSelectScreen; // Tham số để nhận hàm chọn trang
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +17,9 @@ class SideDrawer extends StatelessWidget {
             child: Image.asset(CImages.darkAppLogo)
           ),
           ListTile(
-            onTap: (){},
+            onTap: (){
+              onSelectScreen(DashboardScreen());
+            },
             leading: Icon(Icons.home),
             title: Text('Dashboard'),
           ),
@@ -33,7 +39,9 @@ class SideDrawer extends StatelessWidget {
             title: Text('Order'),
           ),
           ListTile(
-            onTap: (){},
+            onTap: (){
+              onSelectScreen(UserScreen());
+            },
             leading: Icon(Icons.supervised_user_circle_rounded),
             title: Text('User'),
           ),
