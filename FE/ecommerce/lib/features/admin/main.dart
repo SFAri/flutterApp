@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 
-StreamController<Map<String, dynamic>> streamController = StreamController<Map<String, dynamic>>();
+StreamController<Widget> streamController = StreamController<Widget>();
 void main() {
   runApp(AdminMain());
 }

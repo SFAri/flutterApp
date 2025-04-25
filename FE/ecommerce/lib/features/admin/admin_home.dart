@@ -11,7 +11,7 @@ import 'dart:async';
 class AdminHome extends StatefulWidget {
   const AdminHome( this.stream, {super.key});
 
-  final Stream<Map<String, dynamic>> stream;
+  final Stream<Widget> stream;
   @override
   State<AdminHome> createState() => AdminHomeState();
 }
@@ -26,15 +26,15 @@ class AdminHomeState extends State<AdminHome> {
     });
   }
 
-  void showUserDetailScreen(Map<String, dynamic> user) {
+  void showUserDetailScreen(Widget screen) {
     setState(() {
-      _currentScreen = DetailUserScreen(user: user);
+      _currentScreen = screen;
     });
   }
   @override void initState() {
     super.initState();
-    widget.stream.listen((user) {
-      showUserDetailScreen(user);
+    widget.stream.listen((screen) {
+      showUserDetailScreen(screen);
     });
   }
 

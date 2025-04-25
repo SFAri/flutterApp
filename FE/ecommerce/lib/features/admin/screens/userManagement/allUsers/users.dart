@@ -1,6 +1,7 @@
 import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/responsive.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
+import 'package:ecommerce/features/admin/screens/userManagement/detailUser/detail_user.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 
@@ -179,7 +180,7 @@ class _UserScreenState extends State<UserScreen> {
                         margin: const EdgeInsets.symmetric(vertical: 4),
                         child: ListTile(
                           onTap: () {
-                            streamController.add(users[index]);
+                            streamController.add(DetailUserScreen(user:  users[index]));
                           },
                           internalAddSemanticForOnTap: false,
                           title: Text(user['name']!),
@@ -284,7 +285,7 @@ class MyData extends DataTableSource {
             children: [
               IconButton(
                 onPressed: (){
-                  streamController.add(users[index]);
+                  streamController.add(DetailUserScreen(user: users[index]));
                 },
                 icon: Icon(Icons.remove_red_eye)
               ),
