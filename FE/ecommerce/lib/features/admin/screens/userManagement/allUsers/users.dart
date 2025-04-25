@@ -1,7 +1,10 @@
+import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/responsive.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
+
+// StreamController<Map<String, dynamic>> streamController = StreamController<Map<String, dynamic>>();
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -176,9 +179,7 @@ class _UserScreenState extends State<UserScreen> {
                         margin: const EdgeInsets.symmetric(vertical: 4),
                         child: ListTile(
                           onTap: () {
-                            setState(() {
-                              selectedUser = user; // Cập nhật người dùng được chọn
-                            });
+                            streamController.add(users[index]);
                           },
                           internalAddSemanticForOnTap: false,
                           title: Text(user['name']!),
@@ -282,7 +283,9 @@ class MyData extends DataTableSource {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                onPressed: (){},
+                onPressed: (){
+                  streamController.add(users[index]);
+                },
                 icon: Icon(Icons.remove_red_eye)
               ),
               IconButton(

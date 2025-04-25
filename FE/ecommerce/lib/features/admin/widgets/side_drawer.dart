@@ -1,5 +1,7 @@
+import 'package:ecommerce/features/admin/main.dart';
+import 'package:ecommerce/features/admin/screens/couponManagement/allCoupons/coupon_screen.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/dashboard.dart';
-import 'package:ecommerce/features/admin/screens/userManagement/user_management.dart/users.dart';
+import 'package:ecommerce/features/admin/screens/userManagement/allUsers/users.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 
@@ -44,6 +46,13 @@ class SideDrawer extends StatelessWidget {
             },
             leading: Icon(Icons.supervised_user_circle_rounded),
             title: Text('User'),
+          ),
+          ListTile(
+            onTap: (){
+              onSelectScreen(CouponScreen());
+            },
+            leading: Icon(Icons.trending_down_sharp),
+            title: Text('Coupon'),
           ),
           ListTile(
             onTap: (){},

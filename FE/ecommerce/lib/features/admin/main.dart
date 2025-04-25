@@ -2,6 +2,9 @@ import 'package:ecommerce/features/admin/admin_home.dart';
 import 'package:ecommerce/features/admin/controller/menu_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
+
+StreamController<Map<String, dynamic>> streamController = StreamController<Map<String, dynamic>>();
 void main() {
   runApp(AdminMain());
 }
@@ -26,8 +29,11 @@ class _AdminMainState extends State<AdminMain> {
           ChangeNotifierProvider(
             create: (context) => MenuAppController(),
           ),
+          // ChangeNotifierProvider(
+          //   create: (context) => UserProvider(), // Add UserProvider
+          // ),
         ],
-        child: AdminHome()
+        child: AdminHome(streamController.stream)
       ),
     );
   }
