@@ -1,3 +1,5 @@
+import 'package:ecommerce/features/admin/main.dart';
+import 'package:ecommerce/features/admin/screens/couponManagement/detailCoupon/detail_coupon.dart';
 import 'package:flutter/material.dart';
 
 class PaginatedTable extends StatefulWidget{
@@ -5,14 +7,14 @@ class PaginatedTable extends StatefulWidget{
     super.key, 
     required this.lists,
     required this.removeFunction,
-    required this.viewFunction,
+    // required this.viewWidget,
     required this.columns,
     this.header = 'Table'
   });
 
   final List<Map<String, dynamic>> lists;
   final VoidCallback removeFunction;
-  final VoidCallback viewFunction;
+  // final Widget viewWidget;
   final List<DataColumn> columns;
   final String header;
 
@@ -26,7 +28,7 @@ class _PaginatedTableState extends State<PaginatedTable> {
   @override
   void initState() {
     super.initState();
-    _data = MyData(widget.lists, widget.removeFunction, widget.viewFunction);
+    _data = MyData(widget.lists, widget.removeFunction);
   }
 
   @override
@@ -52,11 +54,11 @@ class _PaginatedTableState extends State<PaginatedTable> {
 }
 
 class MyData extends DataTableSource {
-  MyData(this.lists ,this.removeFunction, this.viewFunction);
+  MyData(this.lists ,this.removeFunction);
 
   final List<Map<String, dynamic>> lists;
   final VoidCallback removeFunction;
-  final VoidCallback viewFunction;
+  // final VoidCallback viewFunction;
 
   @override
   DataRow? getRow(int index) {
@@ -80,7 +82,7 @@ class MyData extends DataTableSource {
         Row(
           children: [
             IconButton(
-              onPressed: () => viewFunction(), // Hành động xem
+              onPressed: () => streamController.add(DetailCouponScreen(coupon: item)), // Hành động xem
               icon: Icon(Icons.remove_red_eye),
             ),
             IconButton(

@@ -95,6 +95,14 @@ class CouponScreenState extends State<CouponScreen> {
                   onChanged: (value) {
                     
                   },
+                ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  color: Colors.white,
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.green
+                  ),
+                  onPressed: () {}, // show modal add here!
                 )
               ],
             ),
@@ -102,9 +110,9 @@ class CouponScreenState extends State<CouponScreen> {
             PaginatedTable(
               lists: coupons,
               removeFunction: (){},
-              viewFunction: (){
-                streamController.add(DetailCouponScreen());
-              },
+              // viewFunction: (){
+              //   streamController.add(DetailCouponScreen(coupon: {}));
+              // },
               header: 'List coupons',
               columns: [
                 DataColumn(label: Text('Code')),
