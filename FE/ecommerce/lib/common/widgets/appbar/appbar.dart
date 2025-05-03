@@ -26,11 +26,12 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = CHelperFunctions.isDarkMode(context);
     return AppBar(
       backgroundColor:
           isTranfer
               ? Colors.transparent
-              : CHelperFunctions.isDarkMode(context)
+              : dark
               ? Colors.black
               : Colors.blue,
       automaticallyImplyLeading: false,

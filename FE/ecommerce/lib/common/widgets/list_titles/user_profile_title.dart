@@ -1,4 +1,5 @@
 import 'package:ecommerce/common/widgets/images/circular_image.dart';
+import 'package:ecommerce/features/personalization/screens/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
@@ -26,7 +27,11 @@ class CUserProfileTitle extends StatelessWidget {
         ).textTheme.bodyMedium!.apply(color: Colors.white),
       ),
       trailing: IconButton(
-        onPressed: () {},
+        onPressed:
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ProfileScreen()),
+            ),
         icon: const Icon(Iconsax.edit_copy, color: Colors.white),
       ),
     );

@@ -10,8 +10,7 @@ class OrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CAppBar(
-        leadingIcon: Icons.arrow_back,
-        leadingOnPressed: () => Navigator.pop(context),
+        showBackArrows: true,
         title: Text(
           'My Order',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(

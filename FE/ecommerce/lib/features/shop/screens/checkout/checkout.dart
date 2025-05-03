@@ -26,8 +26,7 @@ class CheckoutScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: CAppBar(
-          leadingIcon: Icons.arrow_back,
-          leadingOnPressed: () => Navigator.pop(context),
+          showBackArrows: true,
           title: Text('Order Review',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,

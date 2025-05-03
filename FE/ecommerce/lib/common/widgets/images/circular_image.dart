@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CCircularImage extends StatelessWidget {
   const CCircularImage({
-    Key? key,
+    super.key,
     required this.width,
     required this.height,
     required this.image,
