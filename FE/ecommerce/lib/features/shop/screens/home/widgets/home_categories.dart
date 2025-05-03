@@ -30,7 +30,7 @@ class CHomeCategory extends StatelessWidget {
         ),
         // Categories :
         Container(
-          height: 80,
+          height: 100,
           padding: EdgeInsets.only(left: CSizes.defaultSpace, right: CSizes.defaultSpace),
           child: ListView.builder(
             itemCount: categories.length,

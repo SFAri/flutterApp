@@ -5,7 +5,7 @@ class CGridView extends StatelessWidget {
   const CGridView({
     super.key,
     required this.items,
-    this.mainAxisExtent = 235,
+    this.mainAxisExtent = 290,
     this.crossAxisCount = 2
   });
 

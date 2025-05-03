@@ -2,6 +2,7 @@ import 'package:ecommerce/common/styles/widget_style.dart';
 import 'package:ecommerce/features/shop/screens/product_details/product_detail.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
+import 'package:ecommerce/utils/formatters/formatter.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -42,11 +43,13 @@ class CProductCard extends StatelessWidget {
             boxShadow: [CShadowStyle.productShadow],
             color: dark ? Colors.grey : Colors.white),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Product image
             CRoundedContainer(
               width: 170,
-              height: 130,
+              // height: 130,
               padding: EdgeInsets.all(0),
               radius: CSizes.productImageRadius,
               // backgroundColor: dark ? CColors.dark : CColors.light,
@@ -56,8 +59,8 @@ class CProductCard extends StatelessWidget {
                     // Image
                     Container(
                       alignment: Alignment.center,
-                      width: 170,
-                      height: 130,
+                      width: 160,
+                      // height: 120,
                       child: ClipRRect(
                         borderRadius:
                             BorderRadius.circular(CSizes.productImageRadius),
@@ -96,16 +99,28 @@ class CProductCard extends StatelessWidget {
               padding: EdgeInsets.only(left: CSizes.sm),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   CProductCardTitle(title: productName, smallSize: false),
                   Text(productBrand,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.labelMedium),
-                  Text('$price VND',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleSmall),
+                      style: TextStyle(color: Colors.green.shade500, fontWeight: FontWeight.bold) ),
+                  if (double.parse(price)*double.parse(salePrice)/100 > 0)
+                    Text(CFormatter.formatMoney((double.parse(price) - double.parse(price)*double.parse(salePrice)/100).toString()),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleSmall),
+                  if (double.parse(price)*double.parse(salePrice)/100 > 0)
+                    Text(CFormatter.formatMoney(price),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(decoration: TextDecoration.lineThrough, decorationColor: Colors.grey.shade600, decorationThickness: 1.7, color: Colors.grey.shade500)),
+                  if (double.parse(price)*double.parse(salePrice)/100 == 0)
+                    Text(CFormatter.formatMoney(price),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleSmall),
                   // Rate and button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -129,14 +144,14 @@ class CProductCard extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                             color: Colors.black,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16),
-                                bottomRight: Radius.circular(16))),
+                            borderRadius: BorderRadius.circular(10),
+                        ),
                         child: SizedBox(
                           width: CSizes.iconLg * 1.2,
                           height: CSizes.iconLg * 1.2,
-                          child: Icon(
-                            Icons.shopping_cart,
+                          child: IconButton(
+                            onPressed: (){},
+                            icon: Icon(Icons.shopping_cart),
                             color: Colors.white,
                           ),
                         ),

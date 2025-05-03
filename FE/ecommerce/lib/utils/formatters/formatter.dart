@@ -16,4 +16,9 @@ class CFormatter {
     }
     return phoneNumber;
   }
+
+  static String formatMoney(String amount){
+    final formatter = NumberFormat('#,##0');
+    return '${formatter.format(double.parse(amount))} VND';
+  }
 }

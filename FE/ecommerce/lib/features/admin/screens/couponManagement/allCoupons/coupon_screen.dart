@@ -110,9 +110,9 @@ class CouponScreenState extends State<CouponScreen> {
             PaginatedTable(
               lists: coupons,
               removeFunction: (){},
-              // viewFunction: (){
-              //   streamController.add(DetailCouponScreen(coupon: {}));
-              // },
+              viewFunction: (item) {
+                streamController.add(DetailCouponScreen(coupon: item));
+              },
               header: 'List coupons',
               columns: [
                 DataColumn(label: Text('Code')),

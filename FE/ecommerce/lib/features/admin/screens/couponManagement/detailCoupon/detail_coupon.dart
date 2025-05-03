@@ -2,6 +2,7 @@ import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/userManagement/widgets/paginated_table.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/get_utils.dart';
 
 class DetailCouponScreen extends StatefulWidget {
   final Map<String, dynamic> coupon;
@@ -112,7 +113,8 @@ class DetailCouponScreenState extends State<DetailCouponScreen> {
             ),
             
             PaginatedTable(
-              lists: widget.coupon['orders'], 
+              header: 'List orders',
+              lists: (widget.coupon['orders'] as List).isEmpty ? [] : widget.coupon['orders'],
               removeFunction: (){}, 
               columns: [
                 DataColumn(label: Text('Order Id')),
@@ -120,7 +122,7 @@ class DetailCouponScreenState extends State<DetailCouponScreen> {
                 DataColumn(label: Text('Order Value')),
                 DataColumn(label: Text('Customer Name')),
                 DataColumn(label: Text('Action')),
-              ]
+              ], 
             ),
 
             // Row button:

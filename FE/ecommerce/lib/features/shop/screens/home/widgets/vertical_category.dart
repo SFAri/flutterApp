@@ -24,12 +24,12 @@ class CVerticalItem extends StatelessWidget {
           spacing: 12,
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: 60,
+              height: 60,
               padding: EdgeInsets.all(CSizes.sm),
               decoration: BoxDecoration(
                 color: CColors.textWhite,
-                borderRadius: BorderRadius.circular(100)
+                borderRadius: BorderRadius.circular(10)
               ),
               child: Center(
                 child: Image(image: AssetImage(imageString), fit: BoxFit.cover)

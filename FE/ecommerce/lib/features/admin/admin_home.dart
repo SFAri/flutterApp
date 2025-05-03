@@ -53,7 +53,13 @@ class AdminHomeState extends State<AdminHome> {
               ),
             Expanded(
               flex: 5,
-              child: _currentScreen
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  primary: false,
+                  padding: EdgeInsets.all(10),
+                  child: _currentScreen,
+                )
+              )
             ),
           ],
         )

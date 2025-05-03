@@ -1,6 +1,7 @@
 import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/screens/couponManagement/allCoupons/coupon_screen.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/dashboard.dart';
+import 'package:ecommerce/features/admin/screens/productManagement/products_management.dart';
 import 'package:ecommerce/features/admin/screens/userManagement/allUsers/users.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,9 @@ class SideDrawer extends StatelessWidget {
             title: Text('Dashboard'),
           ),
           ListTile(
-            onTap: (){},
+            onTap: (){
+              onSelectScreen(ProductManagement());
+            },
             leading: Icon(Icons.laptop_mac),
             title: Text('Product'),
           ),

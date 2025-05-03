@@ -23,15 +23,15 @@ class _AdminMainState extends State<AdminMain> {
       title: 'Flutter Admin Panel',
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Color(0xFF212332),
+        scrollbarTheme: ScrollbarThemeData(
+          thumbVisibility: MaterialStateProperty.all<bool>(true),
+        )
       ),
       home: MultiProvider(
         providers: [
           ChangeNotifierProvider(
             create: (context) => MenuAppController(),
           ),
-          // ChangeNotifierProvider(
-          //   create: (context) => UserProvider(), // Add UserProvider
-          // ),
         ],
         child: AdminHome(streamController.stream)
       ),

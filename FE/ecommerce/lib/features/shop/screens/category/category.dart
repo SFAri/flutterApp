@@ -26,13 +26,13 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
     final List<String> categories = ['Best sellers', 'Popular products', 'New products', 'Laptop', 'PC', 'Accessory', 'Switch/hub', 'Software/OS'];
     List<Map<String, String>> products = [
       {
-        "name": "Macbook air 14", "brand": "Apple", "imageUrl": CImages.macImage, "price": "27.000.000",
+        "name": "Macbook air 14", "brand": "Apple", "imageUrl": CImages.macImage, "price": "27000000",
       },
       {
-        "name": "Macbook pro 14", "brand": "Apple", "imageUrl": CImages.macImage, "price": "32.536.000", "salePrice": "11"
+        "name": "Macbook pro 14", "brand": "Apple", "imageUrl": CImages.macImage, "price": "32536000", "salePrice": "11"
       },
       {
-        "name": "Lenovo Ideapad 3", "brand": "Lenovo", "imageUrl": CImages.macImage, "price": "19.330.000",
+        "name": "Lenovo Ideapad 3", "brand": "Lenovo", "imageUrl": CImages.macImage, "price": "19330000",
       },
     ];
 

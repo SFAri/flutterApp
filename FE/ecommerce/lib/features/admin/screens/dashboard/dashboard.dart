@@ -66,340 +66,246 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        primary: false,
-        padding: EdgeInsets.all(10),
-        child: Column(
-          spacing: 20,
+    return Column(
+      spacing: 20,
+      children: [
+        // Header:
+        Header(),
+        Divider(),
+        // Main board
+        // 1. Filter row:
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            // Header:
-            Header(),
-            Divider(),
-
-            // Main board
-            // 1. Filter row:
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                SizedBox(
-                  width: 160,
-                  child: DropdownButtonFormField<String>(
-                    value: dropdownValue,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                       
-                    ),
-                    icon: const Icon(Icons.arrow_drop_down),
-                    elevation: 16,
-                    
-                    style: const TextStyle(color: Colors.deepPurple),
-                    borderRadius: BorderRadius.circular(10),
-                    // padding: EdgeInsets.all(5),
-                    onChanged: (value) {
-                      // This is called when the user selects an item.
-                      setState(() {
-                        dropdownValue = value!;
-                      });
-                    },
-                    items:
-                        list.map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(value: value, child: Text(value));
-                        }).toList(),
-                  ),
+            SizedBox(
+              width: 160,
+              child: DropdownButtonFormField<String>(
+                value: dropdownValue,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                   
                 ),
-                SizedBox(
-                  width: 150,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      side: BorderSide(color: Colors.white)
-                    ),
-                    onPressed: ()=> _selectDate(context, true), 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(CFormatter.formatDate(startDate)),
-                        Icon(Icons.date_range)
-                      ],
-                    )
-                  ),
+                icon: const Icon(Icons.arrow_drop_down),
+                elevation: 16,
+                
+                style: const TextStyle(color: Colors.deepPurple),
+                borderRadius: BorderRadius.circular(10),
+                // padding: EdgeInsets.all(5),
+                onChanged: (value) {
+                  // This is called when the user selects an item.
+                  setState(() {
+                    dropdownValue = value!;
+                  });
+                },
+                items:
+                    list.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(value: value, child: Text(value));
+                    }).toList(),
+              ),
+            ),
+            SizedBox(
+              width: 150,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  side: BorderSide(color: Colors.white)
                 ),
-                Text('-'),
-                SizedBox(
-                  width: 150,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      side: BorderSide(color: Colors.white)
-                    ),
-                    onPressed: ()=> _selectDate(context, false), 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(CFormatter.formatDate(endDate)),
-                        Icon(Icons.date_range)
-                      ],
-                    )
-                  ),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.all(10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    side: BorderSide(color: Colors.white)
-                  ),
-                  onPressed: (){}, 
-                  child: Text('Apply filter')
+                onPressed: ()=> _selectDate(context, true), 
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(CFormatter.formatDate(startDate)),
+                    Icon(Icons.date_range)
+                  ],
                 )
-              ],
+              ),
             ),
-
-            // 2. Simple dashboard wrap
-            Wrap(
-              direction: Axis.horizontal,
-              runSpacing: 10,
-              spacing: 10,
-              children: [
-                CBlockSimple(title: 'Total users',description: 250),
-                CBlockSimple(title: 'Total orders',description: 10),
-                CBlockSimple(title: 'Total revenues',description: 880000, isMoney: true,),
-                CBlockSimple(title: 'Overall profit',description: 250000, isMoney: true, isProfit: true,)
-              ],
-            ),
-
-            // 3. Advanced dashboard: 1 pie graph, 1 line graph + bar graph
-            // ----- Line graph:
-            Wrap(
-              direction: Axis.horizontal,
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-
-                // Line graph:
-                SizedBox(
-                  // color: Colors.blueGrey[900],
-                  height: 450,
-                  width: 500,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 400,
-                        child: LineChart(
-                          sampleData1,
-                          duration: const Duration(milliseconds: 250),
-                        ),
-                      ),
-                      buildLegend(),
-                      Text('Revenue chart', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)
-                    ],
-                  ),
+            Text('-'),
+            SizedBox(
+              width: 150,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  side: BorderSide(color: Colors.white)
                 ),
-
-
-                // Pie chart:
-                Container(
-                  margin: EdgeInsets.all(10),
-                  width: 400,
-                  height: 400,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 1.3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            const SizedBox(
-                              height: 18,
-                            ),
-                            Expanded(
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: PieChart(
-                                  PieChartData(
-                                    pieTouchData: PieTouchData(
-                                      touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                                        setState(() {
-                                          if (!event.isInterestedForInteractions ||
-                                              pieTouchResponse == null ||
-                                              pieTouchResponse.touchedSection == null) {
-                                            touchedIndex = -1;
-                                            return;
-                                          }
-                                          touchedIndex = pieTouchResponse
-                                              .touchedSection!.touchedSectionIndex;
-                                        });
-                                      },
-                                    ),
-                                    borderData: FlBorderData(
-                                      show: false,
-                                    ),
-                                    sectionsSpace: 0,
-                                    centerSpaceRadius: 40,
-                                    sections: showingSections(),
-                                  ),
+                onPressed: ()=> _selectDate(context, false), 
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(CFormatter.formatDate(endDate)),
+                    Icon(Icons.date_range)
+                  ],
+                )
+              ),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.all(10),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                side: BorderSide(color: Colors.white)
+              ),
+              onPressed: (){}, 
+              child: Text('Apply filter')
+            )
+          ],
+        ),
+        // 2. Simple dashboard wrap
+        Wrap(
+          direction: Axis.horizontal,
+          runSpacing: 10,
+          spacing: 10,
+          children: [
+            CBlockSimple(title: 'Total users',description: 250),
+            CBlockSimple(title: 'Total orders',description: 10),
+            CBlockSimple(title: 'Total revenues',description: 880000, isMoney: true,),
+            CBlockSimple(title: 'Overall profit',description: 250000, isMoney: true, isProfit: true,)
+          ],
+        ),
+        // 3. Advanced dashboard: 1 pie graph, 1 line graph + bar graph
+        // ----- Line graph:
+        Wrap(
+          direction: Axis.horizontal,
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            // Line graph:
+            SizedBox(
+              // color: Colors.blueGrey[900],
+              height: 450,
+              width: 500,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 400,
+                    child: LineChart(
+                      sampleData1,
+                      duration: const Duration(milliseconds: 250),
+                    ),
+                  ),
+                  buildLegend(),
+                  Text('Revenue chart', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)
+                ],
+              ),
+            ),
+            // Pie chart:
+            Container(
+              margin: EdgeInsets.all(10),
+              width: 400,
+              height: 400,
+              child: Column(
+                children: [
+                  AspectRatio(
+                    aspectRatio: 1.3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 18,
+                        ),
+                        Expanded(
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: PieChart(
+                              PieChartData(
+                                pieTouchData: PieTouchData(
+                                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                                    setState(() {
+                                      if (!event.isInterestedForInteractions ||
+                                          pieTouchResponse == null ||
+                                          pieTouchResponse.touchedSection == null) {
+                                        touchedIndex = -1;
+                                        return;
+                                      }
+                                      touchedIndex = pieTouchResponse
+                                          .touchedSection!.touchedSectionIndex;
+                                    });
+                                  },
                                 ),
+                                borderData: FlBorderData(
+                                  show: false,
+                                ),
+                                sectionsSpace: 0,
+                                centerSpaceRadius: 40,
+                                sections: showingSections(),
                               ),
                             ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Indicator(
-                                  color: Colors.blueAccent,
-                                  text: 'First',
-                                  isSquare: true,
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Indicator(
-                                  color: Colors.yellowAccent,
-                                  text: 'Second',
-                                  isSquare: true,
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Indicator(
-                                  color: Colors.purpleAccent,
-                                  text: 'Third',
-                                  isSquare: true,
-                                ),
-                                SizedBox(
-                                  height: 4,
-                                ),
-                                Indicator(
-                                  color: Colors.green,
-                                  text: 'Fourth',
-                                  isSquare: true,
-                                ),
-                                SizedBox(
-                                  height: 18,
-                                ),
-                              ],
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Indicator(
+                              color: Colors.blueAccent,
+                              text: 'First',
+                              isSquare: true,
                             ),
-                            const SizedBox(
-                              width: 28,
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Indicator(
+                              color: Colors.yellowAccent,
+                              text: 'Second',
+                              isSquare: true,
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Indicator(
+                              color: Colors.purpleAccent,
+                              text: 'Third',
+                              isSquare: true,
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Indicator(
+                              color: Colors.green,
+                              text: 'Fourth',
+                              isSquare: true,
+                            ),
+                            SizedBox(
+                              height: 18,
                             ),
                           ],
                         ),
-                      ),
-                      Text('Products', style: TextStyle(fontSize: 20),)
-                    ],
-                  )
-                ),
-
-                
-              ]
-            ),
-
-            // Table data of products sold:
-            // Padding(
-            //   padding: EdgeInsets.all(15),
-            //   child: Table(
-            //     border: TableBorder.all(color: Colors.white30),
-            //     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            //     children: [
-            //       const TableRow(
-            //         decoration: BoxDecoration(
-            //           color: Colors.redAccent,
-            //         ),
-            //         children: [
-            //           TableCell(
-            //             verticalAlignment: TableCellVerticalAlignment.middle,
-            //             child: Padding(
-            //               padding: EdgeInsets.all(8.0),
-            //               child: Text('Title 1'),
-            //             ),
-            //           ),
-            //           TableCell(
-            //             verticalAlignment: TableCellVerticalAlignment.middle,
-            //             child: Padding(
-            //               padding: EdgeInsets.all(8.0),
-            //               child: Text('Title 2'),
-            //             ),
-            //           ),
-            //           TableCell(
-            //             verticalAlignment: TableCellVerticalAlignment.middle,
-            //             child: Padding(
-            //               padding: EdgeInsets.all(8.0),
-            //               child: Text('Title 3'),
-            //             ),
-            //           ),
-            //           TableCell(
-            //             verticalAlignment: TableCellVerticalAlignment.middle,
-            //             child: Padding(
-            //               padding: EdgeInsets.all(8.0),
-            //               child: Text('Title 4'),
-            //             ),
-            //           ),
-            //         ]
-            //       ),
-            //       // Data display here:
-            //       ...List.generate(
-            //         20, 
-            //         (index) => const TableRow(
-            //           children: [
-            //             TableCell(
-            //               verticalAlignment: TableCellVerticalAlignment.middle,
-            //               child: Padding(
-            //                 padding: EdgeInsets.all(8.0),
-            //                 child: Text('Cell1'),
-            //               ),
-            //             ),
-            //             TableCell(
-            //               verticalAlignment: TableCellVerticalAlignment.middle,
-            //               child: Padding(
-            //                 padding: EdgeInsets.all(8.0),
-            //                 child: Text('Cell2'),
-            //               ),
-            //             ),
-            //             TableCell(
-            //               verticalAlignment: TableCellVerticalAlignment.middle,
-            //               child: Padding(
-            //                 padding: EdgeInsets.all(8.0),
-            //                 child: Text('Cell3'),
-            //               ),
-            //             ),
-            //             TableCell(
-            //               verticalAlignment: TableCellVerticalAlignment.middle,
-            //               child: Padding(
-            //                 padding: EdgeInsets.all(8.0),
-            //                 child: Text('Cell4'),
-            //               ),
-            //             ),
-            //           ]
-            //         )
-            //       )
-            //     ],
-            //   ),
-            // )
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Container(
-                width: 1000,
-                child: PaginatedDataTable(
-                  rowsPerPage: 10,
-                  source: _data,
-                  columns: [
-                    DataColumn(label: Text('OrderId')),
-                    DataColumn(label: Text('User')),
-                    DataColumn(label: Text('Date')),
-                    DataColumn(label: Text('Total')),
-                    DataColumn(label: Text('Actions')),
-                  ], 
-                  header: const Center(child: Text('List Order')),
-                ),
+                        const SizedBox(
+                          width: 28,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text('Products', style: TextStyle(fontSize: 20),)
+                ],
               )
             ),
-          ],
+            
+          ]
         ),
-      ),
+        
+        Padding(
+          padding: EdgeInsets.all(20),
+          child: Container(
+            width: 1000,
+            child: PaginatedDataTable(
+              rowsPerPage: 10,
+              source: _data,
+              columns: [
+                DataColumn(label: Text('OrderId')),
+                DataColumn(label: Text('User')),
+                DataColumn(label: Text('Date')),
+                DataColumn(label: Text('Total')),
+                DataColumn(label: Text('Actions')),
+              ], 
+              header: const Center(child: Text('List Order')),
+            ),
+          )
+        ),
+      ],
     );
   }
 
