@@ -31,6 +31,7 @@ class CheckoutScreen extends StatelessWidget {
           title: Text('Order Review',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: Colors.white
                   )),
         ),
         body: SingleChildScrollView(

@@ -1,5 +1,6 @@
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:ecommerce/utils/device/device_utility.dart';
+import 'package:ecommerce/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingIcon,
     this.leadingOnPressed,
     this.showBackArrows = false,
+    this.isTranfer = false,
   });
 
   final Widget? title;
@@ -20,29 +22,32 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData? leadingIcon;
   final List<Widget>? actions;
   final VoidCallback? leadingOnPressed;
+  final bool isTranfer;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 5),
-      child: AppBar(
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        leading:
-            showBackArrows
-                ? IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                )
-                : leadingIcon != null
-                ? IconButton(
-                  onPressed: leadingOnPressed,
-                  icon: Icon(leadingIcon),
-                )
-                : null,
-        title: title,
-        actions: actions,
-      ),
+    return AppBar(
+      backgroundColor:
+          isTranfer
+              ? Colors.transparent
+              : CHelperFunctions.isDarkMode(context)
+              ? Colors.black
+              : Colors.blue,
+      automaticallyImplyLeading: false,
+      leading:
+          showBackArrows
+              ? IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+              )
+              : leadingIcon != null
+              ? IconButton(
+                onPressed: leadingOnPressed,
+                icon: Icon(leadingIcon, color: Colors.white),
+              )
+              : null,
+      title: title,
+      actions: actions,
     );
   }
 

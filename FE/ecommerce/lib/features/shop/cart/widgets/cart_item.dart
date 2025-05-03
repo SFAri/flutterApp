@@ -47,7 +47,7 @@ class CCartItem extends StatelessWidget {
                   Expanded(
                     child: Text(
                       item.name,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleSmall,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

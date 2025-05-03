@@ -50,6 +50,7 @@ flutter:
     - assets/images/products/
     - assets/logos/
     - assets/images/order/
+    - assets/images/users/
     - assets/images/payments/
     - assets/icons/categories/
 

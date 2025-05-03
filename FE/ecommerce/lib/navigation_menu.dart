@@ -1,3 +1,4 @@
+import 'package:ecommerce/features/personalization/screens/settings/settings.dart';
 import 'package:ecommerce/features/shop/screens/category/category.dart';
 import 'package:ecommerce/features/shop/screens/home/home.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
@@ -27,13 +28,16 @@ class _NavigationMenuState extends State<NavigationMenu> {
             });
           },
           backgroundColor: darkMode ? Colors.black : Colors.white,
-          indicatorColor: darkMode ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.1),
+          indicatorColor: darkMode
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.black.withValues(alpha: 0.1),
           destinations: [
             NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-            NavigationDestination(icon: Icon(Icons.category), label: 'Category'),
-            NavigationDestination(icon: Icon(Icons.account_box), label: 'Profile'),
-          ]
-        ),
+            NavigationDestination(
+                icon: Icon(Icons.category), label: 'Category'),
+            NavigationDestination(
+                icon: Icon(Icons.account_box), label: 'Profile'),
+          ]),
       body: SafeArea(child: _getBody()),
     );
   }
@@ -45,7 +49,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
       case 1:
         return CategoryHomeScreen(); // Màn hình danh mục
       case 2:
-        return Container(color: Colors.blue); // Màn hình hồ sơ
+        return SettingsScreen(); // Màn hình hồ sơ
       default:
         return Container();
     }

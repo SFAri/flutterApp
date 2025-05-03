@@ -74,6 +74,7 @@ class _CartScreenState extends State<CartScreen> {
           title: Text('Cart',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: Colors.white
                   )),
         ),
         body: SingleChildScrollView(

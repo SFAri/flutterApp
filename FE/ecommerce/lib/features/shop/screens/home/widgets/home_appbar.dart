@@ -16,6 +16,7 @@ class CHomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CAppBar(
+      isTranfer: true,
       showBackArrows: isBack,
       title: Column(
         children: [
@@ -77,7 +78,7 @@ class CHomeAppBar extends StatelessWidget {
                   ),
                 );
               }, 
-              icon: Icon(Iconsax.shopping_bag, color: CColors.textWhite,)
+              icon: Icon(Iconsax.shopping_cart, color: CColors.textWhite,)
             ),
             Positioned(
               right: 0,
