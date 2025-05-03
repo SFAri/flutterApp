@@ -4,6 +4,7 @@ import 'package:ecommerce/common/widgets/list_titles/settings_menu_title.dart';
 import 'package:ecommerce/common/widgets/list_titles/user_profile_title.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
 import 'package:ecommerce/features/shop/screens/cart/cart.dart';
+import 'package:ecommerce/features/shop/screens/order/order.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -75,6 +76,13 @@ class SettingsScreen extends StatelessWidget {
                     icon: Iconsax.bag_tick_copy,
                     title: 'My Orders',
                     subTitle: 'View and manage your orders',
+                    onTap:
+                        () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => OrderScreen()),
+                          ),
+                        },
                   ),
                   CSettingsMenuTitle(
                     icon: Iconsax.lovely_copy,
