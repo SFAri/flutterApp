@@ -148,9 +148,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       child: Text(
                         'Logout',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium!.apply(color: Colors.white),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
                   ),
