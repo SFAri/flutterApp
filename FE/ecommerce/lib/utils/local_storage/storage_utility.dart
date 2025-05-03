@@ -1,29 +1,36 @@
 import 'package:get_storage/get_storage.dart';
 
 class CLocalStorage {
-  static final CLocalStorage _instance = CLocalStorage._internal();
+  late final GetStorage _storage;
 
-  factory CLocalStorage() {
-    return _instance;
-  }
+  // Singleton instance
+  static CLocalStorage? _instance;
 
   CLocalStorage._internal();
 
-  final _storage = GetStorage();
+  factory CLocalStorage.instance() {
+    _instance ??= CLocalStorage._internal();
+    return _instance!;
+  }
 
-  Future<void> saveDate<T>(String key, T value) async {
+  static Future<void> init(String bucketName) async {
+    await GetStorage.init(bucketName);
+    _instance = CLocalStorage._internal();
+    _instance!._storage = GetStorage(bucketName);
+  }
+
+  // Generic method to save data
+  Future<void> writeData<T>(String key, T value) async {
     await _storage.write(key, value);
   }
 
-  T? readData<T>(String key){
-    return _storage.read<T>(key);
+  // Generic method to read data
+  Future<T?> readData<T>(String key) async {
+    return await _storage.read<T>(key);
   }
 
-  Future<void> removeDate(String key) async {
+  // Generic method to remove data
+  Future<void> deleteData(String key) async {
     await _storage.remove(key);
-  }
-
-  Future<void> clearAll() async {
-    await _storage.erase();
   }
 }

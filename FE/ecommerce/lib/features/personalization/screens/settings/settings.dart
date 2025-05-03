@@ -3,7 +3,7 @@ import 'package:ecommerce/common/widgets/layout/primary_header_container.dart';
 import 'package:ecommerce/common/widgets/list_titles/settings_menu_title.dart';
 import 'package:ecommerce/common/widgets/list_titles/user_profile_title.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
-import 'package:ecommerce/features/shop/cart/cart.dart';
+import 'package:ecommerce/features/shop/screens/cart/cart.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';

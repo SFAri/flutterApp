@@ -1,15 +1,12 @@
 import 'package:ecommerce/common/widgets/appbar/appbar.dart';
-import 'package:ecommerce/features/shop/cart/cart.dart';
+import 'package:ecommerce/features/shop/screens/cart/cart.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class CHomeAppBar extends StatelessWidget {
-  const CHomeAppBar({
-    super.key,
-    this.isBack = false,
-  });
+  const CHomeAppBar({super.key, this.isBack = false});
 
   final bool isBack;
 
@@ -26,18 +23,19 @@ class CHomeAppBar extends StatelessWidget {
               hintText: 'Search in store',
               filled: true,
               fillColor: CColors.textWhite,
-              prefixIcon: Icon(Icons.search, color: CColors.grey,) ,
+              prefixIcon: Icon(Icons.search, color: CColors.grey),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(CSizes.borderRadiusLg),
                 // borderSide: BorderSide(color: CColors.grey)
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: CColors.grey.withValues(alpha: 0.2),),
+                borderSide: BorderSide(
+                  color: CColors.grey.withValues(alpha: 0.2),
+                ),
                 // borderRadius: BorderRadius.circular(CSizes.borderRadiusMd),
-              )
+              ),
             ),
-            
-          )
+          ),
         ],
       ),
       actions: [
@@ -45,8 +43,8 @@ class CHomeAppBar extends StatelessWidget {
           children: [
             // Chat icon: only display when user login
             IconButton(
-              onPressed: (){}, 
-              icon: Icon(Icons.chat, color: CColors.textWhite,)
+              onPressed: () {},
+              icon: Icon(Icons.chat, color: CColors.textWhite),
             ),
             Positioned(
               right: 0,
@@ -55,12 +53,14 @@ class CHomeAppBar extends StatelessWidget {
                 height: 18,
                 decoration: BoxDecoration(
                   color: CColors.dark.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(100)
+                  borderRadius: BorderRadius.circular(100),
                 ),
                 child: Center(
                   child: Text(
                     '2',
-                    style: Theme.of(context).textTheme.labelLarge!.apply(color: CColors.textWhite),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge!.apply(color: CColors.textWhite),
                   ),
                 ),
               ),
@@ -70,15 +70,13 @@ class CHomeAppBar extends StatelessWidget {
         Stack(
           children: [
             IconButton(
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => CartScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => CartScreen()),
                 );
-              }, 
-              icon: Icon(Iconsax.shopping_cart, color: CColors.textWhite,)
+              },
+              icon: Icon(Iconsax.shopping_cart, color: CColors.textWhite),
             ),
             Positioned(
               right: 0,
@@ -87,19 +85,20 @@ class CHomeAppBar extends StatelessWidget {
                 height: 18,
                 decoration: BoxDecoration(
                   color: CColors.dark.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(100)
+                  borderRadius: BorderRadius.circular(100),
                 ),
                 child: Center(
                   child: Text(
                     '2',
-                    style: Theme.of(context).textTheme.labelLarge!.apply(color: CColors.textWhite),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge!.apply(color: CColors.textWhite),
                   ),
                 ),
               ),
             ),
           ],
         ),
-        
       ],
     );
   }

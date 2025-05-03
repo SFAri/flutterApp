@@ -6,7 +6,7 @@ import 'package:ecommerce/common/widgets/images/rounded_image.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 
-import 'package:ecommerce/features/shop/cart/models/Product.dart';
+import 'package:ecommerce/features/shop/screens/cart/models/Product.dart';
 
 class CCartItem extends StatelessWidget {
   final Product item;
@@ -29,9 +29,10 @@ class CCartItem extends StatelessWidget {
           width: 70,
           height: 70,
           padding: const EdgeInsets.all(CSizes.sm),
-          backgroundColor: CHelperFunctions.isDarkMode(context)
-              ? CColors.grey
-              : CColors.lightGrey,
+          backgroundColor:
+              CHelperFunctions.isDarkMode(context)
+                  ? CColors.grey
+                  : CColors.lightGrey,
         ),
         SizedBox(width: CSizes.spaceBtwItems),
         // Title, Price, Quantity
@@ -55,22 +56,24 @@ class CCartItem extends StatelessWidget {
                   // Remove Button
                   showButtonRemove
                       ? TCircularIcon(
-                          icon: Icons.delete_outline,
-                          width: 32,
-                          height: 32,
-                          color: CColors.dark,
-                          backgroundColor: CHelperFunctions.isDarkMode(context)
-                              ? CColors.grey
-                              : CColors.lightGrey,
-                          onPressed: () {
-                            // cart.remove(item);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Removed from cart'),
-                                duration: Duration(seconds: 1),
-                              ),
-                            );
-                          })
+                        icon: Icons.delete_outline,
+                        width: 32,
+                        height: 32,
+                        color: CColors.dark,
+                        backgroundColor:
+                            CHelperFunctions.isDarkMode(context)
+                                ? CColors.grey
+                                : CColors.lightGrey,
+                        onPressed: () {
+                          // cart.remove(item);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Removed from cart'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                      )
                       : const SizedBox.shrink(),
                 ],
               ),
@@ -80,10 +83,11 @@ class CCartItem extends StatelessWidget {
                   Text(
                     'Màu: ',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: CHelperFunctions.isDarkMode(context)
+                      color:
+                          CHelperFunctions.isDarkMode(context)
                               ? CColors.textWhite
                               : CColors.dark,
-                        ),
+                    ),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -91,23 +95,27 @@ class CCartItem extends StatelessWidget {
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: CHelperFunctions.isDarkMode(context)
-                              ? CColors.textWhite
-                              : CColors.dark,
+                          color:
+                              CHelperFunctions.isDarkMode(context)
+                                  ? CColors.textWhite
+                                  : CColors.dark,
                         ),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
                         'Đen',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: CHelperFunctions.isDarkMode(context)
+                          fontWeight: FontWeight.bold,
+                          color:
+                              CHelperFunctions.isDarkMode(context)
                                   ? CColors.textWhite
                                   : CColors.dark,
-                            ),
+                        ),
                       ),
                     ),
                   ),
@@ -116,18 +124,19 @@ class CCartItem extends StatelessWidget {
               Text(
                 CFormatFunction.formatCurrency(item.price),
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: CColors.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: CColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 '32.490.000đ',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      decoration: TextDecoration.lineThrough,
-                      color: CHelperFunctions.isDarkMode(context)
+                  decoration: TextDecoration.lineThrough,
+                  color:
+                      CHelperFunctions.isDarkMode(context)
                           ? CColors.textWhite.withValues(alpha: 0.5)
                           : CColors.dark.withValues(alpha: 0.5),
-                    ),
+                ),
               ),
             ],
           ),
