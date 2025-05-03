@@ -1,5 +1,8 @@
+import 'package:ecommerce/common/widgets/form/custom_dialogform.dart';
+import 'package:ecommerce/common/widgets/form/custom_textformfield.dart';
 import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
+import 'package:ecommerce/features/admin/screens/productDetail/product_detail.dart';
 import 'package:ecommerce/features/admin/screens/userManagement/widgets/paginated_table.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +15,24 @@ class ProductManagement extends StatefulWidget {
 }
 
 class _ProductManagementState extends State<ProductManagement>{
+  late TextEditingController _categoryNameController;
+  late TextEditingController _brandNameController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _categoryNameController = TextEditingController();
+    _brandNameController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _categoryNameController.dispose();
+    _brandNameController.dispose();
+  }
 
   List<Map<String, dynamic>> categories = [
     {
@@ -119,6 +140,16 @@ class _ProductManagementState extends State<ProductManagement>{
     },
   ];
 
+  // Show modal add and edit category:
+  Future<void> _showDialog(BuildContext context, String title, Widget widgets, Function acceptFunction ) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return DialogForm(title: '', widgets: widgets, acceptFunction: acceptFunction,);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -217,6 +248,20 @@ class _ProductManagementState extends State<ProductManagement>{
 
         // Table of category:
         Divider(),
+        Align(
+          alignment: Alignment.centerRight, 
+          child: IconButton(style: IconButton.styleFrom() ,
+          onPressed: () => _showDialog(context, 'Create Category',
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CTextFormField(label: 'Category Name', hintText: 'Enter new category name', controller: _categoryNameController),
+              ],
+            ),
+            (){}
+          ), 
+          icon: Icon(Icons.add)
+        )),
         Center(child: Text('List category', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 20),
@@ -229,11 +274,6 @@ class _ProductManagementState extends State<ProductManagement>{
                 // margin: EdgeInsets.all(5),
                 child: ListTile(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  // onTap: (){},
-                  // leading: Image.asset(
-                  //   CImages.macImage, 
-                  //   width: 20,
-                  // ),
                   contentPadding: EdgeInsets.all(5),
                   title: Text(categories[index]['categoryName']),
                   trailing: Row(
@@ -241,11 +281,123 @@ class _ProductManagementState extends State<ProductManagement>{
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        onPressed: (){}, 
+                        onPressed: (){
+                          TextEditingController _editController = TextEditingController();
+                          _editController.text = categories[index]['categoryName']!;
+
+                          _showDialog(context, 'Edit Category',
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CTextFormField(
+                                  label: 'Category Name', 
+                                  hintText: 'Enter edit category name', 
+                                  controller: _editController, 
+                                ),
+                              ],
+                            ),
+                            (){
+                               // Lưu giá trị khi người dùng nhấn OK
+                                String newCateName = _editController.text;
+                                // Thực hiện cập nhật ở đây
+                            }
+                          ); 
+                        }, 
                         icon: Icon(Icons.edit)
                       ),
                       IconButton(
-                        onPressed: (){}, 
+                        onPressed: (){
+                          _showDialog(context, 'Delete Category',
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Are you sure delete ${categories[index]['categoryName']}')
+                              ],
+                            ),
+                            (){}
+                          ); 
+                        },  
+                        icon: Icon(Icons.delete, color: Colors.red,)
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+
+        // Table of brand:
+        Divider(),
+        Align(
+          alignment: Alignment.centerRight, 
+          child: IconButton(style: IconButton.styleFrom() ,
+          onPressed: () => _showDialog(context, 'Create brand',
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CTextFormField(label: 'Brand Name', hintText: 'Enter new brand name', controller: _brandNameController),
+              ],
+            ),
+            (){}
+          ), 
+          icon: Icon(Icons.add)
+        )),
+        Center(child: Text('List brands', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          height: 300,
+          child: ListView.separated(
+            separatorBuilder: (context, index) => const Divider(),
+            itemCount: brands.length,
+            itemBuilder: (context, index) {
+              return Card(
+                // margin: EdgeInsets.all(5),
+                child: ListTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  contentPadding: EdgeInsets.all(5),
+                  title: Text(brands[index]['brandName']),
+                  trailing: Row(
+                    spacing: 5,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: (){
+                          TextEditingController _editController = TextEditingController();
+                          _editController.text = brands[index]['brandName']!;
+
+                          _showDialog(context, 'Edit brand',
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CTextFormField(
+                                  label: 'Brand Name', 
+                                  hintText: 'Enter edit brand name', 
+                                  controller: _editController, 
+                                ),
+                              ],
+                            ),
+                            (){
+                               // Lưu giá trị khi người dùng nhấn OK
+                                String newBrandName = _editController.text;
+                                // Thực hiện cập nhật ở đây
+                            }
+                          ); 
+                        },
+                        icon: Icon(Icons.edit)
+                      ),
+                      IconButton(
+                        onPressed: (){
+                          _showDialog(context, 'Delete brand',
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Are you sure delete ${brands[index]['brandName']}')
+                              ],
+                            ),
+                            (){}
+                          ); 
+                        }, 
                         icon: Icon(Icons.delete, color: Colors.red,)
                       ),
                     ],
@@ -262,7 +414,7 @@ class _ProductManagementState extends State<ProductManagement>{
           lists: products,
           removeFunction: (){},
           viewFunction: (item) {
-            // streamController.add();
+            streamController.add(ProductDetailScreen(item));
           },
           header: 'List products',
           columns: [
