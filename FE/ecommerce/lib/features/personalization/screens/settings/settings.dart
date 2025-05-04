@@ -3,6 +3,7 @@ import 'package:ecommerce/common/widgets/layout/primary_header_container.dart';
 import 'package:ecommerce/common/widgets/list_titles/settings_menu_title.dart';
 import 'package:ecommerce/common/widgets/list_titles/user_profile_title.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
+import 'package:ecommerce/features/personalization/screens/address/address.dart';
 import 'package:ecommerce/features/personalization/screens/settings/widgets/language_selection_dialog.dart';
 import 'package:ecommerce/features/shop/screens/order/order.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
@@ -85,9 +86,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   CAppBar(
                     title: Text(
                       'Account',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.headlineMedium!.apply(color: Colors.white),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: CSizes.spaceBtwSections),
@@ -128,6 +130,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     icon: Iconsax.truck_copy,
                     title: 'Address book',
                     subTitle: 'Set shopping delivery addresses',
+                    onTap:
+                        () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => UserAddressScreen(),
+                            ),
+                          ),
+                        },
                   ),
 
                   CSettingsMenuTitle(

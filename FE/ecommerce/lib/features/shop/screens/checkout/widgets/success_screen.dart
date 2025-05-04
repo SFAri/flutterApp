@@ -33,7 +33,6 @@ class SuccessScreen extends StatelessWidget {
                 child: CRadiusImage(
                   imageUrl: image,
                   onTap: () {},
-                  isNetworkImage: true,
                 ),
               ),
               const SizedBox(height: CSizes.spaceBtwSections),

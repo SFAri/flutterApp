@@ -1,4 +1,5 @@
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
+import 'package:ecommerce/features/personalization/screens/address/address.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
@@ -19,7 +20,13 @@ class CBillingAddressSection extends StatelessWidget {
           buttonTitle: 'Change',
           padding: 0,
           showActionButton: true,
-          onPressed: () {},
+          onPressed:
+              () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => UserAddressScreen()),
+                ),
+              },
         ),
         SizedBox(width: CSizes.spaceBtwItems / 2),
 
