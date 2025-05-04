@@ -1,4 +1,5 @@
 import 'package:ecommerce/features/personalization/screens/settings/settings.dart';
+import 'package:ecommerce/features/shop/screens/cart/cart.dart';
 import 'package:ecommerce/features/shop/screens/category/category.dart';
 import 'package:ecommerce/features/shop/screens/home/home.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
@@ -36,6 +37,8 @@ class _NavigationMenuState extends State<NavigationMenu> {
             NavigationDestination(
                 icon: Icon(Icons.category), label: 'Category'),
             NavigationDestination(
+              icon: Icon(Icons.shopping_cart), label: 'Cart'),
+            NavigationDestination(
                 icon: Icon(Icons.account_box), label: 'Profile'),
           ]),
       body: SafeArea(child: _getBody()),
@@ -49,6 +52,8 @@ class _NavigationMenuState extends State<NavigationMenu> {
       case 1:
         return CategoryHomeScreen(); // Màn hình danh mục
       case 2:
+        return CartScreen(); // Màn hình giỏ hàng
+      case 3:
         return SettingsScreen(); // Màn hình hồ sơ
       default:
         return Container();

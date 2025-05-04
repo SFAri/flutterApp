@@ -74,7 +74,8 @@ class _CartScreenState extends State<CartScreen> {
 
     return Scaffold(
       appBar: CAppBar(
-        showBackArrows: true,
+        showBackArrows: Navigator.canPop(context),
+        isCenter: !Navigator.canPop(context),
         title: Text(
           'Cart',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(

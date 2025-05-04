@@ -15,6 +15,7 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingOnPressed,
     this.showBackArrows = false,
     this.isTranfer = false,
+    this.isCenter = false,
   });
 
   final Widget? title;
@@ -23,6 +24,7 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final VoidCallback? leadingOnPressed;
   final bool isTranfer;
+  final bool isCenter;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +51,7 @@ class CAppBar extends StatelessWidget implements PreferredSizeWidget {
               : null,
       title: title,
       actions: actions,
+      centerTitle: isCenter,
     );
   }
 
