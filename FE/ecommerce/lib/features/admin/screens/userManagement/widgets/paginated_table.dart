@@ -62,6 +62,9 @@ class _PaginatedTableState extends State<PaginatedTable> {
                   scrollbarOrientation: ScrollbarOrientation.bottom,
                   thumbVisibility: true,
                   // trackVisibility: true,
+                  // notificationPredicate: (ScrollNotification notification) {
+                  //   return notification.depth == 0; // Chỉ hiển thị scrollbar cho scroll depth 0
+                  // },
                   interactive: true,
 
                   child: PaginatedDataTable(

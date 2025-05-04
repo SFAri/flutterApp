@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:ecommerce/features/admin/admin_home.dart';
 import 'package:ecommerce/features/admin/controller/menu_controller.dart';
 import 'package:flutter/material.dart';
@@ -23,10 +25,8 @@ class _AdminMainState extends State<AdminMain> {
       title: 'Flutter Admin Panel',
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Color(0xFF212332),
-        scrollbarTheme: ScrollbarThemeData(
-          thumbVisibility: MaterialStateProperty.all<bool>(true),
-        )
       ),
+      scrollBehavior: MyCustomScrollBehavior(),
       home: MultiProvider(
         providers: [
           ChangeNotifierProvider(
@@ -37,4 +37,13 @@ class _AdminMainState extends State<AdminMain> {
       ),
     );
   }
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }
