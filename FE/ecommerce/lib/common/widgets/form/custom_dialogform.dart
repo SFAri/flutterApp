@@ -15,7 +15,7 @@ class DialogForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('New category'),
+      title: Text(title),
       content: widgets,
       actions: <Widget>[
         TextButton(

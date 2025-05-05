@@ -1,9 +1,5 @@
 import 'dart:ui';
-
-import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/responsive.dart';
-import 'package:ecommerce/features/admin/screens/couponManagement/detailCoupon/detail_coupon.dart';
-import 'package:ecommerce/utils/device/device_utility.dart';
 import 'package:flutter/material.dart';
 
 class PaginatedTable extends StatefulWidget{

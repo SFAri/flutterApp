@@ -1,9 +1,7 @@
 import 'package:ecommerce/features/admin/controller/menu_controller.dart';
 import 'package:ecommerce/features/admin/responsive.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/dashboard.dart';
-import 'package:ecommerce/features/admin/screens/userManagement/detailUser/detail_user.dart';
 import 'package:ecommerce/features/admin/widgets/side_drawer.dart';
-import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';

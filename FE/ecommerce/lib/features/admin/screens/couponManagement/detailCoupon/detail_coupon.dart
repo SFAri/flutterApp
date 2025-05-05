@@ -1,8 +1,6 @@
-import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/userManagement/widgets/paginated_table.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/get_utils.dart';
 
 class DetailCouponScreen extends StatefulWidget {
   final Map<String, dynamic> coupon;
