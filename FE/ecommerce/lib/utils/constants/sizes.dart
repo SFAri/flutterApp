@@ -56,4 +56,7 @@ class CSizes {
   static const double imageThumb = 80.0;
   static const double imageBanner = 240.0;
   static const double imageFull = 400.0;
+
+  // Messages Sizes
+  static const double heightDateTime = 40.0;
 }

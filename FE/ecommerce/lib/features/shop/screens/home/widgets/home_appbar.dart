@@ -1,5 +1,6 @@
 import 'package:ecommerce/common/widgets/appbar/appbar.dart';
 import 'package:ecommerce/features/shop/screens/cart/cart.dart';
+import 'package:ecommerce/features/shop/screens/chat/chat_screen.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,12 @@ class CHomeAppBar extends StatelessWidget {
           children: [
             // Chat icon: only display when user login
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => ChatScreen()),
+                );
+              },
               icon: Icon(Icons.chat, color: CColors.textWhite),
             ),
             Positioned(
