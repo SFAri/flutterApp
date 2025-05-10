@@ -19,10 +19,38 @@ export function FormatResult(status, data) {
   if (status === undefined || data === undefined) {
     throw new Error("Result not found");
   }
+  if (data?.pagination) {
+    return {
+      status,
+      data: data.data,
+      paginate: data.pagination,
+    };
+  }
+
   return {
     status,
     data,
   };
+}
+
+export function CheckMissingFields(fields = {}) {
+  const missingFields = [];
+
+  for (const [field, value] of Object.entries(fields)) {
+    if (!value) {
+      missingFields.push(field);
+    }
+  }
+
+  if (missingFields.length > 0) {
+    ThrowNewError("MissingFields", `${missingFields.join(", ")} is missing`);
+  }
+}
+
+export function ThrowNewError(name, message) {
+  const error = new Error(message);
+  error.name = name;
+  throw error;
 }
 
 // Encrypt password

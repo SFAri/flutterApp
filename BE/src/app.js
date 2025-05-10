@@ -1,12 +1,13 @@
 import createError from "http-errors";
 import { json, urlencoded } from "express";
 import session from "express-session";
+import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 
-import { UserRoute, ProductRoute } from "./adapter/routes/index.js";
+import { AuthRoute, UserRoute, ProductRoute } from "./adapter/routes/index.js";
 import { notFound, errorHandler } from "./utils/handlerErrors.js";
 import { rateLimit } from "./adapter/middlewares/index.js";
 // import { UserService } from "./services/index.js";
@@ -23,6 +24,7 @@ export default async (app) => {
   app.use(compression());
   app.use(json());
   app.use(urlencoded({ extended: true }));
+  app.use(cookieParser(my_secret_key));
 
   app.use(
     session({
@@ -40,6 +42,7 @@ export default async (app) => {
   // Apply the rate limit
   app.use(rateLimit);
 
+  app.use("/api/auth", AuthRoute);
   app.use("/api/users", UserRoute);
   app.use("/api/products", ProductRoute);
   // app.use("/", HomeRoute);
