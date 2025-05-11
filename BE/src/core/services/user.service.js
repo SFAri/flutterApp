@@ -1,7 +1,5 @@
 import { UserRepository } from "../../infras/index.js";
-import { FormatData, EncryptPass, ThrowNewError } from "../utils/index.js";
-
-import configs from "../configs/index.js";
+import { FormatData, EncryptPass, ThrowNewError } from "../../utils/index.js";
 
 class UserService {
   constructor() {
@@ -30,9 +28,11 @@ class UserService {
     }
 
     const password = input.password;
-    const encryptPassword = await EncryptPass(defaultPass); // Encrypt password
-    input.password = encryptPassword;
-    const newUser = await this.repository.AddUser(input);
+    const encryptPassword = await EncryptPass(password); // Encrypt password
+    const newUser = await this.repository.AddUser({
+      email: input.email,
+      password: encryptPassword,
+    });
 
     return FormatData(newUser);
   }

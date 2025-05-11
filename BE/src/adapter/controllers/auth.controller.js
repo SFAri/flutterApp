@@ -9,13 +9,36 @@ import {
 class AuthController {
   async handleRegister(req, res, next) {
     try {
-      const { email, fullName, password, confirmPassword } = req.body;
-      CheckMissingFields({ email, fullName, password, confirmPassword });
+      const {
+        email,
+        fullName,
+        password,
+        confirmPassword,
+        province,
+        district,
+        ward,
+        detailAddress,
+      } = req.body;
+
+      CheckMissingFields({
+        email,
+        fullName,
+        password,
+        confirmPassword,
+        province,
+        district,
+        ward,
+        detailAddress,
+      });
       const data = await AuthService.Register({
         email,
         fullName,
         password,
         confirmPassword,
+        province,
+        district,
+        ward,
+        detailAddress,
       });
       console.log("🚀 ~ AuthController ~ handleRegister ~ data:", data);
       res.status(200).json(FormatResult("success", data));

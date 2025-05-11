@@ -3,7 +3,6 @@ const Schema = _Schema;
 
 const UserSchema = new Schema(
   {
-    id: { type: String },
     fullName: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -13,9 +12,8 @@ const UserSchema = new Schema(
     dateOfBirth: { type: Date },
     fileImage: { type: String },
     phone: { type: String },
-    address: { type: String },
     profileImage: { type: String },
-    address: { type: Schema.Types.ObjectId, ref: "address" },
+    addresses: [{ type: Schema.Types.ObjectId, ref: "address" }],
     wishlist: [{ type: Schema.Types.ObjectId, ref: "product" }],
     cart: [{ type: Schema.Types.ObjectId, ref: "product" }],
     orders: [{ type: Schema.Types.ObjectId, ref: "order" }],

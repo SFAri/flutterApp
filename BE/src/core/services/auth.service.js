@@ -1,7 +1,7 @@
 // import fs from "fs";
 // import Handlebars from "handlebars";
 
-import { UserRepository } from "../../infras/index.js";
+import { UserRepository, AddressRepository } from "../../infras/index.js";
 import {
   FormatData,
   EncryptPass,
@@ -27,6 +27,7 @@ const {
 class AuthService {
   constructor() {
     this.repository = new UserRepository();
+    this.addressRepository = new AddressRepository();
   }
 
   async GetTokens(id) {
@@ -58,7 +59,16 @@ class AuthService {
   }
 
   async Register(input = {}) {
-    const { email, fullName, password } = input;
+    const {
+      email,
+      fullName,
+      password,
+      province,
+      district,
+      ward,
+      detailAddress,
+    } = input;
+
     const existingUser = await this.repository.FindUserByEmail({ email });
     if (existingUser) {
       ThrowNewError("EmailInvalid", "Email already exists");
@@ -70,6 +80,18 @@ class AuthService {
       fullName,
       password: encryptPassword,
     });
+
+    const newAddress = await this.addressRepository.AddNewAddress(newUser, {
+      email,
+      fullName,
+      province,
+      district,
+      ward,
+      detailAddress,
+      isDefault: true,
+    });
+
+    if (!newUser || !newAddress) ThrowNewError("RegisterFail", "Register fail");
 
     return FormatData(newUser);
   }
