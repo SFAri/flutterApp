@@ -15,7 +15,6 @@ import {
 // import { sendEmail } from "../utils/mailer.js";
 import configs from "../../configs/index.js";
 const {
-  app: { port, host },
   tokens: {
     access_token_key,
     access_token_expiration,
@@ -78,7 +77,7 @@ class AuthService {
     const newUser = await this.repository.AddUser({
       email,
       fullName,
-      role: 1,
+      role: 0,
       password: encryptPassword,
     });
 
