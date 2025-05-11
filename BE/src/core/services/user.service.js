@@ -37,19 +37,20 @@ class UserService {
     return FormatData(newUser);
   }
 
-  //? Alumni
-  async GetListUser() {
-    const listAlumni = await this.repository.FindByFilter({ userType: 0 });
-    return FormatData(listAlumni);
+  async UpdateUserById(id, input) {
+    const updatedUser = await this.repository.UpdateById(id, input);
+    if (!updatedUser) {
+      ThrowNewError("UserError", "User does not exist");
+    }
+    return FormatData(updatedUser);
   }
 
-  async GetUsersByFilter(filter = {}, page = null, perpage = null) {
-    const listAlumni = await this.repository.FindByFilter(
-      filter,
-      page,
-      perpage
-    );
-    return FormatData(listAlumni);
+  async DeleteUserById(id) {
+    const deletedUser = await this.repository.DeleteById(id);
+    if (!deletedUser) {
+      ThrowNewError("UserError", "User does not exist");
+    }
+    return FormatData(null);
   }
 }
 

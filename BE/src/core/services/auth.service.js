@@ -78,6 +78,7 @@ class AuthService {
     const newUser = await this.repository.AddUser({
       email,
       fullName,
+      role: 1,
       password: encryptPassword,
     });
 

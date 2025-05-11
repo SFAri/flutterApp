@@ -8,7 +8,6 @@ import {
 } from "../../utils/index.js";
 
 class UserController {
-  //? Customer
   async createUser(req, res, next) {
     try {
       const { fullName, email, role, gender, dateOfBirth, fileImage, phone } =
@@ -57,22 +56,13 @@ class UserController {
   }
 
   async getListUser(req, res, next) {
+    const { page, limit, ...filter } = req.query || {};
+    const pageQuery = parseInt(page) || 1;
+    const perPage = parseInt(limit) || 10;
+
     try {
-      const { page, limit, ...filter } = req.query || {};
-      const pageQuery = parseInt(page) || 1;
-      const perPage = parseInt(limit) || 10;
-
-      let data;
-      // if (page) {
-      //   data = await UserService.GetUserByFilter(filter, pageQuery, perPage);
-      // } else if (Object.keys(req.query).length > 0) {
-      //   data = await UserService.GetUserByFilter(filter);
-      // } else {
-      //   data = await UserService.GetListUser();
-      // }
-
-      data = await UserService.GetListUser();
-
+      const data = await UserService.GetListUser();
+      console.log("🚀 ~ UserController ~ getListUser ~ data[]:", data);
       res.status(200).json(FormatResult("success", data));
     } catch (err) {
       next(createError(400, err));
@@ -87,32 +77,13 @@ class UserController {
       id = req.user._id;
     }
 
-    upload.uploadFileImg.single("profileImage")(req, res, async (err) => {
-      if (err) return next(err);
-      try {
-        const { graduateYear, ...updatedUser } = req.body;
-        if (graduateYear) {
-          updatedUser.graduateYear = parseInt(graduateYear.toString());
-        }
-
-        if (req.file) {
-          const fileImage = {
-            type: req.file.mimetype,
-            buffer: req.file.buffer,
-          };
-          updatedUser.profileImage = await UserService.UploadNewAvatar(
-            fileImage,
-            "single",
-            id
-          );
-        }
-
-        const data = await UserService.UpdateUserById(id, updatedUser);
-        res.status(200).json(FormatResult("success", data));
-      } catch (err) {
-        next(createError(400, err));
-      }
-    });
+    try {
+      const updatedUser = req.body;
+      const data = await UserService.UpdateUserById(id, updatedUser);
+      res.status(200).json(FormatResult("success", data));
+    } catch (err) {
+      next(createError(400, err));
+    }
   }
 
   async deleteUser(req, res, next) {

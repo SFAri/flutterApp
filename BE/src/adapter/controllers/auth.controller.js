@@ -40,7 +40,6 @@ class AuthController {
         ward,
         detailAddress,
       });
-      console.log("🚀 ~ AuthController ~ handleRegister ~ data:", data);
       res.status(200).json(FormatResult("success", data));
     } catch (err) {
       next(createError(400, err));

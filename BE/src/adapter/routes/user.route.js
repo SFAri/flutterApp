@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-import { authUser } from "../middlewares/index.js";
+import { authUser, checkRole } from "../middlewares/index.js";
 import { UserController } from "../controllers/index.js";
 
 /* GET users listing. */
@@ -28,6 +28,7 @@ router
 router
   .route("/:id")
   .get(UserController.getUserDetail)
-  .put(authUser, UserController.updateUser)
-  .delete(authUser, UserController.deleteUser);
+  .put(authUser, checkRole(["admin", "write"]), UserController.updateUser)
+  .delete(authUser, checkRole(["admin", "write"]), UserController.deleteUser);
+
 export default router;

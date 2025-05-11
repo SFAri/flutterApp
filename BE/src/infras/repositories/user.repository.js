@@ -2,9 +2,11 @@ import { UserModel } from "../models/index.js";
 
 export default class UserRepository {
   async AddUser(input = {}) {
-    const { email, password } = input;
+    const { email, fullName, role, password } = input;
     const newUser = new UserModel({
       email,
+      fullName,
+      role,
       password,
     });
 
@@ -26,9 +28,7 @@ export default class UserRepository {
   }
 
   async FindAll() {
-    const users = await UserModel.find()
-      .select({ password: 0, refreshToken: 0 })
-      .lean();
+    const users = await UserModel.find();
     return users;
   }
 
