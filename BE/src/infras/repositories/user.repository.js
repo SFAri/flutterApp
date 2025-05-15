@@ -22,7 +22,7 @@ export default class UserRepository {
   async FindUserRoleAdmin({ email }) {
     const user = await UserModel.findOne({
       email,
-      userType: { $in: [1] },
+      role: { $in: [1] },
     });
     return user;
   }

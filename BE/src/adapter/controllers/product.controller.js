@@ -6,7 +6,9 @@ import { CheckMissingFields, FormatResult } from "../../utils/index.js";
 class ProductController {
   async createProduct(req, res, next) {
     try {
-      const { name, brand, description, category, images, variants } = req.body;
+      const { name, brand, description, category, images, variants, discount } =
+        req.body;
+
       CheckMissingFields({
         name,
         brand,
@@ -23,6 +25,7 @@ class ProductController {
         category,
         images,
         variants,
+        discount,
       };
 
       const data = await ProductService.AddNewProduct(newProduct);

@@ -2,8 +2,17 @@ import { ProductModel } from "../models/index.js";
 
 export default class ProductRepository {
   async AddProduct(input = {}) {
-    const { name, brand, description, price, category, images, variants } =
-      input;
+    const {
+      name,
+      brand,
+      description,
+      price,
+      category,
+      images,
+      variants,
+      discount,
+    } = input;
+
     const newProduct = new ProductModel({
       name,
       brand,
@@ -12,6 +21,7 @@ export default class ProductRepository {
       category,
       images,
       variants,
+      discount,
     });
 
     await newProduct.save();

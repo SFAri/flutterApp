@@ -3,6 +3,40 @@ const Schema = _Schema;
 
 const VariantSchema = Schema({
   variantId: { type: String, required: true },
+  type: {
+    type: String,
+    required: true,
+    enum: [
+      "Laptop",
+      "Desktop",
+      "CPU",
+      "GPU",
+      "RAM",
+      "SSD",
+      "HDD",
+      "Motherboard",
+      "PSU",
+      "Case",
+      "Cooling",
+      "Monitor",
+      "Accessory",
+    ],
+  },
+  specs: {
+    processor: { type: String }, // for laptops/desktops
+    gpu: { type: String }, // GPU model if available
+    ram: { type: String }, // e.g., "16GB DDR4"
+    storage: { type: String }, // e.g., "512GB SSD"
+    motherboard: { type: String }, // for desktops
+    powerSupply: { type: String }, // PSU info
+    socket: { type: String }, // e.g., "LGA1200" (for CPU/motherboard)
+    chipset: { type: String }, // e.g., "B660", optional
+    interface: { type: String }, // e.g., "NVMe", "SATA", "PCIe"
+    formFactor: { type: String }, // e.g., "ATX", "MicroATX", "SFX"
+    screenSize: { type: String }, // e.g., "15.6 inch" (for laptops/monitors)
+    refreshRate: { type: String }, // e.g., "144Hz"
+    resolution: { type: String }, // e.g., "1920x1080"
+  },
   color: { type: String, required: true },
   inventory: { type: Number, required: true },
   price: { type: Number, required: true },
@@ -27,6 +61,7 @@ const ProductSchema = Schema(
     ratings: [RatingSchema],
     averageRating: { type: Number, default: 0 },
     totalReviews: { type: Number, default: 0 },
+    discount: { type: Number, default: 0 },
   },
   {
     timestamps: true,

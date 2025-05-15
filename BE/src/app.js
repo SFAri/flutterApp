@@ -7,7 +7,13 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 
-import { AuthRoute, UserRoute, ProductRoute } from "./adapter/routes/index.js";
+import {
+  AuthRoute,
+  UserRoute,
+  ProductRoute,
+  CouponRoute,
+  OrderRoute,
+} from "./adapter/routes/index.js";
 import { notFound, errorHandler } from "./utils/handlerErrors.js";
 import { rateLimit } from "./adapter/middlewares/index.js";
 // import { UserService } from "./services/index.js";
@@ -45,6 +51,8 @@ export default async (app) => {
   app.use("/api/auth", AuthRoute);
   app.use("/api/users", UserRoute);
   app.use("/api/products", ProductRoute);
+  app.use("/api/coupons", CouponRoute);
+  app.use("/api/orders", OrderRoute);
   // app.use("/", HomeRoute);
 
   // Handle error
