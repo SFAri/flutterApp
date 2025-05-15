@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class CUserProfileTitle extends StatelessWidget {
-  final String fullName;
-  final String email;
+  final Map<String, dynamic>? userData;
+  String get fullName => userData?['fullName'] ?? '';
+  String get email => userData?['email'] ?? '';
 
-  const CUserProfileTitle({
-    super.key,
-    required this.fullName,
-    required this.email,
-  });
+  const CUserProfileTitle({super.key, required this.userData});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +34,9 @@ class CUserProfileTitle extends StatelessWidget {
         onPressed:
             () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => ProfileScreen()),
+              MaterialPageRoute(
+                builder: (_) => ProfileScreen(userData: userData!),
+              ),
             ),
         icon: const Icon(Iconsax.edit_copy, color: Colors.white),
       ),

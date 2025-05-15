@@ -10,6 +10,7 @@ import 'package:ecommerce/features/personalization/screens/settings/widgets/lang
 import 'package:ecommerce/features/shop/screens/order/order.dart';
 import 'package:ecommerce/services/auth_service.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
+import 'package:ecommerce/utils/local_storage/storage_utility.dart';
 import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -23,11 +24,11 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool loggedIn = false;
   final ProfileController _profileController = ProfileController();
+  bool loggedIn = false;
+  bool isLoading = false;
   late List<String> languages;
   Map<String, dynamic>? userData;
-  bool isLoading = false;
   String? errorMessage;
   @override
   void didChangeDependencies() {
@@ -38,49 +39,73 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    // Kiểm tra trạng thái đăng nhập
-    AuthService.isLoggedIn().then((value) {
-      setState(() {
-        loggedIn = value;
-      });
-    });
-
-    // Gọi hàm lấy thông tin người dùng khi khởi tạo
-    _profileController
-        .fetchProfile()
-        .then((data) {
-          setState(() {
-            userData = data;
-          });
-          print('User profile: $userData');
-        })
-        .catchError((error) {
-          // Xử lý lỗi nếu cần
-          print('Error fetching profile: $error');
-        });
+    checkLoginAndFetchProfile();
   }
 
-  void handleLogOut() async {
+  Future<void> checkLoginAndFetchProfile() async {
     setState(() {
       isLoading = true;
-      errorMessage = null;
     });
 
+    final localStorage = CLocalStorage.instance();
+    const userKey = 'user_profile';
+
     try {
-      AuthService.clearToken();
-      await AuthService.clearToken();
+      final isUserLoggedIn = await AuthService.isLoggedIn();
+
+      if (!isUserLoggedIn) {
+        setState(() {
+          loggedIn = false;
+          isLoading = false;
+        });
+        return;
+      }
+
       setState(() {
-        loggedIn = false;
+        loggedIn = true;
+      });
+
+      // Try getting cached data first
+      final cachedUser = await localStorage.readData<Map<String, dynamic>>(
+        userKey,
+      );
+      if (cachedUser != null) {
+        setState(() {
+          userData = cachedUser;
+          isLoading = false;
+        });
+        return;
+      }
+
+      // If not cached, fetch from API
+      final fetchedUser = await _profileController.fetchProfile();
+      await localStorage.writeData(userKey, fetchedUser);
+
+      setState(() {
+        userData = fetchedUser;
+        isLoading = false;
       });
     } catch (e) {
       setState(() {
         errorMessage = e.toString();
-      });
-    } finally {
-      setState(() {
         isLoading = false;
       });
+      print('Error: $e');
     }
+  }
+
+  Future<void> logoutUser() async {
+    final localStorage = CLocalStorage.instance();
+    await localStorage.deleteData('user_profile');
+    await AuthService.clearToken();
+    setState(() {
+      userData = null;
+      loggedIn = false;
+    });
+  }
+
+  void handleLogOut() async {
+    logoutUser();
   }
 
   // Dialog chọn ngôn ngữ
@@ -151,10 +176,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   // -- Login User
                   loggedIn
-                      ? CUserProfileTitle(
-                        fullName: userData?['fullName'],
-                        email: userData?['email'],
-                      ) // Profile title
+                      ? CUserProfileTitle(userData: userData) // Profile title
                       : TextButton(
                         onPressed: () {
                           Navigator.push(

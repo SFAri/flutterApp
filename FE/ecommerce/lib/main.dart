@@ -1,13 +1,16 @@
 // import 'package:ecommerce/utils/constants/colors.dart';
 // import 'package:ecommerce/features/shop/screens/home/home.dart';
 import 'package:ecommerce/navigation_menu.dart';
+import 'package:ecommerce/utils/local_storage/storage_utility.dart';
 import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:ecommerce/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await CLocalStorage.init('user_bucket');
   runApp(
     ChangeNotifierProvider(
       create: (context) => SettingsProvider(), // Tạo instance của provider

@@ -1,5 +1,4 @@
 import 'package:ecommerce/utils/http/http_client.dart';
-import 'package:http/http.dart' as http;
 
 class ProfileController {
   Future<Map<String, dynamic>> fetchProfile() async {
