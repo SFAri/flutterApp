@@ -3,9 +3,12 @@ import 'package:ecommerce/common/widgets/layout/primary_header_container.dart';
 import 'package:ecommerce/common/widgets/list_titles/settings_menu_title.dart';
 import 'package:ecommerce/common/widgets/list_titles/user_profile_title.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
+import 'package:ecommerce/features/auth/login_page.dart';
 import 'package:ecommerce/features/personalization/screens/address/address.dart';
+import 'package:ecommerce/features/personalization/screens/settings/controllers/profile_controller.dart';
 import 'package:ecommerce/features/personalization/screens/settings/widgets/language_selection_dialog.dart';
 import 'package:ecommerce/features/shop/screens/order/order.dart';
+import 'package:ecommerce/services/auth_service.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +23,64 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  bool loggedIn = false;
+  final ProfileController _profileController = ProfileController();
   late List<String> languages;
-
+  Map<String, dynamic>? userData;
+  bool isLoading = false;
+  String? errorMessage;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     languages = ['English', 'Vietnamese'];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Kiểm tra trạng thái đăng nhập
+    AuthService.isLoggedIn().then((value) {
+      setState(() {
+        loggedIn = value;
+      });
+    });
+
+    // Gọi hàm lấy thông tin người dùng khi khởi tạo
+    _profileController
+        .fetchProfile()
+        .then((data) {
+          setState(() {
+            userData = data;
+          });
+          print('User profile: $userData');
+        })
+        .catchError((error) {
+          // Xử lý lỗi nếu cần
+          print('Error fetching profile: $error');
+        });
+  }
+
+  void handleLogOut() async {
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      AuthService.clearToken();
+      await AuthService.clearToken();
+      setState(() {
+        loggedIn = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   // Dialog chọn ngôn ngữ
@@ -94,8 +149,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: CSizes.spaceBtwSections),
 
-                  // -- Profile Card
-                  CUserProfileTitle(),
+                  // -- Login User
+                  loggedIn
+                      ? CUserProfileTitle(
+                        fullName: userData?['fullName'],
+                        email: userData?['email'],
+                      ) // Profile title
+                      : TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const LoginPage(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Login / Sign Up',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineMedium?.copyWith(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor:
+                              Colors
+                                  .white, // optional: gives it a button background
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+
                   const SizedBox(height: CSizes.spaceBtwSections),
                 ],
               ),
@@ -219,7 +310,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed:
+                          isLoading
+                              ? null
+                              : () {
+                                handleLogOut();
+                              },
                       style: OutlinedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(

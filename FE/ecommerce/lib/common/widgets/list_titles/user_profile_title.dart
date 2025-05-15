@@ -4,7 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class CUserProfileTitle extends StatelessWidget {
-  const CUserProfileTitle({super.key});
+  final String fullName;
+  final String email;
+
+  const CUserProfileTitle({
+    super.key,
+    required this.fullName,
+    required this.email,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +22,13 @@ class CUserProfileTitle extends StatelessWidget {
         height: 56,
       ),
       title: Text(
-        'John Doe',
+        fullName,
         style: Theme.of(
           context,
         ).textTheme.headlineMedium!.apply(color: Colors.white),
       ),
       subtitle: Text(
-        '@johndoe',
+        email,
         style: Theme.of(
           context,
         ).textTheme.bodyMedium!.apply(color: Colors.white),

@@ -1,3 +1,6 @@
+import 'package:ecommerce/features/auth/controllers/login_controller.dart';
+import 'package:ecommerce/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -13,6 +16,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+  final loginController = LoginController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FocusNode myFocusNodeEmailLogin = FocusNode();
   final FocusNode myFocusNodePasswordLogin = FocusNode();
@@ -37,6 +41,41 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     loginPasswordController.dispose();
     _pageController?.dispose();
     super.dispose();
+  }
+
+  bool isLoading = false;
+  String? errorMessage;
+
+  void handleLogin(context) async {
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      final result = await loginController.login(
+        loginEmailController.text,
+        loginPasswordController.text,
+      );
+      
+      // Lưu token vào SharedPreferences
+      await AuthService.saveToken(result['accessToken']);
+
+      // Chuyển trang
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => NavigationMenu()),
+      );
+
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void showInSnackBar(String value) {
@@ -356,7 +395,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                     ),
                   ),
-                  onPressed: () => showInSnackBar("Login button pressed"),
+                  onPressed: isLoading ? null : () {
+                    if (loginEmailController.text.isEmpty || loginPasswordController.text.isEmpty) {
+                      showInSnackBar("Vui lòng nhập email và mật khẩu");
+                    } else {
+                      handleLogin(context);
+                    }
+                  },
                 ),
               ),
             ],

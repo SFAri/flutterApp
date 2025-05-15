@@ -1,50 +1,93 @@
-
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CHttpHelper {
-  static const String _baseUrl = ''; //App API base URL
+  static const String _baseUrl =
+  'http://10.0.0.2:8000/api'; //Android Emulator
+  // 'http://localhost:8000/api'; //iOS Emulator, web
 
-  // Helper method to make a GET request:
-  static Future<Map<String, dynamic>> get(String endpoint) async {
-    final response = await http.get(Uri.parse('$_baseUrl/$endpoint'));
+  // Helper to get headers with Bearer token
+  static Future<Map<String, String>> _getHeaders({
+    bool withAuth = false,
+  }) async {
+    final headers = {'Content-Type': 'application/json'};
+
+    if (withAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('accessToken');
+
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+    }
+
+    return headers;
+  }
+
+  // GET request
+  static Future<Map<String, dynamic>> get(
+    String endpoint, {
+    bool withAuth = false,
+  }) async {
+    final headers = await _getHeaders(withAuth: withAuth);
+    final response = await http.get(
+      Uri.parse('$_baseUrl/$endpoint'),
+      headers: headers,
+    );
     return _handleResponse(response);
   }
 
-  // POST method:
-  static Future<Map<String, dynamic>> post(String endpoint, dynamic data) async {
+  // POST request
+  static Future<Map<String, dynamic>> post(
+    String endpoint,
+    dynamic data, {
+    bool withAuth = false,
+  }) async {
+    final headers = await _getHeaders(withAuth: withAuth);
     final response = await http.post(
       Uri.parse('$_baseUrl/$endpoint'),
-      headers: {'Content-Type': 'application/json'},
+      headers: headers,
       body: json.encode(data),
     );
     return _handleResponse(response);
   }
 
-  // PUT method:
-  static Future<Map<String, dynamic>> put(String endpoint, dynamic data) async {
+  // PUT request
+  static Future<Map<String, dynamic>> put(
+    String endpoint,
+    dynamic data, {
+    bool withAuth = false,
+  }) async {
+    final headers = await _getHeaders(withAuth: withAuth);
     final response = await http.put(
       Uri.parse('$_baseUrl/$endpoint'),
-      headers: {'Content-Type': 'application/json'},
+      headers: headers,
       body: json.encode(data),
     );
     return _handleResponse(response);
   }
 
-  // DELETE method:
-  static Future<Map<String, dynamic>> delete(String endpoint) async {
-    final response = await http.delete(Uri.parse('$_baseUrl/$endpoint'));
+  // DELETE request
+  static Future<Map<String, dynamic>> delete(
+    String endpoint, {
+    bool withAuth = false,
+  }) async {
+    final headers = await _getHeaders(withAuth: withAuth);
+    final response = await http.delete(
+      Uri.parse('$_baseUrl/$endpoint'),
+      headers: headers,
+    );
     return _handleResponse(response);
   }
 
-  // Handle the HTTP response
-  static Future<Map<String, dynamic>> _handleResponse(http.Response response){
-    if (response.statusCode == 200){
-      return json.decode(response.body);
-    }
-    else {
-      throw Exception('Failed to load data: ${response.statusCode}');
+  // Response handler
+  static Map<String, dynamic> _handleResponse(http.Response response) {
+    final decoded = json.decode(response.body);
+    if (decoded is Map<String, dynamic>) {
+      return decoded;
+    } else {
+      throw Exception('Unexpected response format');
     }
   }
 }
