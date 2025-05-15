@@ -15,7 +15,7 @@ const configs = {
     host: process.env.HOST || "localhost" || "127.0.0.1",
   },
   db: {
-    mongoURL: process.env.MONGO_URL || "mongodb://localhost:27017/user-service",
+    mongoURL: process.env.MONGO_URI || "mongodb://localhost:27017/user-service",
   },
   secret_key: {
     my_secret_key: process.env.SECRET_KEY,
