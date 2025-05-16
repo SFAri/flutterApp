@@ -64,15 +64,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       // Lưu token vào SharedPreferences
       await AuthService.saveToken(result['accessToken']);
 
-      print("Done post: ${AuthService.getToken()}");
       int role = getRoleFromToken(result['accessToken']);
-      print("Role : $role");
 
-      // Chuyển trang
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => NavigationMenu()),
-      // );
       if (role == 1) { // Nếu vai trò là 1 (admin)
         Navigator.pushReplacement(
           context,
