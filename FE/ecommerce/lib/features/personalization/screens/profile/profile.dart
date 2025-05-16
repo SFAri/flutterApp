@@ -59,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   DateTime? get dateOfBirth =>
       userData?['dateOfBirth'] != null
           ? DateTime.tryParse(userData!['dateOfBirth'])
-          : null; // More direct access after null check
+          : null;
   String get profileImage =>
       _get('profileImage', 'assets/images/users/default-user.jpg');
   @override
