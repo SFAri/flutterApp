@@ -26,9 +26,8 @@ class CHelperFunctions {
         return Colors.black;
     }
   }
-
-  static void showSnackBar(String message){
-    ScaffoldMessenger.of(Get.context!).showSnackBar(
+  static void showSnackBar(String message, {required BuildContext context}) {
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
   }

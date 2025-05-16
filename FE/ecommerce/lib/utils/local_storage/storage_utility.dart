@@ -26,7 +26,7 @@ class CLocalStorage {
 
   // Generic method to read data
   Future<T?> readData<T>(String key) async {
-    return await _storage.read<T>(key);
+    return _storage.read<T>(key);
   }
 
   // Generic method to remove data

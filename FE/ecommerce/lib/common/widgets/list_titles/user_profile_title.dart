@@ -34,9 +34,7 @@ class CUserProfileTitle extends StatelessWidget {
         onPressed:
             () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => ProfileScreen(userData: userData!),
-              ),
+              MaterialPageRoute(builder: (_) => ProfileScreen()),
             ),
         icon: const Icon(Iconsax.edit_copy, color: Colors.white),
       ),

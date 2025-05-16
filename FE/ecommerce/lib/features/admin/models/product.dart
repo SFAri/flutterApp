@@ -1,4 +1,5 @@
 import 'package:ecommerce/features/admin/models/variant.dart';
+
 class Product {
   final int id;
   final String name;
@@ -25,9 +26,10 @@ class Product {
     image: List<String>.from(json['image']),
     categoryId: json['categoryId'],
     brandId: json['brandId'],
-    variations: (json['variations'] as List<dynamic>)
-        .map((v) => Variation.fromJson(v))
-        .toList(),
+    variations:
+        (json['variations'] as List<dynamic>)
+            .map((v) => Variation.fromJson(v))
+            .toList(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -36,6 +38,7 @@ class Product {
     'description': description,
     'image': image,
     'categoryId': categoryId,
+    'brandId': brandId,
     'variations': variations.map((v) => v.toJson()).toList(),
   };
 }

@@ -5,11 +5,13 @@ import 'package:ecommerce/common/widgets/list_titles/user_profile_title.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
 import 'package:ecommerce/features/auth/login_page.dart';
 import 'package:ecommerce/features/personalization/screens/address/address.dart';
-import 'package:ecommerce/features/personalization/screens/settings/controllers/profile_controller.dart';
+import 'package:ecommerce/features/personalization/controllers/profile_controller.dart';
 import 'package:ecommerce/features/personalization/screens/settings/widgets/language_selection_dialog.dart';
 import 'package:ecommerce/features/shop/screens/order/order.dart';
+import 'package:ecommerce/navigation_menu.dart';
 import 'package:ecommerce/services/auth_service.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
+import 'package:ecommerce/utils/helpers/helper_functions.dart';
 import 'package:ecommerce/utils/local_storage/storage_utility.dart';
 import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +27,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final ProfileController _profileController = ProfileController();
-  bool loggedIn = false;
+  bool? loggedIn;
   bool isLoading = false;
   late List<String> languages;
   Map<String, dynamic>? userData;
@@ -55,14 +57,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       if (!isUserLoggedIn) {
         setState(() {
-          loggedIn = false;
+          loggedIn = isUserLoggedIn;
           isLoading = false;
         });
         return;
       }
 
       setState(() {
-        loggedIn = true;
+        loggedIn = isUserLoggedIn;
       });
 
       // Try getting cached data first
@@ -98,14 +100,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final localStorage = CLocalStorage.instance();
     await localStorage.deleteData('user_profile');
     await AuthService.clearToken();
-    setState(() {
-      userData = null;
-      loggedIn = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+      CHelperFunctions.showSnackBar('Logout successfully', context: context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NavigationMenu()),
+      );
+    }
   }
 
   void handleLogOut() async {
-    logoutUser();
+    await logoutUser();
   }
 
   // Dialog chọn ngôn ngữ
@@ -175,7 +183,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: CSizes.spaceBtwSections),
 
                   // -- Login User
-                  loggedIn
+                  loggedIn == null
+                      ? SizedBox.shrink()
+                      : loggedIn!
                       ? CUserProfileTitle(userData: userData) // Profile title
                       : TextButton(
                         onPressed: () {
@@ -186,6 +196,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           );
                         },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                         child: Text(
                           'Login / Sign Up',
                           style: Theme.of(
@@ -193,18 +213,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ).textTheme.headlineMedium?.copyWith(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        style: TextButton.styleFrom(
-                          backgroundColor:
-                              Colors
-                                  .white, // optional: gives it a button background
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                       ),
@@ -329,28 +337,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   // -- Logout Button
                   SizedBox(height: CSizes.spaceBtwSections),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed:
-                          isLoading
-                              ? null
-                              : () {
-                                handleLogOut();
-                              },
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            CSizes.borderRadiusMd,
+                  loggedIn == null
+                      ? SizedBox.shrink()
+                      : loggedIn!
+                      ? SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: isLoading ? null : handleLogOut,
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                CSizes.borderRadiusMd,
+                              ),
+                            ),
                           ),
+
+                          child:
+                              isLoading
+                                  ? SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.black,
+                                    ),
+                                  )
+                                  : Text(
+                                    'Logout',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(color: Colors.black),
+                                  ),
                         ),
-                      ),
-                      child: Text(
-                        'Logout',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                  ),
+                      )
+                      : SizedBox.shrink(),
                 ],
               ),
             ),

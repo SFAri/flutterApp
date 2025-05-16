@@ -4,11 +4,12 @@ const Schema = _Schema;
 const UserSchema = new Schema(
   {
     fullName: { type: String },
+    userName: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     refreshToken: { type: String, require: false },
     role: { type: Number, required: true, enum: [0, 1], default: 0 }, // 0. Customer - 1. Admin
-    gender: { type: String, enum: ["male", "female"] },
+    gender: { type: String, enum: ["Male", "Female"] },
     dateOfBirth: { type: Date },
     fileImage: { type: String },
     phone: { type: String },
