@@ -14,7 +14,6 @@ class CHttpHelper {
     } else if (Platform.isAndroid) {
       return 'http://10.0.0.2:8000/api'; // Địa chỉ cho Android Emulator
     }
-    // Có thể thêm các điều kiện khác nếu cần
     return 'http://localhost:8000/api'; // Giá trị mặc định
   }
 

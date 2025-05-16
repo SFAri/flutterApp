@@ -216,9 +216,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       body: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height >= 775.0
-              ? MediaQuery.of(context).size.height
-              : 775.0,
+          height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
             color: Colors.black, // Đổi màu nền thành màu đen
           ),
@@ -226,7 +224,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               const Padding(
-                padding: EdgeInsets.only(top: 75.0),
+                padding: EdgeInsets.only(top: 20.0),
                 child: Icon(
                   Icons.lock,
                   size: 100,
@@ -379,6 +377,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               ),
               Container(
                 margin: const EdgeInsets.only(top: 200.0),
+                width: 300,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
