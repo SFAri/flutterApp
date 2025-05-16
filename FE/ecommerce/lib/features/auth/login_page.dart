@@ -1,6 +1,9 @@
+// import 'package:ecommerce/features/admin/admin_home.dart';
+import 'package:ecommerce/features/admin/admin_home.dart';
 import 'package:ecommerce/features/auth/controllers/login_controller.dart';
+import 'package:ecommerce/main.dart';
 import 'package:ecommerce/services/auth_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ecommerce/utils/helpers/role_function.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -61,11 +64,26 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       // Lưu token vào SharedPreferences
       await AuthService.saveToken(result['accessToken']);
 
+      print("Done post: ${AuthService.getToken()}");
+      int role = getRoleFromToken(result['accessToken']);
+      print("Role : $role");
+
       // Chuyển trang
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => NavigationMenu()),
-      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => NavigationMenu()),
+      // );
+      if (role == 1) { // Nếu vai trò là 1 (admin)
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AdminHome(streamController.stream)),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => NavigationMenu()),
+        );
+      }
 
     } catch (e) {
       setState(() {
@@ -384,6 +402,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   ),
                 ),
                 child: MaterialButton(
+                  onPressed: isLoading ? null : () {
+                    if (loginEmailController.text.isEmpty || loginPasswordController.text.isEmpty) {
+                      showInSnackBar("Vui lòng nhập email và mật khẩu");
+                    } else {
+                      handleLogin(context);
+                    }
+                  },
                   child: const Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
                     child: Text(
@@ -395,13 +420,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                     ),
                   ),
-                  onPressed: isLoading ? null : () {
-                    if (loginEmailController.text.isEmpty || loginPasswordController.text.isEmpty) {
-                      showInSnackBar("Vui lòng nhập email và mật khẩu");
-                    } else {
-                      handleLogin(context);
-                    }
-                  },
                 ),
               ),
             ],

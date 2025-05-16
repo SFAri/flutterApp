@@ -30,8 +30,11 @@ class AuthService {
   }
 
   async GetTokens(id) {
+    const existingUser = await this.repository.FindById(id);
+
     const payload = {
       id,
+      role: existingUser.role
     };
     //generate new JWT
     const tokens = {

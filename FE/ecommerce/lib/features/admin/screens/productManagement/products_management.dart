@@ -1,6 +1,7 @@
-import 'package:ecommerce/features/admin/main.dart';
+// import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/productManagement/productDetail/product_detail.dart';
+import 'package:ecommerce/main.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 
@@ -200,6 +201,12 @@ class _ProductManagementState extends State<ProductManagement>{
               child: ListTile(
                 onTap: () {
                   streamController.add(ProductDetailScreen(products[index]));
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => ProductDetailScreen(products[index]),
+                  //   ),
+                  // );
                 },
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 leading: SizedBox(

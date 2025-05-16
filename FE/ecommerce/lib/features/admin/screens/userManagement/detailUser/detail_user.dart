@@ -54,7 +54,7 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
           children: [
             Column(
               spacing: 10,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,7 +110,7 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
               ],
             ),
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              // crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 10,
               children: [
                 Row(

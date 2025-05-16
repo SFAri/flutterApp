@@ -1,8 +1,8 @@
 import 'package:ecommerce/common/widgets/filters/search_filter.dart';
-import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/screens/couponManagement/detailCoupon/detail_coupon.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/userManagement/widgets/paginated_table.dart';
+import 'package:ecommerce/main.dart';
 import 'package:flutter/material.dart';
 
 class CouponScreen extends StatefulWidget {
