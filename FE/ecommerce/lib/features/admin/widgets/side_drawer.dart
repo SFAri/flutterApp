@@ -6,6 +6,8 @@ import 'package:ecommerce/features/admin/screens/variantionManagement/variation_
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/orderManagement/order_management.dart';
+
 class SideDrawer extends StatelessWidget {
   const SideDrawer({super.key, required this.onSelectScreen});
 
@@ -42,7 +44,7 @@ class SideDrawer extends StatelessWidget {
           ),
           ListTile(
             onTap: (){
-              // onSelectScreen(OrderManagementScreen());
+              onSelectScreen(OrderManagementScreen());
             },
             leading: Icon(Icons.local_shipping_outlined),
             title: Text('Order'),
