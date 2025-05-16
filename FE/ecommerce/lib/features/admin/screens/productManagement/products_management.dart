@@ -188,6 +188,19 @@ class _ProductManagementState extends State<ProductManagement>{
                 
               },
             ),
+
+            TextButton(
+              onPressed: (){
+                streamController.add(ProductDetailScreen());
+              }, 
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.create_new_folder_rounded),
+                  Text('Create new Product')
+                ],
+              )
+            )
           ],
         ),
 
@@ -200,13 +213,7 @@ class _ProductManagementState extends State<ProductManagement>{
             return Card(
               child: ListTile(
                 onTap: () {
-                  streamController.add(ProductDetailScreen(products[index]));
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => ProductDetailScreen(products[index]),
-                  //   ),
-                  // );
+                  streamController.add(ProductDetailScreen(item: products[index]));
                 },
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 leading: SizedBox(

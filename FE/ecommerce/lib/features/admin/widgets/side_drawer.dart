@@ -35,13 +35,13 @@ class SideDrawer extends StatelessWidget {
             leading: Icon(Icons.laptop_mac),
             title: Text('Product'),
           ),
-          ListTile(
-            onTap: (){
-              onSelectScreen(VariantScreen());
-            },
-            leading: Icon(Icons.color_lens),
-            title: Text('Variant'),
-          ),
+          // ListTile(
+          //   onTap: (){
+          //     onSelectScreen(VariantScreen());
+          //   },
+          //   leading: Icon(Icons.color_lens),
+          //   title: Text('Variant'),
+          // ),
           ListTile(
             onTap: (){
               onSelectScreen(OrderManagementScreen());

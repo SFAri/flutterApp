@@ -6,7 +6,10 @@ import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  const ProductDetailScreen(Map<String, dynamic> item, {super.key});
+  // const ProductDetailScreen(Map<String, dynamic> item, {super.key});
+  final Map<String, dynamic>? item; // optional
+
+  const ProductDetailScreen({super.key, this.item});
 
   @override
   State<StatefulWidget> createState() => _ProductDetailScreenState();
@@ -21,6 +24,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   late TextEditingController _categoryController;
   late TextEditingController _discountController;
   // double _discount = 0.0;
+
+  late TextEditingController _variantIdController;
+  late TextEditingController _importPriceController;
+  late TextEditingController _salePriceController;
+  late TextEditingController _colorController;
+
+  late TextEditingController _processorController;
+  late TextEditingController _gpuController;
+  late TextEditingController _ramController;
+  late TextEditingController _storageController;
+  late TextEditingController _screenSizeController;
+  late TextEditingController _refreshRateController;
+  late TextEditingController _resolutionController;
+  late TextEditingController _inventoryController;
 
   String? _selectedBrand;
   final List<String> _brands = [
@@ -51,9 +68,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     'Yellow'
   ];
 
-  String? _selectedAttribute;
-  String? _selectedAttributeOption;
-
   List<String> imagePath = [
     CImages.macImage,
     CImages.blackFridayLaptop,
@@ -61,7 +75,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _codeController = TextEditingController();
     _nameController = TextEditingController();
@@ -69,6 +82,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _brandController = TextEditingController();
     _categoryController = TextEditingController();
     _discountController = TextEditingController();
+
+    _variantIdController = TextEditingController();
+    _importPriceController = TextEditingController();
+    _salePriceController = TextEditingController();
+    _colorController = TextEditingController();
+
+    _processorController = TextEditingController();
+    _gpuController = TextEditingController();
+    _ramController = TextEditingController();
+    _storageController = TextEditingController();
+    _screenSizeController = TextEditingController();
+    _refreshRateController = TextEditingController();
+    _resolutionController = TextEditingController();
+    _inventoryController = TextEditingController();
   } 
 
   @override
@@ -81,6 +108,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _brandController.dispose();
     _categoryController.dispose();
     _discountController.dispose();
+
+    _variantIdController.dispose();
+    _importPriceController.dispose();
+    _salePriceController.dispose();
+    _colorController.dispose();
+
+    _processorController.dispose();
+    _gpuController.dispose();
+    _ramController.dispose();
+    _storageController.dispose();
+    _screenSizeController.dispose();
+    _refreshRateController.dispose();
+    _resolutionController.dispose();
+    _inventoryController.dispose();
   }
 
   // Show modal add and edit category:
@@ -305,134 +346,74 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           SingleChildScrollView(
                             child: Column(
                               spacing: 10,
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton(
-                                    onPressed: (){
-                                      // Show dialog cho chọn dropdownbuttonform attribute; chọn dropdownbuttonForm là attribute value
-                                      // Ví dụ: Chọn color -> bên dưới sẽ cho chọn màu red/grey/yellow/white/...
-                                      _showDialog(context, 'Edit Option', 
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          spacing: 10,
-                                          children: [
-                                            SizedBox(
-                                              width: 300,
-                                              child: DropdownButtonFormField<String>(
-                                                value: _selectedAttribute,
-                                                decoration: InputDecoration(
-                                                  labelText: 'Attribute',
-                                                  border: OutlineInputBorder(),
-                                                ),
-                                                items: attributes.map((String attribute) {
-                                                  return DropdownMenuItem<String>(
-                                                    value: attribute,
-                                                    child: Text(attribute),
-                                                  );
-                                                }).toList(),
-                                                onChanged: (String? newValue) {
-                                                  setState(() {
-                                                    _selectedAttribute = newValue;
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 300,
-                                              child: DropdownButtonFormField<String>(
-                                                value: _selectedAttributeOption,
-                                                decoration: InputDecoration(
-                                                  labelText: 'Option',
-                                                  border: OutlineInputBorder(),
-                                                ),
-                                                items: options.map((String option) {
-                                                  return DropdownMenuItem<String>(
-                                                    value: option,
-                                                    child: Text(option),
-                                                  );
-                                                }).toList(),
-                                                onChanged: (String? newValue) {
-                                                  setState(() {
-                                                    _selectedAttributeOption = newValue;
-                                                  });
-                                                },
-                                              ),
-                                            )
-                                          ],
-                                        ), 
-                                        (){
-                                          // Thực hiện cập nhật ở đây
-                                        }
-                                      );
-                                    }, 
-                                    child: Text('Add option')
-                                  ),
-                                ),
-                                Row(
-                                  spacing: 10,
-                                  children: [
-                                    Text('Variants'),
-                                    Expanded(
-                                      child: Divider()
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 200,
-                                  width: 300,
-                                  child: ListView.builder(
-                                    itemCount: 3,
-                                    shrinkWrap: true,
-                                    // physics: NeverScrollableScrollPhysics(),
-                                    itemBuilder: (context, index) {
-                                      return Card(
-                                        child: ListTile(
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                          leading: Icon(Icons.account_tree_rounded),
-                                          contentPadding: EdgeInsets.all(5),
-                                          title: Text('RAM'),
-                                          subtitle: Text('8Gb'),
-                                          trailing: Row(
-                                            spacing: 5,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              IconButton(
-                                                onPressed: (){}, 
-                                                icon: Icon(Icons.edit)
-                                              ),
-                                              IconButton(
-                                                onPressed: (){}, 
-                                                icon: Icon(Icons.delete, color: Colors.red,)
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                SizedBox(height: 15,),
-                                Row(
-                                  spacing: 10,
-                                  children: [
-                                    Text('General information'),
-                                    Expanded(
-                                      child: Divider()
-                                    ),
-                                  ],
+                                CTextFormField(
+                                  label: 'Variant Id', 
+                                  hintText: 'Enter Variant Id', 
+                                  controller: _variantIdController, 
                                 ),
                                 CTextFormField(
                                   label: 'Import price', 
                                   hintText: 'Enter import price', 
-                                  controller: _editImportController, 
+                                  controller: _importPriceController, 
                                 ),
                                 CTextFormField(
                                   label: 'Sale price', 
                                   hintText: 'Enter sale price', 
-                                  controller: _editSaleController, 
+                                  controller: _salePriceController, 
+                                ),
+                                CTextFormField(
+                                  label: 'Color', 
+                                  hintText: 'Choose color', 
+                                  controller: _colorController, 
+                                ),
+                                Row(
+                                  spacing: 10,
+                                  children: [
+                                    Text('Spec information'),
+                                    Expanded(child: Divider()),
+                                  ],
+                                ),
+                                CTextFormField(
+                                  label: 'Processor', 
+                                  hintText: 'Enter Processor', 
+                                  controller: _processorController, 
+                                ),
+                                CTextFormField(
+                                  label: 'GPU', 
+                                  hintText: 'Enter GPU', 
+                                  controller: _gpuController, 
+                                ),
+                                CTextFormField(
+                                  label: 'RAM', 
+                                  hintText: 'Enter RAM', 
+                                  controller: _ramController, 
+                                ),
+                                CTextFormField(
+                                  label: 'Storage', 
+                                  hintText: 'Enter Storage', 
+                                  controller: _storageController, 
+                                ),
+                                CTextFormField(
+                                  label: 'Screen Size', 
+                                  hintText: 'Enter Screen Size', 
+                                  controller: _screenSizeController, 
+                                ),
+                                CTextFormField(
+                                  label: 'Refresh Rate', 
+                                  hintText: 'Enter Refresh Rate', 
+                                  controller: _refreshRateController, 
+                                ),
+                                CTextFormField(
+                                  label: 'Resolution', 
+                                  hintText: 'Enter Resolution', 
+                                  controller: _resolutionController, 
+                                ),
+                                CTextFormField(
+                                  keyboardType: TextInputType.number,
+                                  label: 'Inventory', 
+                                  hintText: 'Enter Inventory number', 
+                                  controller: _inventoryController, 
                                 ),
                               ],
                             ),
