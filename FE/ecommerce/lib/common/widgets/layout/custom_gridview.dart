@@ -29,12 +29,13 @@ class CGridView extends StatelessWidget {
           mainAxisExtent: mainAxisExtent
         ), 
         itemBuilder: (_, index) => CProductCard(
+          id : items[index]["_id"],
           productName: items[index]["name"]!, 
           imageProduct: items[index]["images"][0]!, 
           productBrand: items[index]["brand"]!, 
           price: items[index]["price"]!.toString(), 
           salePrice: items[index]["discount"] != null ? items[index]["discount"]!.toString() : '0',
-          rateStar: double.parse(items[index]['averageRating'].toString()),
+          rateStar: items[index]["ratings"].length != 0 ? double.parse(items[index]['averageRating'].toString()) : 5,
         ),
       ),
     );

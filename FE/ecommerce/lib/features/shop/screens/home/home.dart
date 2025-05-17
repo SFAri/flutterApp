@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             CClipPathAppBar(
               listWidgets: [
                 SizedBox(height: 2),
-                CHomeAppBar(),
+                CHomeAppBar(onCategorySelected: widget.onCategorySelected),
                 CHomeCategory(onCategorySelected: widget.onCategorySelected)
               ],
             ),

@@ -10,6 +10,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 class CProductCard extends StatelessWidget {
   const CProductCard(
       {super.key,
+      required this.id,
       required this.imageProduct,
       required this.productName,
       required this.productBrand,
@@ -17,6 +18,7 @@ class CProductCard extends StatelessWidget {
       this.salePrice = '0',
       this.rateStar = 5});
 
+  final String id;
   final double rateStar;
   final String imageProduct, productName, productBrand;
   final String price;
@@ -31,7 +33,7 @@ class CProductCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => ProductDetail(),
+            builder: (_) => ProductDetail(id: id),
           ),
         );
       },
