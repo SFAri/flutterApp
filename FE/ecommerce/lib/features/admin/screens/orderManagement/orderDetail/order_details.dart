@@ -1,6 +1,9 @@
 // order_details.dart
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../../../../auth/controllers/order_controller.dart';
+import '../../../models/Order.dart';
 import '../order_management.dart';
 
 class OrderDetailScreen extends StatefulWidget {
@@ -14,10 +17,23 @@ class OrderDetailScreen extends StatefulWidget {
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
   late String _selectedStatus;
 
+  // Danh sách trạng thái chuẩn hóa có hoa chữ đầu
+  final List<String> _statuses = ['Pending', 'Cancelled', 'Delivered', 'Shipped'];
+
   @override
   void initState() {
     super.initState();
-    _selectedStatus = widget.order.status;
+    // Chuẩn hóa trạng thái đầu vào để tránh lỗi DropdownButton
+    _selectedStatus = _capitalize(widget.order.status);
+    if (!_statuses.contains(_selectedStatus)) {
+      _selectedStatus = _statuses.first;
+    }
+  }
+
+  // Hàm chuyển trạng thái thành dạng chữ hoa chữ cái đầu, chữ thường phần còn lại
+  String _capitalize(String status) {
+    if (status.isEmpty) return status;
+    return status[0].toUpperCase() + status.substring(1).toLowerCase();
   }
 
   Color _getStatusColor(String status) {
@@ -36,6 +52,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   void _confirmUpdateStatus() {
+    final order = widget.order;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -47,47 +64,96 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Order status updated successfully.')),
-              );
-              // Logic to sync with backend or customer view should be added here
+            onPressed: () async {
+              Navigator.pop(context); // Đóng dialog trước khi cập nhật
+              final success = await OrderController().updateOrderStatus(order.id, _selectedStatus);
+              if (success) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Order status updated successfully.')),
+                );
+                // Nếu cần cập nhật UI thì gọi setState() ở đây hoặc callback
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Failed to update order status.')),
+                );
+              }
             },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
             child: const Text('Yes'),
           ),
+
         ],
       ),
     );
   }
 
+  String formatCurrency(num amount) {
+    return NumberFormat.currency(locale: 'vi_VN', symbol: '₫').format(amount);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final order = widget.order;
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           children: [
             Header(title: 'Order Details:'),
-            Divider(),
-            
+            const Divider(),
+
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Order ID: ${widget.order.id}', style: const TextStyle(fontSize: 18, color: Colors.white)),
+                  Text('Order ID: ${order.id}', style: const TextStyle(fontSize: 18, color: Colors.white)),
                   const SizedBox(height: 8),
-                  Text('Date: ${widget.order.date}', style: const TextStyle(fontSize: 16, color: Colors.white70)),
+                  Text('Date: ${DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt)}',
+                      style: const TextStyle(fontSize: 16, color: Colors.white70)),
+                  const SizedBox(height: 16),
+
+                  const Text('Products:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                   const SizedBox(height: 8),
-                  Text('Items: ${widget.order.items}', style: const TextStyle(fontSize: 16, color: Colors.white70)),
+
+                  ...order.items.map((item) => Container(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[800],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.productName, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                        Text('Variant: ${item.variantId}', style: const TextStyle(color: Colors.white70)),
+                        Text('Quantity: ${item.quantity}', style: const TextStyle(color: Colors.white70)),
+                        Text('Unit Price: ${formatCurrency(item.unitPrice)}', style: const TextStyle(color: Colors.white70)),
+                        Text('Discount: ${formatCurrency(item.discountPerProduct)}', style: const TextStyle(color: Colors.white70)),
+                      ],
+                    ),
+                  )),
+
+                  const Divider(height: 32),
+
+                  Text('Subtotal: ${formatCurrency(order.subtotal)}', style: const TextStyle(color: Colors.white70)),
+                  if (order.coupon != null)
+                    Text('Coupon (${order.coupon!.code}): -${formatCurrency(order.coupon!.discountAmount)}',
+                        style: const TextStyle(color: Colors.white70)),
+                  Text('Tax: ${formatCurrency(order.taxAmount)}', style: const TextStyle(color: Colors.white70)),
+                  Text('Shipping Fee: ${formatCurrency(order.shippingFee)}', style: const TextStyle(color: Colors.white70)),
                   const SizedBox(height: 8),
-                  Text('Amount: \$${widget.order.amount.toStringAsFixed(1)}', style: const TextStyle(fontSize: 16, color: Colors.white70)),
-                  const SizedBox(height: 8),
+                  Text('Total Amount: ${formatCurrency(order.totalAmount)}',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.lightBlueAccent)),
+
+                  const SizedBox(height: 16),
+
                   DropdownButton<String>(
                     value: _selectedStatus,
                     dropdownColor: Colors.grey[850],
                     style: const TextStyle(color: Colors.white),
-                    items: ['Pending', 'Cancelled', 'Delivered', 'Shipped']
+                    items: _statuses
                         .map((status) => DropdownMenuItem(
                       value: status,
                       child: Text(status, style: TextStyle(color: _getStatusColor(status))),
@@ -101,6 +167,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       }
                     },
                   ),
+
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _confirmUpdateStatus,
