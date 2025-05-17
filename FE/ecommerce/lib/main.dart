@@ -11,12 +11,19 @@ import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:ecommerce/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+// For cloudinary package:
+import 'package:cloudinary_flutter/cloudinary_context.dart';
+import 'package:cloudinary_url_gen/cloudinary.dart';
 // import 'package:get/get_navigation/src/root/get_material_app.dart';
 StreamController<Widget> streamController = StreamController<Widget>.broadcast();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CLocalStorage.init('user_bucket');
+  CloudinaryContext.cloudinary = Cloudinary.fromCloudName(cloudName: "dfgfyxjfx");
   runApp(
+    // For cloudinary:
+    
     MultiProvider(
       providers: [
         ChangeNotifierProvider(

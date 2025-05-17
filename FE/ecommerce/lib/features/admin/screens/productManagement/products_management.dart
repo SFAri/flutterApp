@@ -1,9 +1,10 @@
-// import 'package:ecommerce/features/admin/main.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/productManagement/productDetail/product_detail.dart';
+import 'package:ecommerce/features/auth/controllers/product_controller.dart';
 import 'package:ecommerce/main.dart';
-import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
+import '../../../../utils/data/categories_data.dart';
+import '../../../../utils/data/brands_data.dart';
 
 class ProductManagement extends StatefulWidget {
   const ProductManagement({super.key});
@@ -13,87 +14,51 @@ class ProductManagement extends StatefulWidget {
 }
 
 class _ProductManagementState extends State<ProductManagement>{
+  List<dynamic> products = [];
+  final productController = ProductController();
+  String selectedCategory = 'All Category';
+  String selectedBrand = 'All Brand';
+  String searchQuery = '';
+  bool isDesc = true;
 
-  List<Map<String, dynamic>> categories = [
-    {
-      'categoryId': '1',
-      'categoryName': 'PC'
-    },
-    {
-      'categoryId': '2',
-      'categoryName': 'Laptop'
-    },
-    {
-      'categoryId': '3',
-      'categoryName': 'Accessory'
-    },
-    {
-      'categoryId': '4',
-      'categoryName': 'Hard drive'
-    },
-  ];
+  @override
+  void initState() {
+    fetchProducts();
+    super.initState();
+  }
 
-  List<Map<String, dynamic>> brands = [
-    {
-      'brandId': '1',
-      'brandName': 'Apple'
-    },
-    {
-      'brandId': '2',
-      'brandName': 'Lenovo'
-    },
-    {
-      'brandId': '3',
-      'brandName': 'HP'
-    },
-    {
-      'brandId': '4',
-      'brandName': 'Huawei'
-    },
-  ];
+  // Fetch data:
+  Future<void> fetchProducts() async {
+    try {
+      final response = await productController.getProducts();
+      // print("rES: " + response.toString());
+      // Check if response is a Map and contains 'data'
+      if (response['status'] == 'success') {
+        setState(() {
+          products = response['data'];
+        });
+        print("Products: " + products.join(','));
+      } else {
+        print('error');
+      }
+      
+    } catch (e) {
+      print('Error: $e'); // Handle errors here
+    }
+  }
 
-  List<Map<String, dynamic>> products = [
-    {
-      'productId': '1',
-      'productName': 'Laptop Lenovo ThinkPad',
-      'categoryName': 'Laptop',
-      'brandName': 'Lenovo',
-      'variants': ['16GB RAM', '512GB SSD'],
-      'imagePath':[CImages.macImage],
-    },
-    {
-      'productId': '2',
-      'productName': 'Máy Tính Để Bàn HP',
-      'categoryName': 'Desktop',
-      'brandName': 'HP',
-      'variants': ['Intel i5', '16GB RAM', '1TB HDD'],
-      'imagePath':[CImages.macImage],
-    },
-    {
-      'productId': '3',
-      'productName': 'Hard Drive Seagate 1TB',
-      'categoryName': 'Storage',
-      'brandName': 'Seagate',
-      'variants': ['USB 3.0', 'USB-C'],
-      'imagePath':[CImages.macImage],
-    },
-    {
-      'productId': '4',
-      'productName': 'Wireless Mouse Logitech',
-      'categoryName': 'Accessories',
-      'brandName': 'Logitech',
-      'variants': ['Black', 'White'],
-      'imagePath':[CImages.macImage],
-    },
-    {
-      'productId': '5',
-      'productName': 'Bàn Phím Cơ Corsair',
-      'categoryName': 'Accessories',
-      'brandName': 'Corsair',
-      'variants': ['Red Switch', 'Blue Switch'],
-      'imagePath':[CImages.macImage],
-    },
-  ];
+  // Filter product:
+  List<dynamic> getFilteredProducts() {
+  return products.where((product) {
+    final matchesCategory = selectedCategory == 'All Category' ||
+                            product['category'] == selectedCategory;
+    final matchesBrand = selectedBrand == 'All Brand' || 
+                         product['brand'] == selectedBrand;
+    final matchesSearch = product['name'].toLowerCase().contains(searchQuery.toLowerCase());
+
+    return matchesCategory && matchesBrand && matchesSearch;
+  }).toList();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +88,11 @@ class _ProductManagementState extends State<ProductManagement>{
                     borderSide: BorderSide()
                   )
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value;
+                  });
+                },
               ),
             ),
             SizedBox(
@@ -137,55 +107,61 @@ class _ProductManagementState extends State<ProductManagement>{
               ),
             ),
             // 2. button desc/asc
-            SizedBox(
-              height: 50,
-              width: 100,
-              child: TextButton(
-                onPressed: (){},
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.sort),
-                    Text('Desc'),
-                  ],
-                )
-              ),
-            ),
+            // SizedBox(
+            //   height: 50,
+            //   width: 100,
+            //   child: TextButton(
+            //     onPressed: (){
+            //       setState(() {
+            //         isDesc = !isDesc;
+            //       });
+            //     },
+            //     style: TextButton.styleFrom(
+            //       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //     ),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         isDesc ? Icon(Icons.arrow_downward_sharp) : Icon(Icons.arrow_upward_sharp),
+            //         isDesc ? Text('Desc') : Text('Asc'),
+            //       ],
+            //     )
+            //   ),
+            // ),
 
             // Choose category:
             DropdownButton(
-              value: 'All Category',
+              value: selectedCategory,
               borderRadius: BorderRadius.circular(10),
               padding: EdgeInsets.symmetric(horizontal: 8),
-              items: [
-                DropdownMenuItem<String>(value: 'All Category',child: Text('All Category'),),
-                DropdownMenuItem<String>(value: 'Laptop',child: Text('Laptop'),),
-                DropdownMenuItem<String>(value: 'PC',child: Text('PC'),),
-                // Thêm 1 số danh mục nữa
-              ], 
+              items: categories.map((String category) {
+                return DropdownMenuItem<String>(
+                  value: category,
+                  child: Text(category),
+                );
+              }).toList(), 
               onChanged: (value) {
-                
+                setState(() {
+                  selectedCategory = value!;
+                });
               },
             ),
 
             // Choose brand:
             DropdownButton(
-              value: 'All Brand',
+              value: selectedBrand,
               borderRadius: BorderRadius.circular(10),
               padding: EdgeInsets.symmetric(horizontal: 8),
-              items: [
-                DropdownMenuItem<String>(value: 'All Brand',child: Text('All Brand'),),
-                DropdownMenuItem<String>(value: 'Apple',child: Text('Apple'),),
-                DropdownMenuItem<String>(value: 'Lenovo',child: Text('Lenovo'),),
-                DropdownMenuItem<String>(value: 'Huawei',child: Text('Huawei'),),
-                DropdownMenuItem<String>(value: 'HP',child: Text('HP'),),
-                // Thêm 1 số danh mục nữa
-              ], 
+              items: brands.map((String brand) {
+                return DropdownMenuItem<String>(
+                  value: brand,
+                  child: Text(brand),
+                );
+              }).toList(), 
               onChanged: (value) {
-                
+                setState(() {
+                  selectedBrand = value!;
+                });
               },
             ),
 
@@ -207,30 +183,31 @@ class _ProductManagementState extends State<ProductManagement>{
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          itemCount: products.length,
-          // separatorBuilder: separatorBuilder, 
+          itemCount: getFilteredProducts().length,
           itemBuilder: (context, index) {
+            final filteredProducts = getFilteredProducts();
             return Card(
               child: ListTile(
                 onTap: () {
-                  streamController.add(ProductDetailScreen(item: products[index]));
+                  streamController.add(ProductDetailScreen(item: filteredProducts[index]));
                 },
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 leading: SizedBox(
                   height: 50,
                   width: 50,
-                  child: Image.asset(products[index]['imagePath'][0])
+                  // child: Image.asset(products[index]['images'][0])
+                  child: Image.network(filteredProducts[index]['images'][0]),
                 ),
                 contentPadding: EdgeInsets.all(5),
-                title: Text(products[index]['productName']),
+                title: Text(filteredProducts[index]['name']),
                 subtitle: Column(
                   spacing: 4,
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(products[index]['brandName']),
-                    Text(products[index]['categoryName']),
-                    Text('Variants: ${products[index]['productName']}'),
+                    Text(filteredProducts[index]['brand']),
+                    Text(filteredProducts[index]['category']),
+                    Text('Variants: ${filteredProducts[index]['variants'][0]['variantId']}'),
                   ],
                 ),
                 trailing: IconButton(

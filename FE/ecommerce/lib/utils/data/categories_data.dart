@@ -1,0 +1,16 @@
+List<String> categories = [
+  "All Category",
+  "Laptop",
+  "Desktop",
+  "CPU",
+  "GPU",
+  "RAM",
+  "SSD",
+  "HDD",
+  "Motherboard",
+  "PSU",
+  "Case",
+  "Cooling",
+  "Monitor",
+  "Accessory",
+];

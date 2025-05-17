@@ -21,7 +21,7 @@ class ProductService {
   }
 
   async GetProductByFilter(filter = {}, sortBy = {}) {
-    const { minPrice, maxPrice, ...filterQuery } = filter;
+    const { minPrice, maxPrice, brand, category, ...filterQuery } = filter;
 
     if (minPrice) {
       filterQuery.price = { $gte: minPrice };
@@ -29,6 +29,14 @@ class ProductService {
       filterQuery.price = { $lte: maxPrice };
     } else if (minPrice && maxPrice) {
       filterQuery.price = { $gte: minPrice, $lte: maxPrice };
+    }
+
+    // Add brand and category filters if they exist
+    if (brand) {
+        filterQuery.brand = brand; // Assuming brand is a single value
+    }
+    if (category) {
+        filterQuery.category = category; // Assuming category is a single value
     }
 
     const products = await this.repository.FindByFilter(filterQuery, sortBy);
