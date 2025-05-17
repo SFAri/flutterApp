@@ -69,6 +69,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       print("Enter loginROLE: $role");
 
       if (role == 1) { // Nếu vai trò là 1 (admin)
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => AdminHome(streamController.stream)),
@@ -236,18 +237,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   controller: _pageController,
                   onPageChanged: (i) {
                     setState(() {
-                      if (i == 0) {
-                        left = Colors.white; // "Sign In" được chọn
-                        right = Colors.grey; // "Sign Up" không được chọn
-                      } else if (i == 1) {
-                        left = Colors.grey; // "Sign In" không được chọn
-                        right = Colors.white; // "Sign Up" được chọn
-                      }
+                      left = i == 0 ? Colors.white : Colors.grey;
+                      right = i == 1 ? Colors.white : Colors.grey;
                     });
                   },
                   children: <Widget>[
-                    ConstrainedBox(
-                      constraints: const BoxConstraints.expand(),
+                    // ✅ Sửa ở đây: dùng SingleChildScrollView bao Column
+                    SingleChildScrollView(
                       child: Column(
                         children: [
                           _buildLoginForm(),
@@ -297,7 +293,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Container(
-                  width: 300.0,
+                  width: 350.0,
                   height: 190.0,
                   child: Column(
                     children: <Widget>[
