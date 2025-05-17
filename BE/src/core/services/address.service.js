@@ -21,6 +21,16 @@ class AddressService {
 
   async AddNewAddress(userId, input) {
     const existingUser = await this.userRepository.FindById(userId);
+
+    if (input.isDefault) {
+      // remove all other addresses
+      const addresses = await this.GetAllAddressByUserId(existingUser._id);
+
+      addresses.forEach(async (address) => {
+        address.isDefault = false;
+        await this.repository.UpdateAddressById(address._id, address);
+      });
+    }
     if (!existingUser) {
       ThrowNewError("UserError", "User does not exist");
     }

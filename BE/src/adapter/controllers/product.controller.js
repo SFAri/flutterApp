@@ -60,10 +60,15 @@ class ProductController {
   }
 
   async filterProduct(req, res, next) {
-    const { sortBy, filter } = req.body || {};
+    const { limit, sortBy, filter } = req.body || {};
+    const perPage = parseInt(limit) || 10;
 
     try {
-      const data = await ProductService.GetProductByFilter(filter, sortBy);
+      const data = await ProductService.GetProductByFilter(
+        filter,
+        sortBy,
+        perPage
+      );
       res.status(200).json(FormatResult("success", data));
     } catch (err) {
       next(createError(400, err));

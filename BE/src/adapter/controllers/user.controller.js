@@ -103,7 +103,6 @@ class UserController {
       const { _id } = req.user;
       const {
         fullName,
-        email,
         phone,
         province,
         district,
@@ -114,7 +113,6 @@ class UserController {
 
       CheckMissingFields({
         fullName,
-        email,
         phone,
         province,
         district,
@@ -125,7 +123,6 @@ class UserController {
 
       const data = await AddressService.AddNewAddress(_id, {
         fullName,
-        email,
         phone,
         province,
         district,

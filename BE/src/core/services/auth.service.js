@@ -34,7 +34,7 @@ class AuthService {
 
     const payload = {
       id,
-      role: existingUser.role
+      role: existingUser.role,
     };
     //generate new JWT
     const tokens = {
@@ -85,7 +85,6 @@ class AuthService {
     });
 
     const newAddress = await this.addressRepository.AddNewAddress(newUser, {
-      email,
       fullName,
       province,
       district,

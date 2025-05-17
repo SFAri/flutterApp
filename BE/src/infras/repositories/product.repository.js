@@ -41,8 +41,8 @@ export default class ProductRepository {
     return product;
   }
 
-  async FindByFilter(filter = {}, sortBy = {}) {
-    const products = await ProductModel.find(filter).sort(sortBy);
+  async FindByFilter(filter = {}, sortBy = {}, limit) {
+    const products = await ProductModel.find(filter).sort(sortBy).limit(limit);
     return products;
   }
 }

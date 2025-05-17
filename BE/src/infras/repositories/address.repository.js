@@ -21,7 +21,6 @@ export default class AddressRepository {
   async AddNewAddress(user = {}, input = {}) {
     const {
       fullName,
-      email,
       phone,
       province,
       district,
@@ -32,7 +31,6 @@ export default class AddressRepository {
 
     const newAddress = new AddressModel({
       fullName,
-      email,
       phone,
       province,
       district,

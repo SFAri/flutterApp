@@ -20,7 +20,7 @@ class ProductService {
     return FormatData(Product);
   }
 
-  async GetProductByFilter(filter = {}, sortBy = {}) {
+  async GetProductByFilter(filter = {}, sortBy = {}, limit) {
     const { minPrice, maxPrice, brand, category, ...filterQuery } = filter;
 
     if (minPrice != null && maxPrice != null) {
@@ -33,13 +33,17 @@ class ProductService {
 
     // Add brand and category filters if they exist
     if (brand) {
-        filterQuery.brand = brand; // Assuming brand is a single value
+      filterQuery.brand = brand; // Assuming brand is a single value
     }
     if (category) {
-        filterQuery.category = category; // Assuming category is a single value
+      filterQuery.category = category; // Assuming category is a single value
     }
 
-    const products = await this.repository.FindByFilter(filterQuery, sortBy);
+    const products = await this.repository.FindByFilter(
+      filterQuery,
+      sortBy,
+      limit
+    );
     return FormatData(products);
   }
 
