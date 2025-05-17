@@ -1,17 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:ecommerce/common/widgets/form/custom_dialogform.dart';
 import 'package:ecommerce/common/widgets/form/custom_textformfield.dart';
 import 'package:ecommerce/features/admin/responsive.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
-import 'package:ecommerce/features/admin/screens/productManagement/productDetail/models/variant.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../utils/data/categories_data.dart';
 import '../../../../../utils/data/brands_data.dart';
+import 'package:http/http.dart' as http;
 
 class ProductDetailScreen extends StatefulWidget {
   // const ProductDetailScreen(Map<String, dynamic> item, {super.key});
@@ -41,6 +41,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   List<File> selectedImagesMobile = [];
   final ImagePicker _picker = ImagePicker();
   List<dynamic> variants = [];
+  String testImgUrl = '';
 
   @override
   void initState() {
@@ -196,6 +197,50 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     } else {
       print('No images selected');
     }
+  }
+
+  Future<void> _uploadImage() async{
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dfgfyxjfx/upload/');
+
+    final request = http.MultipartRequest('POST', url)
+      ..fields['upload_preset'] = 'dldndst';
+      // ..files.add(await http.MultipartFile.fromPath('file', !kIsWeb ? selectedImagesMobile[0].path : ''));
+      if (kIsWeb) {
+        // Xử lý cho trường hợp web
+        for (var imageFuture in selectedImagesWeb) {
+          Uint8List imageData = await imageFuture; // Chờ cho Future hoàn thành
+          request.files.add(http.MultipartFile.fromBytes(
+            'file', 
+            imageData,
+            filename: 'image_${DateTime.now().millisecondsSinceEpoch}.png', // Tạo tên file
+          ));
+        }
+      } else {
+        // Xử lý cho trường hợp mobile
+        request.files.add(await http.MultipartFile.fromPath('file', selectedImagesMobile[0].path));
+      }
+      final response = await request.send();
+      if (response.statusCode == 200) {
+        final responseData = await response.stream.toBytes();
+        final responseString = String.fromCharCodes(responseData);
+        final jsonMap = jsonDecode(responseString);
+        setState(() {
+          final url = jsonMap['url'];
+          testImgUrl = url;
+          print("URL -----$url");
+        });
+      }
+      else {
+        print('ERROR WHILE UPLOADING IMAGE');
+      }
+  }
+
+  void handleUpdate (){
+
+  }
+
+  void handleCreate (){
+    _uploadImage();
   }
 
   @override
@@ -537,8 +582,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.all(5)
                 ),
-                onPressed: (){}, 
-                child: Text('Update')
+                onPressed: widget.item != null ? handleUpdate : handleCreate, 
+                child: Text(widget.item != null ? 'Update' : 'Create')
               ),
             ],
           ),
