@@ -7,9 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class CHomeAppBar extends StatelessWidget {
-  const CHomeAppBar({super.key, this.isBack = false});
+  final void Function(Map<String, dynamic> filter)? onCategorySelected;
+  final void Function(String)? onSearchCompleted;
+  final TextEditingController? controller;
+  CHomeAppBar({
+    super.key, 
+    this.isBack = false, 
+    this.onCategorySelected,
+    this.controller,
+    this.onSearchCompleted
+  });
 
   final bool isBack;
+  final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +30,22 @@ class CHomeAppBar extends StatelessWidget {
         children: [
           // Search bar:
           TextFormField(
-            onSaved: (newValue) {
-              
+            controller: controller ?? searchController,
+            onEditingComplete: () {
+              if (onCategorySelected != null){
+                onCategorySelected?.call({
+                  'name': searchController.text,
+                });
+              }
+              else {
+                onSearchCompleted?.call(searchController.text);
+              }
             },
             decoration: InputDecoration(
               hintText: 'Search in store',
               filled: true,
               fillColor: CColors.textWhite,
-              prefixIcon: Icon(Icons.search, color: CColors.grey),
+              prefixIcon: Icon(Icons.search, color: const Color.fromARGB(255, 23, 22, 22)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(CSizes.borderRadiusLg),
                 // borderSide: BorderSide(color: CColors.grey)

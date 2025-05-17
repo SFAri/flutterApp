@@ -1,9 +1,6 @@
-
-import 'package:ecommerce/common/widgets/layout/custom_clippath_appbar.dart';
 import 'package:ecommerce/common/widgets/products/product_card.dart';
-import 'package:ecommerce/common/widgets/texts/section_heading.dart';
+import 'package:ecommerce/features/auth/controllers/product_controller.dart';
 import 'package:ecommerce/features/auth/login_page.dart';
-import 'package:ecommerce/features/shop/screens/home/widgets/home_appbar.dart';
 import 'package:ecommerce/features/shop/screens/product_details/widgets/comment_piece.dart';
 import 'package:ecommerce/features/shop/screens/product_details/widgets/detail_appbar.dart';
 import 'package:ecommerce/features/shop/screens/product_details/widgets/filter_button.dart';
@@ -12,12 +9,14 @@ import 'package:ecommerce/features/shop/screens/product_details/widgets/review_p
 import 'package:ecommerce/features/shop/screens/product_details/widgets/variant_image.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
-import 'package:ecommerce/utils/device/device_utility.dart';
+import 'package:ecommerce/utils/formatters/formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 
 class ProductDetail extends StatefulWidget {
-  const ProductDetail({super.key});
+  final String id;
+  const ProductDetail({super.key, required this.id});
 
   @override
   State<StatefulWidget> createState() => ProductDetailState();
@@ -27,19 +26,66 @@ class ProductDetail extends StatefulWidget {
 class ProductDetailState extends State<ProductDetail> {
   late int _currentIndex;
   late PageController _pageController;
-  int colorChoice = -1;
-  int configChoice = -1;
-  final List<String> images = [
-    'https://worklap.vn/image/laptop-tam-gia-15-trieu-dang-mua-ollvczd.jpg',
-    'https://bizweb.dktcdn.net/100/446/400/products/laptop-dell-latitude-7420-1-gia-loc.jpg?v=1686626945173',
-    'https://cdnv2.tgdd.vn/mwg-static/tgdd/Products/Images/44/313333/lenovo-ideapad-slim-3-15iah8-i5-83er00evn-thumb-638754848306439358-600x600.jpg',
-    'https://bizweb.dktcdn.net/thumb/large/100/362/971/products/screenshot-2024-08-08-182121.png?v=1723122912060',
-  ];
+  int configChoice = 0;
+  bool isLoading = true;
+  dynamic productData;
+  final productController = ProductController();
+  String moreInfo = '';
+
+  Future<void> fetchProduct() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await productController.getProductDetail(widget.id);
+      if (response['status'] == 'success') {
+        setState(() {
+          // products = List.from(response['data']).take(4).toList();
+          productData = response['data'];
+          final variant = productData["variants"][configChoice];
+          switch (productData["category"]) {
+            case "Laptop":
+              moreInfo = 'SKU: ${variant["variantId"]} \nColor: ${variant["color"]} \nProcessor: ${variant["specs"]["processor"]} \nRAM: ${variant["specs"]["ram"]} \nStorage: ${variant["specs"]["storage"]} \nScreenSize: ${variant["specs"]["screenSize"]} \nRefreshRate: ${variant["specs"]["refreshRate"]} \nResolution: ${variant["specs"]["resolution"]} \nInventory: ${variant["inventory"]}';
+              break;
+            case "GPU":
+              moreInfo = 'SKU: ${variant["variantId"]} \nColor: ${variant["color"]} \n${variant["specs"]["gpu"]} \n${variant["specs"]["interface"]}';
+              break;
+            case "SSD":
+              moreInfo = 'SKU: ${variant["variantId"]} \nColor: ${variant["color"]} \n${variant["specs"]["storage"]} \n${variant["specs"]["interface"]} \n${variant["specs"]["formFactor"]}';
+              break;
+            case "RAM":
+              moreInfo = 'SKU: ${variant["variantId"]} \nColor: ${variant["color"]} \n${variant["specs"]["ram"]} \n${variant["specs"]["interface"]} \n${variant["specs"]["formFactor"]}';
+              break;
+            case "Motherboard":
+              moreInfo = 'SKU: ${variant["variantId"]} \nColor: ${variant["color"]} \n${variant["specs"]["socket"]} \n${variant["specs"]["chipset"]} \n${variant["specs"]["interface"]} \n${variant["specs"]["formFactor"]}';
+              break;
+            case "CPU":
+              moreInfo = 'SKU: ${variant["variantId"]} \nColor: ${variant["color"]} \n${variant["specs"]["processor"]} \n${variant["specs"]["socket"]} \n${variant["specs"]["chipset"]} \n${variant["specs"]["interface"]}';
+              break;
+            default:
+              moreInfo = 'SKU: ${variant["variantId"]} \nColor: ${variant["color"]} \nInventory: ${variant["inventory"]}'; // Giá trị mặc định nếu không khớp
+          }
+        });
+        print("pRODUCTS =======: $productData");
+      } else {
+        print('error');
+      }
+      
+    } catch (e) {
+      print('Error: $e'); // Handle errors here
+    }
+    finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     _currentIndex = 0;
     _pageController = PageController();
+    fetchProduct();
     super.initState();
   }
 
@@ -52,22 +98,12 @@ class ProductDetailState extends State<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   // title: Text('Product Details', style: TextStyle(fontSize: 18)),
-      //   title: CClipPathAppBar(
-      //     listWidgets: [
-      //       SizedBox(height: 2),
-      //       CHomeAppBar(),
-      //     ],
-      //   ),
-      //   backgroundColor: Colors.blue,
-      //   foregroundColor: Colors.white,
-      // ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10),
-        child: Column(
+        child: isLoading 
+        ? Center(child: CircularProgressIndicator())
+        : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
               decoration: BoxDecoration(
@@ -75,12 +111,13 @@ class ProductDetailState extends State<ProductDetail> {
               ),
               child: CDetailAppBar(isBack: true)
             ),
+            SizedBox(height: 10),
             // Product Image:
             SizedBox(
-              height: 300,
+              height: 280,
               child: PageView.builder(
                 controller: _pageController,
-                itemCount: images.length,
+                itemCount: productData["images"].length,
                 onPageChanged: (index) {
                   setState(() {
                     _currentIndex = index; // Cập nhật chỉ số hiện tại
@@ -89,9 +126,12 @@ class ProductDetailState extends State<ProductDetail> {
                 itemBuilder: (context, index) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      images[index],
-                      fit: BoxFit.cover,
+                    child: FittedBox(
+                      fit: BoxFit.fill,
+                      child: Image.network(
+                        productData['images'][index],
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   );
                 },
@@ -101,7 +141,7 @@ class ProductDetailState extends State<ProductDetail> {
             SizedBox(
               height: 80,
               child: ListView.builder(
-                itemCount: images.length,
+                itemCount: productData["images"].length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   final isSelected = _currentIndex == index; // Kiểm tra hình được chọn
@@ -129,7 +169,7 @@ class ProductDetailState extends State<ProductDetail> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                            images[index],
+                            productData["images"][index],
                             width: 100,
                             fit: BoxFit.cover,
                           ),
@@ -150,8 +190,8 @@ class ProductDetailState extends State<ProductDetail> {
                   spacing: 5,
                   children: [
                     Icon(Icons.star_rate_rounded, color: Colors.amber,),
-                    Text('5.0'),
-                    Text('(2004)'),
+                    Text(productData["ratings"].length == 0 ? '5' : productData["averageRating"].toString()),
+                    Text('(${productData["ratings"].length})'),
                   ],
                 ),
                 TextButton(
@@ -166,7 +206,7 @@ class ProductDetailState extends State<ProductDetail> {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Text(
-                  'Laptop Lenovo Ideapad 3', 
+                  productData["name"], 
                   overflow: TextOverflow.visible,
                   softWrap: true,
                   maxLines: 3,
@@ -186,7 +226,7 @@ class ProductDetailState extends State<ProductDetail> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.bookmark_add_rounded),
-                      Text('Lenovo'),
+                      Text(productData["brand"]),
                     ],
                   ),
                 ),
@@ -198,17 +238,18 @@ class ProductDetailState extends State<ProductDetail> {
                 Row(
                   spacing: 5,
                   children: [
-                    Text(
-                      '21.450.000 VND',
-                      style: TextStyle(
-                        fontSize: CSizes.fontSizeLg,
-                        color: Colors.grey,
-                        decoration: TextDecoration.lineThrough,
+                    if (productData["discount"] != 0)
+                      Text(
+                        CFormatter.formatMoney(productData["price"].toString()),
+                        style: TextStyle(
+                          fontSize: CSizes.fontSizeLg,
+                          color: Colors.grey,
+                          decoration: TextDecoration.lineThrough,
+                        ),
                       ),
-                    ),
                     SizedBox(width: 5), // Khoảng cách giữa các giá
                     Text(
-                      '20.000.000 VND',
+                      CFormatter.formatMoney(productData["discount"] != 0 ? (productData["price"] - productData["price"] * productData["discount"]).toString() : productData["price"].toString()),
                       style: TextStyle(
                         fontSize: CSizes.fontSizeLg,
                         color: Colors.red,
@@ -216,6 +257,7 @@ class ProductDetailState extends State<ProductDetail> {
                     ),
                   ],
                 ),
+                if (productData["discount"] != 0)
                 CRoundedContainer(
                   radius: CSizes.sm,
                   backgroundColor:
@@ -223,7 +265,7 @@ class ProductDetailState extends State<ProductDetail> {
                   padding: EdgeInsets.symmetric(
                       horizontal: CSizes.sm, vertical: CSizes.xs),
                   child: Text(
-                    '10%',
+                    '${productData["discount"]}%',
                     style: Theme.of(context)
                         .textTheme
                         .labelLarge!
@@ -239,64 +281,50 @@ class ProductDetailState extends State<ProductDetail> {
               child: Divider(height: 1)
             ),
 
-            // Variants:
-            // 1.Color
-            Text('Color', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
-            Wrap(
-              direction: Axis.horizontal,
-              spacing: 15,
-              children: <Widget>[
-                VariantWithImage(
-                  images: images[0], 
-                  isSelected: colorChoice == 0, 
-                  onSelect: () {
-                    setState(() {
-                      colorChoice = 0; // Cập nhật chỉ số khi chip được chọn
-                    });
-                  },
-                ),
-                VariantWithImage(
-                  images: images[1], 
-                  isSelected: colorChoice == 1,
-                  title: 'Green',
-                  price: '21.000.000 VNĐ',
-                  onSelect: () {
-                    setState(() {
-                      colorChoice = 1; // Cập nhật chỉ số khi chip được chọn
-                    });
-                  },
-                ),
-              ],
-            ),
-
             SizedBox(height: 10),
             // 2.Config
-            Text('Config', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
+            Text('Variant', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
             Wrap(
               direction: Axis.horizontal,
               spacing: 15,
-              children: <Widget>[
-                VariantWithImage(
-                  isSelected: configChoice == 0, 
-                  title: 'I5-13420H \n16GB - 512GB \nRTX 4050',
-                  price: '20.000.000 VNĐ',
+              children: 
+              List.generate(productData["variants"].length, (index) {
+                final variant = productData["variants"][index];
+
+                String title;
+                switch (variant["type"]) {
+                  case "Laptop":
+                    title = '${variant["color"]} \n${variant["specs"]["processor"]} \n${variant["specs"]["ram"]} \n${variant["specs"]["storage"]}';
+                    break;
+                  case "GPU":
+                    title = '${variant["specs"]["gpu"]} \n${variant["specs"]["interface"]}';
+                    break;
+                  case "SSD":
+                    title = '${variant["specs"]["storage"]} \n${variant["specs"]["interface"]} \n${variant["specs"]["formFactor"]}';
+                    break;
+                  case "RAM":
+                    title = '${variant["specs"]["ram"]} \n${variant["specs"]["interface"]} \n${variant["specs"]["formFactor"]}';
+                    break;
+                  case "Motherboard":
+                    title = '${variant["specs"]["socket"]} \n${variant["specs"]["chipset"]} \n${variant["specs"]["interface"]} \n${variant["specs"]["formFactor"]}';
+                    break;
+                  case "CPU":
+                    title = '${variant["specs"]["processor"]} \n${variant["specs"]["socket"]} \n${variant["specs"]["chipset"]} \n${variant["specs"]["interface"]}';
+                    break;
+                  default:
+                    title = 'Unknown Variant'; // Giá trị mặc định nếu không khớp
+                }
+                return VariantWithImage(
+                  isSelected: configChoice == index,
+                  title: title,
+                  price: CFormatter.formatMoney(variant["price"].toString()),
                   onSelect: () {
                     setState(() {
-                      configChoice = 0; // Cập nhật chỉ số khi chip được chọn
+                      configChoice = index; // Cập nhật chỉ số khi chip được chọn
                     });
                   },
-                ),
-                VariantWithImage(
-                  isSelected: configChoice == 1,
-                  title: 'i7-13620H \n16GB - 512GB \nRTX 4050',
-                  price: '21.000.000 VNĐ',
-                  onSelect: () {
-                    setState(() {
-                      configChoice = 1; // Cập nhật chỉ số khi chip được chọn
-                    });
-                  },
-                ),
-              ],
+                );
+              }),
             ),
 
             Container(
@@ -310,11 +338,22 @@ class ProductDetailState extends State<ProductDetail> {
               direction: Axis.horizontal,
               children: [
                 Text(
-                  'This is the description of the product provided by admin, it can include many information',
+                  productData["description"],
                   softWrap: true,
                   maxLines: 100000,
                   overflow: TextOverflow.visible,
-                  ),
+                ),
+              ],
+            ),
+            Wrap(
+              direction: Axis.horizontal,
+              children: [
+                Text(
+                  '------\n$moreInfo',
+                  softWrap: true,
+                  maxLines: 100000,
+                  overflow: TextOverflow.visible,
+                ),
               ],
             ),
 
@@ -327,7 +366,7 @@ class ProductDetailState extends State<ProductDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Reviews (899)', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
+                Text('Reviews (${productData["ratings"].length})', style: TextStyle(fontSize: CSizes.fontSizeLg, fontWeight: FontWeight.bold)),
                 TextButton(
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.black
@@ -347,13 +386,13 @@ class ProductDetailState extends State<ProductDetail> {
                   children: [
                     Row(
                       children: [
-                        Text('4.7', style: TextStyle(fontSize: 40)),
+                        Text(productData["ratings"].length == 0 ? '5.0' : productData["averageRating"].toString(), style: TextStyle(fontSize: 40)),
                         Text('/5', style: TextStyle(fontSize: 20), textAlign: TextAlign.end)
                       ],
                     ),
                     RatingBarIndicator(
                       itemCount: 5,
-                      rating: 4.7,
+                      rating: productData["ratings"].length == 0 ? 5.0: productData["averageRating"],
                       itemSize: 20,
                       itemBuilder: (context, index) => Icon(Icons.star),
                     ),
@@ -362,8 +401,8 @@ class ProductDetailState extends State<ProductDetail> {
                 Column(
                   spacing: 5,
                   children: [
-                    WRatingProgress(label: '5', progress: 90),
-                    WRatingProgress(label: '4', progress: 10),
+                    WRatingProgress(label: '5', progress: 0),
+                    WRatingProgress(label: '4', progress: 0),
                     WRatingProgress(label: '3', progress: 0),
                     WRatingProgress(label: '2', progress: 0),
                     WRatingProgress(label: '1', progress: 0),
@@ -392,24 +431,41 @@ class ProductDetailState extends State<ProductDetail> {
             ),
             SizedBox(height: 10),
             // List of reviews:
-            Column(
-              spacing: 10,
-              children: [
-                WReviewPiece(userName: 'Tran Van Thanh', time: '01/04/2025', review: 'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.', rating: 5),
-                WReviewPiece(userName: 'Tran Van Thanh', time: '01/04/2025', review: 'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.', rating: 5),
-                WReviewPiece(userName: 'Tran Van Thanh', time: '01/04/2025', review: 'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.', rating: 5),
-                // Button to rate
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    // Here will pop a new page to rate that product or show an alert that user must login before rate.
-                    onPressed: () => showDialogLogin(), 
-                    child: Text('Click here to rate this product!')
-                  ),
-                )
-              ],
-            ),
+            if (productData["ratings"].length == 0)
+              Column(
+                spacing: 10,
+                children: [
+                  Center(child: Text('This product havent receive any ratings.', style: TextStyle(fontStyle: FontStyle.italic))),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      // Here will pop a new page to rate that product or show an alert that user must login before rate.
+                      onPressed: () => showDialogLogin(), 
+                      child: Text('Click here to rate this product!')
+                    ),
+                  )
+                ],
+              )
+            else 
+              Column(
+                spacing: 10,
+                children: [
+                  WReviewPiece(userName: 'Tran Van Thanh', time: '01/04/2025', review: 'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.', rating: 5),
+                  WReviewPiece(userName: 'Tran Van Thanh', time: '01/04/2025', review: 'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.', rating: 5),
+                  WReviewPiece(userName: 'Tran Van Thanh', time: '01/04/2025', review: 'This product brought me an amazing experience ever I have had! I love how it is work! Thanks the shop so much for this.', rating: 5),
+                  // Button to rate
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      // Here will pop a new page to rate that product or show an alert that user must login before rate.
+                      onPressed: () => showDialogLogin(), 
+                      child: Text('Click here to rate this product!')
+                    ),
+                  )
+                ],
+              ),
             
             Container(
               margin: EdgeInsets.symmetric(vertical: 15),

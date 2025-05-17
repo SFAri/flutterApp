@@ -20,4 +20,10 @@ class ProductController {
     final response = await CHttpHelper.post('products/filter', body);
     return response;
   }
+
+  Future<Map<String, dynamic>> getProductDetail(String id) async {
+    final response = await CHttpHelper.get('products/$id');
+    // return response.containsKey('data') ? response['data'] : response;
+    return response;
+  }
 }

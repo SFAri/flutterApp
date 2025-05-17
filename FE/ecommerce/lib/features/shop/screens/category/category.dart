@@ -29,6 +29,8 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
   Map<String,dynamic>? filters;
   Map<String,dynamic>? sortBy;
   bool isLoading = false;
+  String search = '';
+
   final ProductController productController = ProductController();
   Future<void> fetchProducts({Map<String, dynamic>? filter, Map<String, dynamic>? sortBy}) async {
     print("Filters: $filters");
@@ -75,258 +77,261 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
     super.dispose();
   }
 
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CClipPathAppBar(
-                // ... your CClipPathAppBar listWidgets
-                listWidgets: [
-                  SizedBox(height: 2),
-                  CHomeAppBar(),
-                  CSectorHeading(title: 'Tiêu chí lọc'),
-                  Container(
-                    padding: EdgeInsets.only(left: 14, right: 14),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        // Use Wrap for children with spacing to avoid manual spacing widgets if preferred
-                        // spacing: 14, // if using Row's spacing
-                        children: [
-                          CFilterButton(title: 'Danh mục', onPressed: () => _showFilterModal('Danh mục', categories, selectedCategories)),
-                          SizedBox(width: 14), // Manual spacing if not using Row's spacing
-                          CFilterButton(title: 'Hãng', onPressed: () => _showFilterModal('Hãng', brands, selectedBrands)),
-                          SizedBox(width: 14),
-                          CFilterButton(title: 'Mức giá', onPressed: () => _showFilterMoney('Mức giá')),
-                          SizedBox(width: 14),
-                          CFilterButton(title: 'Đánh giá', onPressed: () => _showFilterRate('Đánh giá')),
-                          SizedBox(width: 14),
-                          CFilterButton(title: 'CPU', onPressed: () {}),
-                          SizedBox(width: 14),
-                          CFilterButton(title: 'RAM', onPressed: () {}),
-                        ],
-                      ),
+  void handleSearch(String value) {
+    setState(() {
+      search = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CClipPathAppBar(
+              // ... your CClipPathAppBar listWidgets
+              listWidgets: [
+                SizedBox(height: 2),
+                CHomeAppBar(onSearchCompleted: handleSearch),
+                CSectorHeading(title: 'Tiêu chí lọc'),
+                Container(
+                  padding: EdgeInsets.only(left: 14, right: 14),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      // Use Wrap for children with spacing to avoid manual spacing widgets if preferred
+                      // spacing: 14, // if using Row's spacing
+                      children: [
+                        CFilterButton(title: 'Danh mục', onPressed: () => _showFilterModal('Danh mục', categories, selectedCategories)),
+                        SizedBox(width: 14), // Manual spacing if not using Row's spacing
+                        CFilterButton(title: 'Hãng', onPressed: () => _showFilterModal('Hãng', brands, selectedBrands)),
+                        SizedBox(width: 14),
+                        CFilterButton(title: 'Mức giá', onPressed: () => _showFilterMoney('Mức giá')),
+                        SizedBox(width: 14),
+                        CFilterButton(title: 'Đánh giá', onPressed: () => _showFilterRate('Đánh giá')),
+                        SizedBox(width: 14),
+                        CFilterButton(title: 'CPU', onPressed: () {}),
+                        SizedBox(width: 14),
+                        CFilterButton(title: 'RAM', onPressed: () {}),
+                      ],
                     ),
                   ),
-                  CSectorHeading(title: 'Sắp xếp'),
-                  Container(
-                    padding: EdgeInsets.only(left: 14, right: 14),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          CSortButton(title: 'Giá cao - thấp', icon: Icon(Icons.filter_list), onPressed: () {}),
-                          SizedBox(width: 14),
-                          CSortButton(title: 'Giá thấp - cao', icon: Icon(Icons.filter_list), onPressed: () {}),
-                          SizedBox(width: 14),
-                          CSortButton(title: 'Khuyến mãi hot', icon: Icon(Icons.discount), onPressed: () {}),
-                        ],
+                ),
+                CSectorHeading(title: 'Sắp xếp'),
+                Container(
+                  padding: EdgeInsets.only(left: 14, right: 14),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        CSortButton(title: 'Giá cao - thấp', icon: Icon(Icons.filter_list), onPressed: () {}),
+                        SizedBox(width: 14),
+                        CSortButton(title: 'Giá thấp - cao', icon: Icon(Icons.filter_list), onPressed: () {}),
+                        SizedBox(width: 14),
+                        CSortButton(title: 'Khuyến mãi hot', icon: Icon(Icons.discount), onPressed: () {}),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (isLoading)
+              Center(child: CircularProgressIndicator())
+            else
+              if (products.length ==0 )
+                Center(child: Text('No product found.'))
+              else
+                CGridView(items: products)
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showFilterModal(String title, List<String> items, List<String> selected) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext innerContext, StateSetter innerSetState) {
+            List selectedItems = selected;
+            return Container(
+              padding: EdgeInsets.all(16.0),
+              height: 400,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  SizedBox(height: 20),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        return CheckboxListTile(
+                          title: Text(items[index]),
+                          value: selected.contains(items[index]),
+                          onChanged: (bool? value) {
+                            innerSetState(() {
+                                // Kiểm tra nếu item chưa có trong currentSelection
+                                if (!selectedItems.contains(items[index])) {
+                                  selectedItems.add(items[index]); // Thêm vào danh sách nếu được chọn
+                                  print('${items[index]} added to current selection');
+                                  print('Current Selection: ${selectedItems.toString()}');
+                                }
+                                else {
+                                  selectedItems.remove(items[index]); // Bỏ nếu không được chọn
+                                  print('${items[index]} removed from current selection');
+                                  print('Current Selection: ${selectedItems.toString()}');
+                                }
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        margin: EdgeInsets.all(5),
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          child: Text("Áp dụng"),
+                          onPressed: () {
+                            setState(() {
+                              selected = List.from(selectedItems);
+                            });
+                            Navigator.pop(context); // Đóng modal
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
+            );
+          }
+        );
+      }
+    );
+  }
 
-              if (isLoading)
-                Center(child: CircularProgressIndicator())
-              else
-                if (products.length ==0 )
-                  Center(child: Text('No product found.'))
-                else
-                  CGridView(items: products)
-            ],
-          ),
-        ),
-      );
-    }
-
-    void _showFilterModal(String title, List<String> items, List<String> selected) {
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (BuildContext innerContext, StateSetter innerSetState) {
-              List selectedItems = selected;
-              return Container(
-                padding: EdgeInsets.all(16.0),
-                height: 400,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+  void _showFilterMoney(String title) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        RangeValues innerValues = selectedRange;
+        return StatefulBuilder(
+          builder: (BuildContext innerContext, StateSetter innerSetState) {
+            return Container(
+              padding: EdgeInsets.all(16.0),
+              height: 400,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  SizedBox(height: 20),
+                  Expanded(
+                    child: RangeSlider(
+                      values: innerValues, // Use the observable value
+                      min: 0,
+                      max: 100000000,
+                      divisions: 100,
+                      labels: RangeLabels('${innerValues.start}', '${innerValues.end}'),
+                      onChanged: (RangeValues values) {
+                        print('===== fi $innerValues');
+                        print('===== $innerValues');
+                        print('$values');
+                        innerSetState(() {
+                          innerValues = values; // Cập nhật giá trị khoảng giá
+                        });
+                      },
                     ),
-                    SizedBox(height: 20),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          return CheckboxListTile(
-                            title: Text(items[index]),
-                            value: selected.contains(items[index]),
-                            onChanged: (bool? value) {
-                              innerSetState(() {
-                                  // Kiểm tra nếu item chưa có trong currentSelection
-                                  if (!selectedItems.contains(items[index])) {
-                                    selectedItems.add(items[index]); // Thêm vào danh sách nếu được chọn
-                                    print('${items[index]} added to current selection');
-                                    print('Current Selection: ${selectedItems.toString()}');
-                                  }
-                                  else {
-                                    selectedItems.remove(items[index]); // Bỏ nếu không được chọn
-                                    print('${items[index]} removed from current selection');
-                                    print('Current Selection: ${selectedItems.toString()}');
-                                  }
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          margin: EdgeInsets.all(5),
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            child: Text("Áp dụng"),
-                            onPressed: () {
-                              setState(() {
-                                selected = List.from(selectedItems);
-                              });
-                              Navigator.pop(context); // Đóng modal
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-          );
-        }
-      );
-    }
-
-    void _showFilterMoney(String title) {
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          RangeValues innerValues = selectedRange;
-
-          return StatefulBuilder(
-            builder: (BuildContext innerContext, StateSetter innerSetState) {
-
-              return Container(
-                padding: EdgeInsets.all(16.0),
-                height: 400,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                    SizedBox(height: 20),
-                    Expanded(
-                      child: RangeSlider(
-                        values: innerValues, // Use the observable value
-                        min: 0,
-                        max: 100000000,
-                        divisions: 100,
-                        labels: RangeLabels('${innerValues.start}', '${innerValues.end}'),
-                        onChanged: (RangeValues values) {
-                          print('===== fi $innerValues');
-                          print('===== $innerValues');
-                          print('$values');
-                          innerSetState(() {
-                            innerValues = values; // Cập nhật giá trị khoảng giá
-                          });
-                        },
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('${innerValues.start}'),
-                        Text('${innerValues.end}'),
-                      ]
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          margin: EdgeInsets.all(5),
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            child: Text("Áp dụng"),
-                            onPressed: () {
-                              print('===== butotn: $innerValues');
-                              setState(() {
-                                selectedRange = innerValues;
-                              });
-                              Navigator.pop(context); // Đóng modal
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-          );
-        }
-      );
-    }
-
-    void _showFilterRate(String title) {
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (BuildContext innerContext, StateSetter innerSetState) {
-              return Container(
-                padding: EdgeInsets.all(16.0),
-                width: CDeviceUtils.getScreenWidth(context),
-                height: 400,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                    SizedBox(height: 20),
-                    Center(
-                      child: Expanded(
-                        child: RatingBar.builder(
-                          itemCount: 5,
-                          initialRating: rating,
-                          itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
-                          onRatingUpdate: (value){
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${innerValues.start}'),
+                      Text('${innerValues.end}'),
+                    ]
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        margin: EdgeInsets.all(5),
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          child: Text("Áp dụng"),
+                          onPressed: () {
+                            print('===== butotn: $innerValues');
                             setState(() {
-                              rating = value;
-                              Navigator.pop(context);
+                              selectedRange = innerValues;
                             });
-                          }
-                        )
+                            Navigator.pop(context); // Đóng modal
+                          },
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              );
-            }
-          );
-        }
-      );
-    }
+                  ),
+                ],
+              ),
+            );
+          }
+        );
+      }
+    );
+  }
+
+  void _showFilterRate(String title) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext innerContext, StateSetter innerSetState) {
+            return Container(
+              padding: EdgeInsets.all(16.0),
+              width: CDeviceUtils.getScreenWidth(context),
+              height: 400,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  SizedBox(height: 20),
+                  Center(
+                    child: Expanded(
+                      child: RatingBar.builder(
+                        itemCount: 5,
+                        initialRating: rating,
+                        itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
+                        onRatingUpdate: (value){
+                          setState(() {
+                            rating = value;
+                            Navigator.pop(context);
+                          });
+                        }
+                      )
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        );
+      }
+    );
+  }
 }
 
 

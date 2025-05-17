@@ -1,6 +1,7 @@
 // order_management.dart
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/orderManagement/orderDetail/order_details.dart';
+import 'package:ecommerce/main.dart';
 import 'package:flutter/material.dart';
 
 class Order {
@@ -71,92 +72,104 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Header(title: 'Order Management'),
-        const Divider(),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 50,
-                width: 300,
-                child: TextFormField(
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: 'Find order:',
-                    hintStyle: const TextStyle(color: Colors.white54),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.white24),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.white24),
-                    ),
-                  ),
-                  onChanged: _filterOrders,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columns: const [
-                      DataColumn(label: Text('Order ID')),
-                      DataColumn(label: Text('Date')),
-                      DataColumn(label: Text('Items')),
-                      DataColumn(label: Text('Status')),
-                      DataColumn(label: Text('Amount')),
-                      DataColumn(label: Text('Action')),
-                    ],
-                    rows: _filteredOrders.map((order) {
-                      return DataRow(cells: [
-                        DataCell(Text(order.id)),
-                        DataCell(Text(order.date)),
-                        DataCell(Text(order.items)),
-                        DataCell(
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: _getStatusColor(order.status).withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              order.status,
-                              style: TextStyle(color: _getStatusColor(order.status)),
-                            ),
-                          ),
+    return SafeArea(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        padding: EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 20,
+          children: [
+            Header(title: 'Order Management'),
+            Divider(),
+
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 50,
+                    width: 300,
+                    child: TextFormField(
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'Find order:',
+                        hintStyle: const TextStyle(color: Colors.white54),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.white24),
                         ),
-                        DataCell(Text('\$${order.amount.toStringAsFixed(1)}')),
-                        DataCell(Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.remove_red_eye, color: Colors.white70),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => OrderDetailScreen(order: order),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        )),
-                      ]);
-                    }).toList(),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.white24),
+                        ),
+                      ),
+                      onChanged: _filterOrders,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        columns: const [
+                          DataColumn(label: Text('Order ID')),
+                          DataColumn(label: Text('Date')),
+                          DataColumn(label: Text('Items')),
+                          DataColumn(label: Text('Status')),
+                          DataColumn(label: Text('Amount')),
+                          DataColumn(label: Text('Action')),
+                        ],
+                        rows: _filteredOrders.map((order) {
+                          return DataRow(cells: [
+                            DataCell(Text(order.id)),
+                            DataCell(Text(order.date)),
+                            DataCell(Text(order.items)),
+                            DataCell(
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: _getStatusColor(order.status).withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  order.status,
+                                  style: TextStyle(color: _getStatusColor(order.status)),
+                                ),
+                              ),
+                            ),
+                            DataCell(Text('\$${order.amount.toStringAsFixed(1)}')),
+                            DataCell(Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.remove_red_eye, color: Colors.white70),
+                                  onPressed: () {
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => OrderDetailScreen(order: order),
+                                    //   ),
+                                    // );
+                                    streamController.add(OrderDetailScreen(order: order));
+                                  },
+                                ),
+                              ],
+                            )),
+                          ]);
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
