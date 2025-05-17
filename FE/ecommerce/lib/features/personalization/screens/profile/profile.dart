@@ -5,9 +5,12 @@ import 'package:ecommerce/features/personalization/screens/profile/update_profil
 import 'package:ecommerce/features/personalization/screens/profile/widgets/profile_menu.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:ecommerce/utils/helpers/format_functions.dart';
-import 'package:ecommerce/utils/local_storage/storage_utility.dart';
+import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,30 +23,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic>? userData;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final settings = Provider.of<SettingsProvider>(context);
+    if (userData != settings.userData) {
+      setState(() {
+        userData = settings.userData;
+      });
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     loadData();
   }
 
   Future<void> loadData() async {
-    final localStorage = CLocalStorage.instance();
     const userKey = 'user_profile';
-
     try {
-      final cachedUser = await localStorage.readData<Map<String, dynamic>>(
-        userKey,
-      );
-      if (mounted) {
+      final prefs = await SharedPreferences.getInstance();
+      final userDataString = prefs.getString(userKey);
+
+      if (userDataString != null && userDataString.isNotEmpty) {
+        userData = json.decode(userDataString);
         setState(() {
-          userData = cachedUser;
+          userData = userData;
         });
       }
     } catch (e) {
       print('Error reading user data: $e');
       if (mounted) {
-        setState(() {
-          userData = {}; // Set to empty map or handle error state appropriately
-        });
+        Provider.of<SettingsProvider>(context, listen: false).setUserData({});
       }
     }
   }
@@ -148,8 +160,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: 'Personal Information',
                 padding: 0,
                 showActionButton: true,
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => UpdateProfileScreen(userData: userData!),

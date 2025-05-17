@@ -20,7 +20,6 @@ class ProfileController {
 
     DateTime parsedDate = inputFormat.parse(dateOfBirth);
     dateOfBirth = outputFormat.format(parsedDate);
-    print(dateOfBirth);
     final response = await CHttpHelper.put('users/profile', {
       'fullName': fullName,
       'userName': userName,
@@ -30,5 +29,79 @@ class ProfileController {
       // 'profileImage': profileImage,
     }, withAuth: true);
     return response.containsKey('data') ? response['data'] : response;
+  }
+
+  // Get user address
+  Future<List<Map<String, dynamic>>> fetchUserAddress() async {
+    final response = await CHttpHelper.get('users/address', withAuth: true);
+
+    if (response.containsKey('data')) {
+      final rawList = response['data'];
+
+      return (rawList as List).map((e) => e as Map<String, dynamic>).toList();
+    } else {
+      throw Exception('No address data found');
+    }
+  }
+
+  // Add new address
+  Future<Map<String, dynamic>> addNewAddress(
+    String fullName,
+    String phone,
+    String province,
+    String district,
+    String ward,
+    String detailAddress,
+    bool isDefault,
+  ) async {
+    final response = await CHttpHelper.post('users/address', {
+      'fullName': fullName,
+      'phone': phone,
+      'province': province,
+      'district': district,
+      'ward': ward,
+      'detailAddress': detailAddress,
+      'isDefault': isDefault,
+    }, withAuth: true);
+    return response.containsKey('data') ? response['data'] : response;
+  }
+
+  // Update address
+  Future<Map<String, dynamic>> updateAddress(
+    String id,
+    String fullName,
+    String phone,
+    String province,
+    String district,
+    String ward,
+    String detailAddress,
+    bool isDefault,
+  ) async {
+    final response = await CHttpHelper.put('users/address/$id', {
+      'fullName': fullName,
+      'phone': phone,
+      'province': province,
+      'district': district,
+      'ward': ward,
+      'detailAddress': detailAddress,
+      'isDefault': isDefault,
+    }, withAuth: true);
+    return response.containsKey('data') ? response['data'] : response;
+  }
+
+  // Update address
+  Future<Map<String, dynamic>> setDefaultAddress(
+    String id,
+    bool isDefault,
+  ) async {
+    final response = await CHttpHelper.put('users/address/$id', {
+      'isDefault': isDefault,
+    }, withAuth: true);
+    return response.containsKey('data') ? response['data'] : response;
+  }
+
+  // Delete address
+  Future<void> deleteAddress(String id) async {
+    await CHttpHelper.delete('users/address/$id', withAuth: true);
   }
 }

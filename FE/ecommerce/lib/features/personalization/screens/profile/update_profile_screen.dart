@@ -5,9 +5,10 @@ import 'package:ecommerce/features/personalization/controllers/profile_controlle
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:ecommerce/utils/helpers/format_functions.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
-import 'package:ecommerce/utils/local_storage/storage_utility.dart';
+import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:provider/provider.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -99,22 +100,22 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           null,
         );
 
-        print(updatedUser);
+        if (mounted) {
+          Provider.of<SettingsProvider>(
+            context,
+            listen: false,
+          ).setUserData(updatedUser);
 
-        // Save to localStorage
-        final localStorage = CLocalStorage.instance();
-        const userKey = 'user_profile';
-        await localStorage.writeData(userKey, updatedUser);
-        CHelperFunctions.showSnackBar(
-          'Profile updated successfully',
-          context: context,
-        );
-        if (mounted) Navigator.pop(context, true);
+          CHelperFunctions.showSnackBar(
+            'Profile updated successfully',
+            context: context,
+          );
+
+          Navigator.pop(context, true);
+        }
       } catch (e) {
-        CHelperFunctions.showSnackBar(
-          'Failed to update profile',
-          context: context,
-        );
+        String errorMessage = e.toString();
+        print("Error save profile: $errorMessage");
       }
     }
   }

@@ -1,14 +1,18 @@
 // import 'package:ecommerce/features/admin/admin_home.dart';
 import 'package:ecommerce/features/admin/admin_home.dart';
 import 'package:ecommerce/features/auth/controllers/login_controller.dart';
+import 'package:ecommerce/features/personalization/controllers/profile_controller.dart';
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/services/auth_service.dart';
+import 'package:ecommerce/utils/helpers/helper_functions.dart';
 import 'package:ecommerce/utils/helpers/role_function.dart';
+import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ecommerce/navigation_menu.dart';
+import 'package:provider/provider.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,8 +22,11 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-  final loginController = LoginController();
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
+  final LoginController _loginController = LoginController();
+  final ProfileController _profileController = ProfileController();
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FocusNode myFocusNodeEmailLogin = FocusNode();
   final FocusNode myFocusNodePasswordLogin = FocusNode();
@@ -57,22 +64,43 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     });
 
     try {
-      final result = await loginController.login(
+      final result = await _loginController.login(
         loginEmailController.text,
         loginPasswordController.text,
       );
-      
+
+      if (result['status'] == "failure") {
+        setState(() {
+          errorMessage = result['message'];
+        });
+        CHelperFunctions.showSnackBar(result['message'], context: context);
+        return;
+      }
+
       // Lưu token vào SharedPreferences
       await AuthService.saveToken(result['accessToken']);
+
+      // Lưu thông tin người dùng vào SharedPreferences
+      final fetchedUser = await _profileController.fetchProfile();
+      if (mounted) {
+        Provider.of<SettingsProvider>(
+          context,
+          listen: false,
+        ).setUserData(fetchedUser);
+        CHelperFunctions.showSnackBar("Login success", context: context);
+      }
 
       int role = getRoleFromToken(result['accessToken']);
       print("Enter loginROLE: $role");
 
-      if (role == 1) { // Nếu vai trò là 1 (admin)
+      if (role == 1) {
+        // Nếu vai trò là 1 (admin)
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => AdminHome(streamController.stream)),
+          MaterialPageRoute(
+            builder: (context) => AdminHome(streamController.stream),
+          ),
         );
       } else {
         Navigator.pushReplacement(
@@ -80,10 +108,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           MaterialPageRoute(builder: (context) => NavigationMenu()),
         );
       }
-
     } catch (e) {
       setState(() {
         errorMessage = e.toString();
+        print("Error logging in: $errorMessage");
       });
     } finally {
       setState(() {
@@ -140,8 +168,12 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser != null) {
-        Get.snackbar("Đăng nhập thành công", "Chào mừng ${googleUser.displayName}",
-            backgroundColor: Colors.green, colorText: Colors.white);
+        Get.snackbar(
+          "Đăng nhập thành công",
+          "Chào mừng ${googleUser.displayName}",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
         Get.offAll(() => const NavigationMenu());
       } else {
         showInSnackBar("Hủy đăng nhập Google");
@@ -165,7 +197,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: left == Colors.white ? Colors.lightBlueAccent.withOpacity(0.3) : Colors.transparent,
+                color:
+                    left == Colors.white
+                        ? Colors.lightBlueAccent.withOpacity(0.3)
+                        : Colors.transparent,
                 borderRadius: const BorderRadius.all(Radius.circular(25.0)),
               ),
               child: TextButton(
@@ -184,7 +219,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: right == Colors.white ? Colors.lightBlueAccent.withOpacity(0.3) : Colors.transparent, // Nền xanh lá nhạt khi "Sign Up" được chọn
+                color:
+                    right == Colors.white
+                        ? Colors.lightBlueAccent.withOpacity(0.3)
+                        : Colors
+                            .transparent, // Nền xanh lá nhạt khi "Sign Up" được chọn
                 borderRadius: const BorderRadius.all(Radius.circular(25.0)),
               ),
               child: TextButton(
@@ -298,7 +337,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 25.0,
+                          vertical: 20.0,
+                        ),
                         child: TextField(
                           focusNode: myFocusNodeEmailLogin,
                           controller: loginEmailController,
@@ -329,7 +371,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         color: Colors.grey[400],
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 25.0,
+                          vertical: 20.0,
+                        ),
                         child: TextField(
                           focusNode: myFocusNodePasswordLogin,
                           controller: loginPasswordController,
@@ -384,7 +429,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     ),
                   ],
                   gradient: const LinearGradient(
-                    colors: [Colors.blueAccent, Colors.black], // Đổi gradient thành xanh dương-xám đậm
+                    colors: [
+                      Colors.blueAccent,
+                      Colors.black,
+                    ], // Đổi gradient thành xanh dương-xám đậm
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     stops: [0.0, 1.0],
@@ -392,15 +440,25 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   ),
                 ),
                 child: MaterialButton(
-                  onPressed: isLoading ? null : () {
-                    if (loginEmailController.text.isEmpty || loginPasswordController.text.isEmpty) {
-                      showInSnackBar("Vui lòng nhập email và mật khẩu");
-                    } else {
-                      handleLogin(context);
-                    }
-                  },
+                  onPressed:
+                      isLoading
+                          ? null
+                          : () {
+                            if (loginEmailController.text.isEmpty ||
+                                loginPasswordController.text.isEmpty) {
+                              CHelperFunctions.showSnackBar(
+                                "Vui lòng nhập email và mật khẩu",
+                                context: context,
+                              );
+                            } else {
+                              handleLogin(context);
+                            }
+                          },
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 10.0,
+                      horizontal: 42.0,
+                    ),
                     child: Text(
                       "SIGN IN",
                       style: TextStyle(
@@ -435,7 +493,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(child: Divider(color: Colors.white54, thickness: 1, indent: 15, endIndent: 5)),
+                Expanded(
+                  child: Divider(
+                    color: Colors.white54,
+                    thickness: 1,
+                    indent: 15,
+                    endIndent: 5,
+                  ),
+                ),
                 const Text(
                   "OR",
                   style: TextStyle(
@@ -444,7 +509,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     fontFamily: "WorkSansMedium",
                   ),
                 ),
-                Expanded(child: Divider(color: Colors.white54, thickness: 1, indent: 10, endIndent: 30)),
+                Expanded(
+                  child: Divider(
+                    color: Colors.white54,
+                    thickness: 1,
+                    indent: 10,
+                    endIndent: 30,
+                  ),
+                ),
               ],
             ),
           ),

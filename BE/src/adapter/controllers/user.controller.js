@@ -101,15 +101,10 @@ class UserController {
   async createAddress(req, res, next) {
     try {
       const { _id } = req.user;
-      const {
-        fullName,
-        phone,
-        province,
-        district,
-        ward,
-        detailAddress,
-        isDefault,
-      } = req.body;
+      const { fullName, phone, province, district, ward, detailAddress } =
+        req.body;
+
+      const isDefault = req.body.isDefault || false;
 
       CheckMissingFields({
         fullName,
@@ -118,7 +113,6 @@ class UserController {
         district,
         ward,
         detailAddress,
-        isDefault,
       });
 
       const data = await AddressService.AddNewAddress(_id, {
@@ -150,9 +144,14 @@ class UserController {
   async updateAddress(req, res, next) {
     try {
       const id = req.params.id;
+      const userId = req.user._id;
       const updatedAddress = req.body;
 
-      const data = await AddressService.UpdateAddress(id, updatedAddress);
+      const data = await AddressService.UpdateAddress(
+        id,
+        userId,
+        updatedAddress
+      );
       res.status(200).json(FormatResult("success", data));
     } catch (err) {
       next(createError(400, err));

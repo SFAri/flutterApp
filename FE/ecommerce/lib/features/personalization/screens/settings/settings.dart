@@ -26,84 +26,65 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final ProfileController _profileController = ProfileController();
   bool? loggedIn;
   bool isLoading = false;
   late List<String> languages;
   Map<String, dynamic>? userData;
   String? errorMessage;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final settings = Provider.of<SettingsProvider>(context);
+    if (userData != settings.userData) {
+      setState(() {
+        userData = settings.userData;
+      });
+    }
     languages = ['English', 'Vietnamese'];
   }
 
   @override
   void initState() {
     super.initState();
-    checkLoginAndFetchProfile();
+    initProfileData();
   }
 
-  Future<void> checkLoginAndFetchProfile() async {
+  Future<void> initProfileData() async {
     setState(() {
       isLoading = true;
     });
 
-    final localStorage = CLocalStorage.instance();
-    const userKey = 'user_profile';
-
     try {
       final isUserLoggedIn = await AuthService.isLoggedIn();
+      loggedIn = isUserLoggedIn;
 
       if (!isUserLoggedIn) {
         setState(() {
-          loggedIn = isUserLoggedIn;
           isLoading = false;
         });
         return;
       }
 
       setState(() {
-        loggedIn = isUserLoggedIn;
-      });
-
-      // Try getting cached data first
-      final cachedUser = await localStorage.readData<Map<String, dynamic>>(
-        userKey,
-      );
-      if (cachedUser != null) {
-        setState(() {
-          userData = cachedUser;
-          isLoading = false;
-        });
-        return;
-      }
-
-      // If not cached, fetch from API
-      final fetchedUser = await _profileController.fetchProfile();
-      await localStorage.writeData(userKey, fetchedUser);
-
-      setState(() {
-        userData = fetchedUser;
         isLoading = false;
       });
     } catch (e) {
+      print('Error during initProfileData: $e');
       setState(() {
         errorMessage = e.toString();
         isLoading = false;
       });
-      print('Error: $e');
     }
   }
 
   Future<void> logoutUser() async {
-    final localStorage = CLocalStorage.instance();
-    await localStorage.deleteData('user_profile');
     await AuthService.clearToken();
     if (mounted) {
       setState(() {
         isLoading = false;
       });
+      Provider.of<SettingsProvider>(context, listen: false).setUserData({});
       CHelperFunctions.showSnackBar('Logout successfully', context: context);
       Navigator.pushReplacement(
         context,
