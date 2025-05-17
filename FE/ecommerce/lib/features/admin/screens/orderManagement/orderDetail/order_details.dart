@@ -63,51 +63,56 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Header(title: 'Order Details:'),
-        const Divider(),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Order ID: ${widget.order.id}', style: const TextStyle(fontSize: 18, color: Colors.white)),
-              const SizedBox(height: 8),
-              Text('Date: ${widget.order.date}', style: const TextStyle(fontSize: 16, color: Colors.white70)),
-              const SizedBox(height: 8),
-              Text('Items: ${widget.order.items}', style: const TextStyle(fontSize: 16, color: Colors.white70)),
-              const SizedBox(height: 8),
-              Text('Amount: \$${widget.order.amount.toStringAsFixed(1)}', style: const TextStyle(fontSize: 16, color: Colors.white70)),
-              const SizedBox(height: 8),
-              DropdownButton<String>(
-                value: _selectedStatus,
-                dropdownColor: Colors.grey[850],
-                style: const TextStyle(color: Colors.white),
-                items: ['Pending', 'Cancelled', 'Delivered', 'Shipped']
-                    .map((status) => DropdownMenuItem(
-                  value: status,
-                  child: Text(status, style: TextStyle(color: _getStatusColor(status))),
-                ))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _selectedStatus = value;
-                    });
-                  }
-                },
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Header(title: 'Order Details:'),
+            Divider(),
+            
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Order ID: ${widget.order.id}', style: const TextStyle(fontSize: 18, color: Colors.white)),
+                  const SizedBox(height: 8),
+                  Text('Date: ${widget.order.date}', style: const TextStyle(fontSize: 16, color: Colors.white70)),
+                  const SizedBox(height: 8),
+                  Text('Items: ${widget.order.items}', style: const TextStyle(fontSize: 16, color: Colors.white70)),
+                  const SizedBox(height: 8),
+                  Text('Amount: \$${widget.order.amount.toStringAsFixed(1)}', style: const TextStyle(fontSize: 16, color: Colors.white70)),
+                  const SizedBox(height: 8),
+                  DropdownButton<String>(
+                    value: _selectedStatus,
+                    dropdownColor: Colors.grey[850],
+                    style: const TextStyle(color: Colors.white),
+                    items: ['Pending', 'Cancelled', 'Delivered', 'Shipped']
+                        .map((status) => DropdownMenuItem(
+                      value: status,
+                      child: Text(status, style: TextStyle(color: _getStatusColor(status))),
+                    ))
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedStatus = value;
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _confirmUpdateStatus,
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
+                    child: const Text('Cập nhật trạng thái'),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _confirmUpdateStatus,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
-                child: const Text('Cập nhật trạng thái'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
