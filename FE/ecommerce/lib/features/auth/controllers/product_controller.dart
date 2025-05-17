@@ -5,4 +5,19 @@ class ProductController {
     // return response.containsKey('data') ? response['data'] : response;
     return response;
   }
+
+  Future<Map<String, dynamic>> filterProducts({
+    Map<String, dynamic>? filter,
+    Map<String, dynamic>? sortBy,
+  }) async {
+    final body = <String, dynamic>{};
+
+    if (filter != null) body['filter'] = filter;
+    if (sortBy != null) body['sortBy'] = sortBy;
+
+    print("=========body filter: $body" );
+
+    final response = await CHttpHelper.post('products/filter', body);
+    return response;
+  }
 }

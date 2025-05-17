@@ -1,7 +1,7 @@
 List<String> categories = [
   "All Category",
   "Laptop",
-  "Desktop",
+  "PC",
   "CPU",
   "GPU",
   "RAM",

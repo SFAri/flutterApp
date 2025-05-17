@@ -3,16 +3,18 @@ import 'package:ecommerce/features/shop/screens/cart/cart.dart';
 import 'package:ecommerce/features/shop/screens/category/category.dart';
 import 'package:ecommerce/features/shop/screens/home/home.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
+import 'package:ecommerce/utils/providers/category_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NavigationMenu extends StatefulWidget {
   const NavigationMenu({super.key});
 
   @override
-  State<NavigationMenu> createState() => _NavigationMenuState();
+  State<NavigationMenu> createState() => NavigationMenuState();
 }
 
-class _NavigationMenuState extends State<NavigationMenu> {
+class NavigationMenuState extends State<NavigationMenu> {
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,16 @@ class _NavigationMenuState extends State<NavigationMenu> {
   Widget _getBody() {
     switch (selectedIndex) {
       case 0:
-        return HomeScreen(); // Màn hình chính
+        return HomeScreen(
+          onCategorySelected: (filter) {
+            Provider.of<CategoryFilterProvider>(context, listen: false).setFilter(filter);
+            setState(() => selectedIndex = 1);
+          },
+          onSortSelected: (sortBy) {
+            Provider.of<CategoryFilterProvider>(context, listen: false).setSortby(sortBy);
+            setState(() => selectedIndex = 1);
+          },
+        ); // Màn hình chính
       case 1:
         return CategoryHomeScreen(); // Màn hình danh mục
       case 2:
@@ -58,5 +69,11 @@ class _NavigationMenuState extends State<NavigationMenu> {
       default:
         return Container();
     }
+  }
+
+  void setTab(int i) {
+    setState(() {
+      selectedIndex = i;
+    });
   }
 }

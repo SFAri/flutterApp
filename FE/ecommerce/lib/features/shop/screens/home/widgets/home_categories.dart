@@ -5,20 +5,24 @@ import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 class CHomeCategory extends StatelessWidget {
+  final void Function(Map<String, dynamic> filter)? onCategorySelected;
   const CHomeCategory({
     super.key,
+    this.onCategorySelected,
   });
 
   @override
   Widget build(BuildContext context) {
     final List<Map<String, String>> categories = [
-      {"image": CImages.pcIcon, "label": "PC"},
+      {"image": CImages.pcIcon, "label": "Monitor"},
       {"image": CImages.laptopIcon, "label": "Laptop"},
-      {"image": CImages.headphonesIcon, "label": "Phụ kiện"},
-      {"image": CImages.ramIcon, "label": "Linh kiện"},
-      {"image": CImages.wifiIcon, "label": "Thiết bị mạng"},
-      {"image": CImages.osIcon, "label": "Phần mềm"},
+      {"image": CImages.headphonesIcon, "label": "Accessory"},
+      {"image": CImages.ramIcon, "label": "RAM"},
+      {"image": CImages.wifiIcon, "label": "SSD"},
+      {"image": CImages.osIcon, "label": "Motherboard"},
     ];
+
+
     
     return Column(
       spacing: 12,
@@ -36,7 +40,15 @@ class CHomeCategory extends StatelessWidget {
             itemCount: categories.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (_, index) {
-              return CVerticalItem(titleName: categories[index]["label"]!, imageString: categories[index]["image"]!, onTapAction: (){},);
+              return CVerticalItem(
+                titleName: categories[index]["label"]!, 
+                imageString: categories[index]["image"]!,
+                onTapAction: (){
+                  onCategorySelected?.call({
+                    'category': categories[index]["label"]!,
+                  });
+                },
+              );
             }
           ),
         ),

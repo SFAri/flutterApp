@@ -60,12 +60,15 @@ class CProductCard extends StatelessWidget {
                     Container(
                       alignment: Alignment.center,
                       width: 160,
-                      // height: 120,
+                      height: 120,
                       child: ClipRRect(
                         borderRadius:
                             BorderRadius.circular(CSizes.productImageRadius),
-                        child: Image(
-                            image: AssetImage(imageProduct), fit: BoxFit.cover),
+                        child: FittedBox(
+                          fit: BoxFit.fill,
+                          // child: Image(image: NetworkImage(imageProduct), fit: BoxFit.fill),
+                          child: Image.network(imageProduct),
+                        ),
                       ),
                     ),
 

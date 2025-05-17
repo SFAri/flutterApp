@@ -2,14 +2,18 @@ import 'package:ecommerce/common/widgets/layout/custom_clippath_appbar.dart';
 import 'package:ecommerce/common/widgets/layout/custom_gridview.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
 import 'package:ecommerce/features/shop/screens/home/widgets/home_appbar.dart';
-import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:ecommerce/utils/device/device_utility.dart';
+import 'package:ecommerce/utils/providers/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ecommerce/features/auth/controllers/product_controller.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../utils/data/brands_data.dart';
+import '../../../../utils/data/categories_data.dart';
 
 class CategoryHomeScreen extends StatefulWidget {
-
+  // final List<dynamic>? firstFilter;
   const CategoryHomeScreen({super.key});
 
   @override
@@ -17,43 +21,57 @@ class CategoryHomeScreen extends StatefulWidget {
 }
 
 class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
-    late List<String> selectedBrands;
-    late List<String> selectedCategories;
-    late RangeValues selectedRange;
-    late double rating;
+  late List<String> selectedBrands;
+  late List<String> selectedCategories;
+  late RangeValues selectedRange;
+  late double rating;
+  List<dynamic> products = [];
+  Map<String,dynamic>? filters;
+  Map<String,dynamic>? sortBy;
+  bool isLoading = false;
+  final ProductController productController = ProductController();
+  Future<void> fetchProducts({Map<String, dynamic>? filter, Map<String, dynamic>? sortBy}) async {
+    print("Filters: $filters");
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await productController.filterProducts(filter: filter, sortBy: sortBy);
+      if (response['status'] == 'success') {
+        setState(() {
+          // products = List.from(response['data']).take(4).toList();
+          products = List.from(response['data']).toList();
+        });
+        print("pRODUCTS =======: $products");
+      } else {
+        print('error');
+      }
+      
+    } catch (e) {
+      print('Error: $e'); // Handle errors here
+    }
+    finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
-    late final ProductController productController = ProductController();
-
-    final List<String> brands = ['MAC', 'ASUS', 'Lenovo', 'Samsung', 'Dell', 'E-Dra', 'HP'];
-
-    final List<String> categories = ['Best sellers', 'Popular products', 'New products', 'Laptop', 'PC', 'Accessory', 'Switch/hub', 'Software/OS'];
-    late Future<Map<String, dynamic>> products = productController.getProducts();
-    // List<Map<String, String>> products = [
-    //   {
-    //     "name": "Macbook air 14", "brand": "Apple", "imageUrl": CImages.macImage, "price": "27000000",
-    //   },
-    //   {
-    //     "name": "Macbook pro 14", "brand": "Apple", "imageUrl": CImages.macImage, "price": "32536000", "salePrice": "11"
-    //   },
-    //   {
-    //     "name": "Lenovo Ideapad 3", "brand": "Lenovo", "imageUrl": CImages.macImage, "price": "19330000",
-    //   },
-    // ];
-
-
-    @override
+  @override
   void initState() {
     selectedBrands = [];
     selectedCategories =[];
     selectedRange = RangeValues(1000000, 99000000);
     rating = 0;
+    filters = Provider.of<CategoryFilterProvider>(context, listen: false).filter;
+    sortBy = Provider.of<CategoryFilterProvider>(context, listen: false).sortBy;
+    fetchProducts(filter: filters, sortBy: sortBy);
     super.initState();
 
   }
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
@@ -111,52 +129,14 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
                   ),
                 ],
               ),
-              FutureBuilder<Map<String, dynamic>>(
-                future: products, // Your future
-                builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot){ // Builder starts
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    // If the Future is still running, show a loading indicator
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    // If the Future completed with an error, show an error message
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else if (snapshot.hasData) {
-                    // If the Future completed successfully and has data
-                    Map<String, dynamic>? singleProductData = snapshot.data; // snapshot.data is your single product Map
 
-                    if (singleProductData == null || singleProductData.isEmpty) {
-                      return Center(child: Text('No product found.'));
-                    }
-
-                    List<Map<String, String>> productListForGrid = [];
-
-                    // Since 'singleProductData' is the product itself, we directly convert it
-                    // and add it to our list.
-                    Map<String, String> productForGrid = {};
-                    productForGrid['name'] = singleProductData['name']?.toString() ?? 'N/A';
-                    productForGrid['brand'] = singleProductData['brand']?.toString() ?? 'N/A';
-                    productForGrid['price'] = singleProductData['price']?.toString() ?? '0';
-
-                    // You need to decide which image to show if there are multiple.
-                    // Here, we're taking the first one if available.
-                    if (singleProductData['images'] is List && (singleProductData['images'] as List).isNotEmpty) {
-                      productForGrid['imageUrl'] = (singleProductData['images'] as List).first.toString();
-                    } else {
-                      productForGrid['imageUrl'] = CImages.macImage; // Fallback image
-                    }
-
-                    // Add other fields your CGridView might need, converting them to String
-                    // For example, if CGridView expects 'description':
-                    // productForGrid['description'] = singleProductData['description']?.toString() ?? '';
-                    productListForGrid.add(productForGrid);
-                    return CGridView(items: productListForGrid);
-                  } else {
-                    // Fallback for other ConnectionStates (like .none or .active without data yet)
-                    // Or if you want a specific UI when hasData is false but no error and not waiting.
-                    return Center(child: Text("Loading products...")); // Or some placeholder
-                  }
-                }, // Closing brace for builder, ADD COMMA
-              ), // CLOSING PARENTHESIS FOR FutureBuilder, ADD COMMA IF NEEDED
+              if (isLoading)
+                Center(child: CircularProgressIndicator())
+              else
+                if (products.length ==0 )
+                  Center(child: Text('No product found.'))
+                else
+                  CGridView(items: products)
             ],
           ),
         ),

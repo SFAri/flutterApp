@@ -49,16 +49,16 @@ class _ProductManagementState extends State<ProductManagement>{
 
   // Filter product:
   List<dynamic> getFilteredProducts() {
-  return products.where((product) {
-    final matchesCategory = selectedCategory == 'All Category' ||
-                            product['category'] == selectedCategory;
-    final matchesBrand = selectedBrand == 'All Brand' || 
-                         product['brand'] == selectedBrand;
-    final matchesSearch = product['name'].toLowerCase().contains(searchQuery.toLowerCase());
+    return products.where((product) {
+      final matchesCategory = selectedCategory == 'All Category' ||
+                              product['category'] == selectedCategory;
+      final matchesBrand = selectedBrand == 'All Brand' || 
+                          product['brand'] == selectedBrand;
+      final matchesSearch = product['name'].toLowerCase().contains(searchQuery.toLowerCase());
 
-    return matchesCategory && matchesBrand && matchesSearch;
-  }).toList();
-}
+      return matchesCategory && matchesBrand && matchesSearch;
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {

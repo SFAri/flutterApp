@@ -7,6 +7,7 @@ import 'package:ecommerce/navigation_menu.dart';
 import 'package:ecommerce/services/auth_service.dart';
 import 'package:ecommerce/utils/helpers/role_function.dart';
 import 'package:ecommerce/utils/local_storage/storage_utility.dart';
+import 'package:ecommerce/utils/providers/category_provider.dart';
 import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:ecommerce/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => MenuAppController()
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CategoryFilterProvider(),
         ),
       ],
       child: const MyApp(),

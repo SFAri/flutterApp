@@ -9,7 +9,7 @@ class CGridView extends StatelessWidget {
     this.crossAxisCount = 2
   });
 
-  final List<Map<String, String>> items;
+  final List<dynamic> items;
   final int crossAxisCount;
   final double mainAxisExtent;
 
@@ -28,7 +28,14 @@ class CGridView extends StatelessWidget {
           crossAxisSpacing: 10,
           mainAxisExtent: mainAxisExtent
         ), 
-        itemBuilder: (_, index) => CProductCard(productName: items[index]["name"]!, imageProduct: items[index]["imageUrl"]!, productBrand: items[index]["brand"]!, price: items[index]["price"]!, salePrice: items[index]["salePrice"] != null ? items[index]["salePrice"]! : '0',),
+        itemBuilder: (_, index) => CProductCard(
+          productName: items[index]["name"]!, 
+          imageProduct: items[index]["images"][0]!, 
+          productBrand: items[index]["brand"]!, 
+          price: items[index]["price"]!.toString(), 
+          salePrice: items[index]["discount"] != null ? items[index]["discount"]!.toString() : '0',
+          rateStar: double.parse(items[index]['averageRating'].toString()),
+        ),
       ),
     );
   }

@@ -20,6 +20,9 @@ class CHomeAppBar extends StatelessWidget {
         children: [
           // Search bar:
           TextFormField(
+            onSaved: (newValue) {
+              
+            },
             decoration: InputDecoration(
               hintText: 'Search in store',
               filled: true,
