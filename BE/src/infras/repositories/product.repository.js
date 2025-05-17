@@ -41,8 +41,34 @@ export default class ProductRepository {
     return product;
   }
 
-  async FindByFilter(filter = {}, sortBy = {}, limit) {
-    const products = await ProductModel.find(filter).sort(sortBy).limit(limit);
+  async FindByFilter(filter = {}, sortBy = {}, page = null, perPage = null) {
+    let products = null;
+    if (page && perPage) {
+      const count = await ProductModel.countDocuments(filter);
+      const totalPage = Math.ceil(count / perPage);
+      const previous = page - 1 === 0 ? -1 : page - 1;
+      const next = page + 1 > totalPage ? -1 : page + 1;
+
+      const productsPagination = await ProductModel.find(filter)
+        .sort(sortBy)
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .lean()
+        .exec();
+
+      products = {
+        data: productsPagination,
+        pagination: {
+          previous,
+          next,
+          page: page,
+          limit: perPage,
+          totalPage,
+        },
+      };
+    } else {
+      products = await ProductModel.find(filter).sort(sortBy).lean();
+    }
     return products;
   }
 }

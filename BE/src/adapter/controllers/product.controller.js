@@ -47,10 +47,6 @@ class ProductController {
   }
 
   async getListProduct(req, res, next) {
-    const { page, limit, ...filter } = req.query || {};
-    const pageQuery = parseInt(page) || 1;
-    const perPage = parseInt(limit) || 10;
-
     try {
       const data = await ProductService.GetListProduct();
       res.status(200).json(FormatResult("success", data));
@@ -59,14 +55,16 @@ class ProductController {
     }
   }
 
-  async filterProduct(req, res, next) {
-    const { limit, sortBy, filter } = req.body || {};
-    const perPage = parseInt(limit) || 10;
+  async getFilterProduct(req, res, next) {
+    const { page, limit, sortBy, filter } = req.body || {};
+    const pageQuery = parseInt(page) || null;
+    const perPage = parseInt(limit) || null;
 
     try {
       const data = await ProductService.GetProductByFilter(
         filter,
         sortBy,
+        pageQuery,
         perPage
       );
       res.status(200).json(FormatResult("success", data));

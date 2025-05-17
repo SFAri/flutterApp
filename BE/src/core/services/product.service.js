@@ -12,6 +12,17 @@ class ProductService {
     return FormatData(listProduct);
   }
 
+  async GetListProductByFilter(filter = {}, page = null, perpage = null) {
+    let filterData = {};
+
+    const listAlumni = await this.repository.FindByFilter(
+      filterData,
+      page,
+      perpage
+    );
+    return FormatData(listAlumni);
+  }
+
   async GetProductById(id) {
     const Product = await this.repository.FindById(id);
     if (!Product) {
@@ -20,7 +31,12 @@ class ProductService {
     return FormatData(Product);
   }
 
-  async GetProductByFilter(filter = {}, sortBy = {}, limit) {
+  async GetProductByFilter(
+    filter = {},
+    sortBy = {},
+    page = null,
+    perpage = null
+  ) {
     const { minPrice, maxPrice, brand, category, ...filterQuery } = filter;
 
     if (minPrice != null && maxPrice != null) {
@@ -42,7 +58,8 @@ class ProductService {
     const products = await this.repository.FindByFilter(
       filterQuery,
       sortBy,
-      limit
+      page,
+      perpage
     );
     return FormatData(products);
   }

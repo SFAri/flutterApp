@@ -14,7 +14,7 @@ router
     ProductController.createProduct
   );
 
-router.route("/filter").post(ProductController.filterProduct);
+router.route("/filter").post(ProductController.getFilterProduct);
 
 router
   .route("/:id")

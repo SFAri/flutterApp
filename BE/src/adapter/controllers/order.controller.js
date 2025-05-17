@@ -61,6 +61,24 @@ class OrderController {
     }
   }
 
+  async getFilterOrder(req, res, next) {
+    const { page, limit, sortBy, filter } = req.body || {};
+    const pageQuery = parseInt(page) || null;
+    const perPage = parseInt(limit) || null;
+
+    try {
+      const data = await OrderService.GetOrderByFilter(
+        filter,
+        sortBy,
+        pageQuery,
+        perPage
+      );
+      res.status(200).json(FormatResult("success", data));
+    } catch (err) {
+      next(createError(400, err));
+    }
+  }
+
   async updateOrderStatus(req, res, next) {
     const id = req.params.id;
     const status = req.body.status;

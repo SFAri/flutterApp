@@ -94,6 +94,36 @@ class OrderService {
     return FormatData(orders);
   }
 
+  async GetOrderByFilter(
+    filter = {},
+    sortBy = {},
+    page = null,
+    perpage = null
+  ) {
+    const { status, minTotal, maxTotal, ...filterQuery } = filter;
+
+    if (minTotal != null && maxTotal != null) {
+      filterQuery.totalAmount = { $gte: minTotal, $lte: maxTotal };
+    } else if (minTotal != null) {
+      filterQuery.totalAmount = { $gte: minTotal };
+    } else if (maxTotal != null) {
+      filterQuery.totalAmount = { $lte: maxTotal };
+    }
+
+    // Add status filters if they exist
+    if (status) {
+      filterQuery.status = status; // Assuming status is a single value
+    }
+
+    const products = await this.repository.FindByFilter(
+      filterQuery,
+      sortBy,
+      page,
+      perpage
+    );
+    return FormatData(products);
+  }
+
   async DeleteOrderById(orderId) {
     const order = await this.repository.DeleteById(orderId);
     if (!order) ThrowNewError("OrderError", "Order not found");

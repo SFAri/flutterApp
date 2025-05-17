@@ -59,6 +59,37 @@ export default class OrderRepository {
     return orders;
   }
 
+  async FindByFilter(filter = {}, sortBy = {}, page = null, perPage = null) {
+    let orders = null;
+    if (page && perPage) {
+      const count = await OrderModel.countDocuments(filter);
+      const totalPage = Math.ceil(count / perPage);
+      const previous = page - 1 === 0 ? -1 : page - 1;
+      const next = page + 1 > totalPage ? -1 : page + 1;
+
+      const ordersPagination = await OrderModel.find(filter)
+        .sort(sortBy)
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .lean()
+        .exec();
+
+      orders = {
+        data: ordersPagination,
+        pagination: {
+          previous,
+          next,
+          page: page,
+          limit: perPage,
+          totalPage,
+        },
+      };
+    } else {
+      orders = await OrderModel.find(filter).sort(sortBy).lean();
+    }
+    return orders;
+  }
+
   async DeleteById(id) {
     const order = await OrderModel.findByIdAndDelete(id);
     return order;
