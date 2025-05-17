@@ -23,12 +23,12 @@ class ProductService {
   async GetProductByFilter(filter = {}, sortBy = {}) {
     const { minPrice, maxPrice, brand, category, ...filterQuery } = filter;
 
-    if (minPrice) {
-      filterQuery.price = { $gte: minPrice };
-    } else if (maxPrice) {
-      filterQuery.price = { $lte: maxPrice };
-    } else if (minPrice && maxPrice) {
-      filterQuery.price = { $gte: minPrice, $lte: maxPrice };
+    if (minPrice != null && maxPrice != null) {
+      filterQuery["variants.salePrice"] = { $gte: minPrice, $lte: maxPrice };
+    } else if (minPrice != null) {
+      filterQuery["variants.salePrice"] = { $gte: minPrice };
+    } else if (maxPrice != null) {
+      filterQuery["variants.salePrice"] = { $lte: maxPrice };
     }
 
     // Add brand and category filters if they exist
@@ -44,8 +44,6 @@ class ProductService {
   }
 
   async AddNewProduct(input = {}) {
-    input.price = Math.min(...input.variants.map((v) => v.price));
-
     const newProduct = await this.repository.AddProduct(input);
 
     return FormatData(newProduct);
