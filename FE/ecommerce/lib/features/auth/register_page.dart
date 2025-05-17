@@ -80,7 +80,9 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      // return json.decode(response.body);
+      final decodedBody = utf8.decode(response.bodyBytes); 
+      return json.decode(decodedBody);
     } else {
       throw Exception('Failed to load provinces');
     }
@@ -92,7 +94,9 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      // final data = json.decode(response.body);
+      final decodedBody = utf8.decode(response.bodyBytes); 
+      final data = json.decode(decodedBody);
       setState(() {
         districts = data['districts']; // Lấy danh sách quận từ dữ liệu
         selectedWard = null;
@@ -109,7 +113,9 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      // final data = json.decode(response.body);
+      final decodedBody = utf8.decode(response.bodyBytes); 
+      final data = json.decode(decodedBody);
       setState(() {
         wards = data['wards']; // Lấy danh sách quận từ dữ liệu
       });

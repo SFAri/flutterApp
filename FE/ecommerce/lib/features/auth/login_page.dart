@@ -50,6 +50,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   String? errorMessage;
 
   void handleLogin(context) async {
+    print("Enter login");
     setState(() {
       isLoading = true;
       errorMessage = null;
@@ -65,6 +66,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       await AuthService.saveToken(result['accessToken']);
 
       int role = getRoleFromToken(result['accessToken']);
+      print("Enter loginROLE: $role");
 
       if (role == 1) { // Nếu vai trò là 1 (admin)
         Navigator.pushReplacement(

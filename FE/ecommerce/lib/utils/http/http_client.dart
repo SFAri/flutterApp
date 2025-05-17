@@ -12,7 +12,7 @@ class CHttpHelper {
     if (kIsWeb) {
       return 'http://localhost:8000/api'; // Địa chỉ cho web
     } else if (Platform.isAndroid) {
-      return 'http://10.0.0.2:8000/api'; // Địa chỉ cho Android Emulator
+      return 'http://10.0.2.2:8000/api'; // Địa chỉ cho Android Emulator
     }
     return 'http://localhost:8000/api'; // Giá trị mặc định
   }

@@ -11,8 +11,8 @@ _config({ path: envFilePath });
 
 const configs = {
   app: {
-    port: process.env.PORT || 3000,
-    host: process.env.HOST || "localhost" || "127.0.0.1",
+    port: process.env.PORT || 8000,
+    host: process.env.HOST || "localhost" || "10.0.0.2",
   },
   db: {
     mongoURL: process.env.MONGO_URI || "mongodb://localhost:27017/user-service",
