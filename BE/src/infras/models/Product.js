@@ -39,7 +39,8 @@ const VariantSchema = Schema({
   },
   color: { type: String, required: true },
   inventory: { type: Number, required: true },
-  price: { type: Number, required: true },
+  importPrice: { type: Number, required: true }, // Giá nhập
+  salePrice: { type: Number, required: true }, // Giá bán
 });
 
 const RatingSchema = Schema({
@@ -54,7 +55,6 @@ const ProductSchema = Schema(
     name: { type: String, required: true },
     brand: { type: String, required: true },
     description: { type: String, required: true },
-    price: { type: Number, required: true },
     category: { type: String, required: true },
     images: [{ type: String, required: true }],
     variants: [VariantSchema],

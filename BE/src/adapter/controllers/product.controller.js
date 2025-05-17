@@ -75,10 +75,6 @@ class ProductController {
 
     try {
       const updatedProduct = req.body;
-      // get min price
-      updatedProduct.price = Math.min(
-        ...updatedProduct.variants.map((v) => v.price)
-      );
       const data = await ProductService.UpdateProductById(id, updatedProduct);
       res.status(200).json(FormatResult("success", data));
     } catch (err) {
