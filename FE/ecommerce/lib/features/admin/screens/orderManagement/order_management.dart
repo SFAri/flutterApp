@@ -3,44 +3,44 @@ import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/orderManagement/orderDetail/order_details.dart';
 import 'package:ecommerce/main.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class Order {
-  final String id;
-  final String date;
-  final String items;
-  final String status;
-  final double amount;
-
-  Order({
-    required this.id,
-    required this.date,
-    required this.items,
-    required this.status,
-    required this.amount,
-  });
-}
+import '../../../auth/controllers/order_controller.dart';
+import '../../models/Order.dart';
 
 class OrderManagementScreen extends StatefulWidget {
   const OrderManagementScreen({super.key});
+
   @override
   State<OrderManagementScreen> createState() => _OrderManagementScreenState();
 }
 
 class _OrderManagementScreenState extends State<OrderManagementScreen> {
-  final List<Order> _orders = [
-    Order(id: '1f3bd8f', date: '27 Jun 2024', items: '1 Items', status: 'Delivered', amount: 5262.4),
-    Order(id: '1f4797f', date: '27 Jun 2024', items: '1 Items', status: 'Cancelled', amount: 5202.2),
-    Order(id: '1f4240c', date: '02 Jul 2024', items: '1 Items', status: 'Pending', amount: 5140.0),
-    Order(id: '1f208a9', date: '27 Jun 2024', items: '1 Items', status: 'Shipped', amount: 5224.2),
-    Order(id: '1f2642f', date: '27 Jun 2024', items: '1 Items', status: 'Delivered', amount: 5170.0),
-  ];
-
+  final orderController = OrderController();
+  List<Order> _orders = [];
   List<Order> _filteredOrders = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _filteredOrders = _orders;
+    _fetchOrders();
+  }
+
+  Future<void> _fetchOrders() async {
+    try {
+      final fetchedOrders = await orderController.getOrders(); // Đúng model mới
+      setState(() {
+        _orders = fetchedOrders;
+        _filteredOrders = fetchedOrders;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print('Lỗi khi fetch orders: $e');
+    }
   }
 
   void _filterOrders(String query) {
@@ -56,36 +56,45 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
   }
 
   Color _getStatusColor(String status) {
-    switch (status) {
-      case 'Pending':
+    switch (status.toLowerCase()) {
+      case 'pending':
         return Colors.blue;
-      case 'Shipped':
+      case 'shipped':
         return Colors.purple;
-      case 'Cancelled':
+      case 'cancelled':
         return Colors.red;
-      case 'Delivered':
+      case 'delivered':
         return Colors.green;
       default:
         return Colors.grey;
     }
   }
 
+  String _formatDate(DateTime dateTime) {
+    return DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
+      child: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
-          spacing: 20,
           children: [
+<<<<<<< HEAD
             // Header(title: 'Order Management'),
             // Divider(),
 
+=======
+            Header(title: 'Order Management'),
+            const Divider(),
+>>>>>>> 67520c02a0e4e28683efe4fb31b53940b7cf73be
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -126,8 +135,8 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                         rows: _filteredOrders.map((order) {
                           return DataRow(cells: [
                             DataCell(Text(order.id)),
-                            DataCell(Text(order.date)),
-                            DataCell(Text(order.items)),
+                            DataCell(Text(_formatDate(order.createdAt))),
+                            DataCell(Text('${order.items.length} sản phẩm')),
                             DataCell(
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -141,19 +150,13 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                                 ),
                               ),
                             ),
-                            DataCell(Text('\$${order.amount.toStringAsFixed(1)}')),
+                            DataCell(Text('${order.totalAmount.toStringAsFixed(0)} ₫')),
                             DataCell(Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
                                   icon: const Icon(Icons.remove_red_eye, color: Colors.white70),
                                   onPressed: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => OrderDetailScreen(order: order),
-                                    //   ),
-                                    // );
                                     streamController.add(OrderDetailScreen(order: order));
                                   },
                                 ),
