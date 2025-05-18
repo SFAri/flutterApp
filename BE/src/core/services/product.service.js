@@ -53,7 +53,9 @@ class ProductService {
       filterQuery.brand = brand; // Assuming brand is a single value
     }
     if (category) {
-      filterQuery.category = category; // Assuming category is a single value
+      if (Array.isArray(category)) {
+        filterQuery.category = { $in: category };
+      }
     }
 
     if (searchText) {
