@@ -10,6 +10,7 @@ router
   .get(authUser, checkRole(["admin", "write"]), OrderController.getListOrder)
   .post(authUser, OrderController.createOrder);
 
+router.route("/filter").post(OrderController.getFilterOrder);
 router.route("/user").get(authUser, OrderController.getOrdersByUser);
 router.route("/status/:id").put(authUser, OrderController.updateOrderStatus);
 router

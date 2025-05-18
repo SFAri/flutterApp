@@ -32,9 +32,9 @@ class CHelperFunctions {
     );
   }
 
-  static void showAlert(String title, String message){
+  static void showAlert(String title, String message, {required BuildContext context}){
     showDialog(
-      context: Get.context!, 
+      context: context, 
       builder: (BuildContext context){
         return AlertDialog(
           title: Text(title),

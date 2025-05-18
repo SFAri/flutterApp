@@ -56,6 +56,11 @@ class _UserAddressScreenState extends State<UserAddressScreen> {
           context,
           listen: false,
         ).setUserAddress(fetchedData);
+
+        setState(() {
+          isLoading = false;
+          userAddress = fetchedData;
+        });
       }
     } catch (e) {
       errorMessage = e.toString();

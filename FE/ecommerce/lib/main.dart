@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:ecommerce/features/admin/admin_home.dart';
 import 'package:ecommerce/features/admin/controller/menu_controller.dart';
+import 'package:ecommerce/features/shop/screens/cart/models/Cart.dart';
 import 'package:ecommerce/navigation_menu.dart';
 import 'package:ecommerce/services/auth_service.dart';
 import 'package:ecommerce/utils/helpers/role_function.dart';
@@ -16,29 +17,31 @@ import 'package:provider/provider.dart';
 // For cloudinary package:
 import 'package:cloudinary_flutter/cloudinary_context.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
+
 // import 'package:get/get_navigation/src/root/get_material_app.dart';
-StreamController<Widget> streamController = StreamController<Widget>.broadcast();
+StreamController<Widget> streamController =
+    StreamController<Widget>.broadcast();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CLocalStorage.init('user_bucket');
-  CloudinaryContext.cloudinary = Cloudinary.fromCloudName(cloudName: "dfgfyxjfx");
+  CloudinaryContext.cloudinary = Cloudinary.fromCloudName(
+    cloudName: "dfgfyxjfx",
+  );
   runApp(
     // For cloudinary:
-    
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (context) => SettingsProvider(), // Tạo instance của provider
         ),
+        ChangeNotifierProvider(create: (context) => MenuAppController()),
+        ChangeNotifierProvider(create: (_) => CategoryFilterProvider()),
         ChangeNotifierProvider(
-          create: (context) => MenuAppController()
-        ),
-        ChangeNotifierProvider(
-          create: (_) => CategoryFilterProvider(),
+          create: (context) => CartModel()..loadCartFromStorage(),
         ),
       ],
       child: const MyApp(),
-    )
+    ),
   );
 }
 
@@ -85,7 +88,8 @@ class _MyAppState extends State<MyApp> {
     if (loggedIn) {
       final token = await AuthService.getToken(); // Lấy token từ LocalStorage
       final role = getRoleFromToken(token!); // Giải mã token để lấy vai trò
-      if (role == 1) { // Nếu vai trò là admin
+      if (role == 1) {
+        // Nếu vai trò là admin
         return AdminHome(streamController.stream);
       } else {
         return NavigationMenu(); // Nếu không phải admin
@@ -99,7 +103,7 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+  };
 }

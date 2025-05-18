@@ -115,6 +115,10 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
   }
 
   Future<void> _addNewAddress(context) async {
+    setState(() {
+      isLoading = true;
+    });
+
     if (_formKey.currentState?.validate() ?? false) {
       try {
         String provinceName =
@@ -162,7 +166,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
           ).setUserAddress(fetchedData);
 
           setState(() {
-            isLoading = true;
+            isLoading = false;
           });
 
           Navigator.pop(context, true);
@@ -388,24 +392,29 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                     ],
                   ),
                   const SizedBox(height: CSizes.defaultSpace),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed:
-                          isLoading
-                              ? null
-                              : () {
-                                FocusScope.of(context).unfocus();
-                                _formKey.currentState?.save();
-                                // Validate the form
-                                if (_formKey.currentState?.validate() ??
-                                    false) {
-                                  _addNewAddress(context);
-                                }
-                              },
-                      child: const Text('Save'),
+                  // Save Button
+                  if (isLoading)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(CSizes.defaultSpace),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          _formKey.currentState?.save();
+                          // Validate the form
+                          if (_formKey.currentState?.validate() ?? false) {
+                            _addNewAddress(context);
+                          }
+                        },
+                        child: const Text('Save'),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

@@ -6,12 +6,14 @@ import 'package:ecommerce/utils/constants/sizes.dart';
 
 class CQuantityItem extends StatelessWidget {
   final int quantity;
+  final bool isOutStock;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
 
   const CQuantityItem({
     super.key,
     required this.quantity,
+    required this.isOutStock,
     required this.onIncrement,
     required this.onDecrement,
   });
@@ -25,25 +27,25 @@ class CQuantityItem extends StatelessWidget {
           icon: Icons.remove,
           width: 32,
           height: 32,
-          backgroundColor: CHelperFunctions.isDarkMode(context)
-              ? CColors.grey
-              : CColors.lightGrey,
+          backgroundColor:
+              CHelperFunctions.isDarkMode(context)
+                  ? CColors.grey
+                  : CColors.lightGrey,
           onPressed: onDecrement,
         ),
         const SizedBox(width: CSizes.spaceBtwItems),
-        Text(
-          '$quantity',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        Text('$quantity', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(width: CSizes.spaceBtwItems),
-        TCircularIcon(
-          icon: Icons.add,
-          width: 32,
-          height: 32,
-          color: CColors.textWhite,
-          backgroundColor: CColors.primary,
-          onPressed: onIncrement,
-        ),
+        isOutStock
+            ? SizedBox.shrink()
+            : TCircularIcon(
+              icon: Icons.add,
+              width: 32,
+              height: 32,
+              color: CColors.textWhite,
+              backgroundColor: CColors.primary,
+              onPressed: onIncrement,
+            ),
       ],
     );
   }

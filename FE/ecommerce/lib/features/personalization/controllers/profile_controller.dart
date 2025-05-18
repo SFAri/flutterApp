@@ -44,6 +44,15 @@ class ProfileController {
     }
   }
 
+  // Get user address default
+  Future<Map<String, dynamic>> fetchUserAddressDefault() async {
+    final response = await CHttpHelper.get(
+      'users/address/isDefault',
+      withAuth: true,
+    );
+    return response.containsKey('data') ? response['data'] : response;
+  }
+
   // Add new address
   Future<Map<String, dynamic>> addNewAddress(
     String fullName,

@@ -100,7 +100,7 @@ class OrderService {
     page = null,
     perpage = null
   ) {
-    const { status, minTotal, maxTotal, ...filterQuery } = filter;
+    const { couponCode, status, minTotal, maxTotal, ...filterQuery } = filter;
 
     if (minTotal != null && maxTotal != null) {
       filterQuery.totalAmount = { $gte: minTotal, $lte: maxTotal };
@@ -110,9 +110,12 @@ class OrderService {
       filterQuery.totalAmount = { $lte: maxTotal };
     }
 
-    // Add status filters if they exist
     if (status) {
-      filterQuery.status = status; // Assuming status is a single value
+      filterQuery.status = status;
+    }
+
+    if (couponCode) {
+      filterQuery["coupon.code"] = couponCode;
     }
 
     const products = await this.repository.FindByFilter(

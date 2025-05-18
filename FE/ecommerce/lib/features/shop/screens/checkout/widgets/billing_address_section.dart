@@ -1,4 +1,5 @@
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
+import 'package:ecommerce/features/personalization/screens/address/add_new_address.dart';
 import 'package:ecommerce/features/personalization/screens/address/address.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
@@ -6,17 +7,50 @@ import 'package:ecommerce/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class CBillingAddressSection extends StatelessWidget {
-  const CBillingAddressSection({super.key});
+  final bool isLoggedIn;
+  final Map<String, dynamic>? address;
+  const CBillingAddressSection({
+    super.key,
+    required this.isLoggedIn,
+    required this.address,
+  });
 
   @override
   Widget build(BuildContext context) {
     final dark = CHelperFunctions.isDarkMode(context);
+
+    if (!isLoggedIn) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CSectorHeading(
+            title: 'Shipping Address',
+            textColor: dark ? CColors.lightGrey : CColors.primary,
+            buttonTitle: 'Create Address',
+            padding: 0,
+            showActionButton: true,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => AddNewAddressScreen()),
+              );
+            },
+          ),
+          const SizedBox(height: CSizes.spaceBtwItems / 2),
+          Text(
+            'No address found here. Please create a new address.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CSectorHeading(
           title: 'Shipping Address',
-          textColor: dark ? CColors.lightGrey : CColors.grey,
+          textColor: dark ? CColors.lightGrey : CColors.primary,
           buttonTitle: 'Change',
           padding: 0,
           showActionButton: true,
@@ -30,7 +64,10 @@ class CBillingAddressSection extends StatelessWidget {
         ),
         SizedBox(width: CSizes.spaceBtwItems / 2),
 
-        Text('Your Name', style: Theme.of(context).textTheme.bodyLarge),
+        Text(
+          address?['fullName'] ?? 'N/A',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
         SizedBox(width: CSizes.spaceBtwItems / 2),
         Row(
           children: [
@@ -41,7 +78,7 @@ class CBillingAddressSection extends StatelessWidget {
             ),
             SizedBox(width: CSizes.spaceBtwItems),
             Text(
-              '+84 123 456 789',
+              address?['phone'] ?? 'N/A',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
@@ -56,7 +93,7 @@ class CBillingAddressSection extends StatelessWidget {
             ),
             SizedBox(width: CSizes.spaceBtwItems),
             Text(
-              '19 Nguyen Huu Tho, Q.7, HCM',
+              address?['detailAddress'] ?? '',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],

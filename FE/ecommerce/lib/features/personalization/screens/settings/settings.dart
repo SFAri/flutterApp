@@ -5,14 +5,12 @@ import 'package:ecommerce/common/widgets/list_titles/user_profile_title.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
 import 'package:ecommerce/features/auth/login_page.dart';
 import 'package:ecommerce/features/personalization/screens/address/address.dart';
-import 'package:ecommerce/features/personalization/controllers/profile_controller.dart';
 import 'package:ecommerce/features/personalization/screens/settings/widgets/language_selection_dialog.dart';
 import 'package:ecommerce/features/shop/screens/order/order.dart';
 import 'package:ecommerce/navigation_menu.dart';
 import 'package:ecommerce/services/auth_service.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
-import 'package:ecommerce/utils/local_storage/storage_utility.dart';
 import 'package:ecommerce/utils/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -140,6 +138,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // Dùng context.watch để widget này tự động build lại khi state thay đổi
     final settingsProvider = context.watch<SettingsProvider>();
     String displayLanguage = getLanguageSelected(settingsProvider);
+    bool dark = CHelperFunctions.isDarkMode(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -211,7 +210,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   CSectorHeading(
                     title: 'Account Settings',
                     padding: 0,
-                    textColor: Colors.white,
+                    textColor: dark ? Colors.white : Colors.black,
                     showActionButton: false,
                   ),
                   SizedBox(height: CSizes.spaceBtwSections),
@@ -222,10 +221,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     subTitle: 'View and manage your orders',
                     onTap:
                         () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => OrderScreen()),
-                          ),
+                          if (loggedIn != null)
+                            {
+                              if (loggedIn!)
+                                {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const OrderScreen(),
+                                    ),
+                                  ),
+                                }
+                              else
+                                {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const LoginPage(),
+                                    ),
+                                  ),
+                                },
+                            },
                         },
                   ),
                   CSettingsMenuTitle(
@@ -234,15 +250,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     subTitle: 'Set shopping delivery addresses',
                     onTap:
                         () => {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => UserAddressScreen(),
-                            ),
-                          ),
+                          if (loggedIn != null)
+                            {
+                              if (loggedIn!)
+                                {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const UserAddressScreen(),
+                                    ),
+                                  ),
+                                }
+                              else
+                                {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const LoginPage(),
+                                    ),
+                                  ),
+                                },
+                            },
                         },
                   ),
-
                   CSettingsMenuTitle(
                     icon: Iconsax.lovely_copy,
                     title: 'My Wishlist',
@@ -270,7 +300,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   CSectorHeading(
                     title: 'App Settings',
                     padding: 0,
-                    textColor: Colors.white,
+                    textColor: dark ? Colors.white : Colors.black,
                     showActionButton: false,
                   ),
                   SizedBox(height: CSizes.spaceBtwSections),

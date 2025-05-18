@@ -1,10 +1,12 @@
 import 'package:ecommerce/common/widgets/appbar/appbar.dart';
 import 'package:ecommerce/features/shop/screens/cart/cart.dart';
+import 'package:ecommerce/features/shop/screens/cart/models/Cart.dart';
 import 'package:ecommerce/features/shop/screens/chat/chat_screen.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:provider/provider.dart';
 
 class CHomeAppBar extends StatelessWidget {
   final void Function(Map<String, dynamic> filter)? onCategorySelected;
@@ -23,6 +25,9 @@ class CHomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CartModel cart = CartModel();
+    cart = Provider.of<CartModel>(context);
+
     return CAppBar(
       isTranfer: true,
       showBackArrows: isBack,
@@ -116,7 +121,7 @@ class CHomeAppBar extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    '2',
+                    cart.items.length.toString(),
                     style: Theme.of(
                       context,
                     ).textTheme.labelLarge!.apply(color: CColors.textWhite),

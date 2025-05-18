@@ -22,7 +22,7 @@ const configs = {
   },
   tokens: {
     access_token_key: process.env.ACCESS_TOKEN_SECRET,
-    access_token_expiration: "1h",
+    access_token_expiration: "1d",
     refresh_token_key: process.env.REFRESH_TOKEN_SECRET,
     refresh_token_expiration: "1d",
   },

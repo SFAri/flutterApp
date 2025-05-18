@@ -51,6 +51,10 @@ class _CSingleAddressState extends State<CSingleAddress> {
           listen: false,
         ).setUserAddress(fetchedData);
 
+        setState(() {
+          isLoading = false;
+        });
+
         Navigator.of(context).pop();
       }
     } catch (e) {
@@ -82,6 +86,10 @@ class _CSingleAddressState extends State<CSingleAddress> {
           context,
           listen: false,
         ).setUserAddress(fetchedData);
+
+        setState(() {
+          isLoading = false;
+        });
 
         Navigator.of(context).pop();
       }
@@ -169,6 +177,15 @@ class _CSingleAddressState extends State<CSingleAddress> {
     final dark = CHelperFunctions.isDarkMode(context);
     final String fullAddress =
         '${widget.userAddress?['detailAddress']}, ${widget.userAddress?['ward']}, ${widget.userAddress?['district']}, ${widget.userAddress?['province']}';
+
+    if (isLoading) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(CSizes.defaultSpace),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return InkWell(
       onLongPress: () {

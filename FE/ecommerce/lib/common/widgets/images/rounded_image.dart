@@ -31,6 +31,7 @@ class CRoundedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(imageUrl);
     return GestureDetector(
       onTap: onPressed,
       child: Container(
@@ -43,14 +44,16 @@ class CRoundedImage extends StatelessWidget {
           border: border,
         ),
         child: ClipRRect(
-          borderRadius: applyImageRadius
-              ? BorderRadius.circular(borderRadius)
-              : BorderRadius.zero,
+          borderRadius:
+              applyImageRadius
+                  ? BorderRadius.circular(borderRadius)
+                  : BorderRadius.zero,
           child: Image(
             fit: fit,
-            image: isNetworkImage
-                ? NetworkImage(imageUrl)
-                : AssetImage(imageUrl) as ImageProvider<Object>,
+            image:
+                isNetworkImage
+                    ? NetworkImage(imageUrl)
+                    : AssetImage(imageUrl) as ImageProvider<Object>,
             errorBuilder: (context, error, stackTrace) {
               return const Icon(Icons.error);
             },

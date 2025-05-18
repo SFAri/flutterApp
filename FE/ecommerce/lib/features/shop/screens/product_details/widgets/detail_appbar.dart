@@ -1,9 +1,11 @@
 import 'package:ecommerce/common/widgets/appbar/appbar.dart';
 import 'package:ecommerce/features/shop/screens/cart/cart.dart';
+import 'package:ecommerce/features/shop/screens/cart/models/Cart.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:provider/provider.dart';
 
 class CDetailAppBar extends StatelessWidget {
   const CDetailAppBar({
@@ -17,6 +19,8 @@ class CDetailAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CartModel cart = CartModel();
+    cart = Provider.of<CartModel>(context);
     return CAppBar(
       showBackArrows: isBack,
       title: Text(title, style: TextStyle(color: Colors.white, fontSize: 18)),
@@ -58,7 +62,7 @@ class CDetailAppBar extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => CartScreen()),
                 );
               },
-              icon: Icon(Iconsax.shopping_bag, color: CColors.textWhite),
+              icon: Icon(Iconsax.shopping_cart, color: CColors.textWhite),
             ),
             Positioned(
               right: 0,
@@ -71,7 +75,7 @@ class CDetailAppBar extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    '2',
+                    cart.items.length.toString(),
                     style: Theme.of(
                       context,
                     ).textTheme.labelLarge!.apply(color: CColors.textWhite),
