@@ -1,6 +1,3 @@
-import 'package:ecommerce/features/shop/screens/cart/models/Product.dart';
-import 'package:ecommerce/features/shop/screens/cart/models/Specs.dart';
-import 'package:ecommerce/features/shop/screens/cart/models/Variant.dart';
 import 'package:ecommerce/features/shop/screens/cart/widgets/cart_items.dart';
 import 'package:ecommerce/navigation_menu.dart';
 import 'package:ecommerce/utils/helpers/format_functions.dart';

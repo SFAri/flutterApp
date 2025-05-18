@@ -4,10 +4,9 @@ import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
 import 'package:ecommerce/utils/helpers/format_functions.dart';
 import 'package:ecommerce/utils/helpers/helper_functions.dart';
-import 'package:ecommerce/utils/providers/settings_provider.dart';
+import 'package:ecommerce/utils/helpers/pricing_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class UserOrderDetailScreen extends StatefulWidget {
   Map<String, dynamic> order;
@@ -269,7 +268,6 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
                         final item = items[index];
                         final num itemUnitPrice = item['unitPrice'];
                         final num itemDiscount = item['discountPerProduct'];
-                        final num finalItemPrice = itemUnitPrice - itemDiscount;
 
                         return Card(
                           elevation: 1,
@@ -295,8 +293,8 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
                                   ),
                                   Text(
                                     itemDiscount > 0
-                                        ? 'Unit Price: ${CFormatFunction.formatCurrency(itemUnitPrice.toDouble())} (Discount: ${itemDiscount.toInt()} %)'
-                                        : 'Unit Price: ${CFormatFunction.formatCurrency(itemUnitPrice.toDouble())}',
+                                        ? '(Discount: ${itemDiscount.toInt()}%)'
+                                        : '',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -308,7 +306,7 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
                                   Text('Qty: ${item['quantity']}'),
                                   Text(
                                     CFormatFunction.formatCurrency(
-                                      finalItemPrice.toDouble() *
+                                      itemUnitPrice.toDouble() *
                                           item['quantity'],
                                     ),
                                     style:

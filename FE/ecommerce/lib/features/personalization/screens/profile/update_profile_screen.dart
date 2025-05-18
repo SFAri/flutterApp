@@ -87,9 +87,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _saveProfile(context) async {
+    setState(() {
+      isLoading = true;
+    });
     if (_formUpdateProfileKey.currentState!.validate()) {
       // Save the profile data
       try {
+        await Future.delayed(const Duration(seconds: 1));
+
         // Call the API to save the profile data
         final updatedUser = await _profileController.updateProfile(
           _fullNameController.text,
@@ -111,11 +116,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             context: context,
           );
 
+          setState(() {
+            isLoading = false;
+          });
           Navigator.pop(context, true);
         }
       } catch (e) {
         String errorMessage = e.toString();
         print("Error save profile: $errorMessage");
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
@@ -351,8 +362,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => _saveProfile(context),
-                    child: Text('Save Changes'),
+                    onPressed: isLoading ? null : () => {_saveProfile(context)},
+                    child:
+                        isLoading
+                            ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                            : const Text('Change Password'),
                   ),
                 ),
 

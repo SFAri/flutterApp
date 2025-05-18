@@ -119,4 +119,19 @@ class ProfileController {
   Future<void> deleteAddress(String id) async {
     await CHttpHelper.delete('users/address/$id', withAuth: true);
   }
+
+  // Change Password
+  Future<Map<String, dynamic>> changePassword(
+    String currentPassword,
+    String newPassword,
+    String confirmPassword,
+  ) async {
+    final response = await CHttpHelper.post('auth/password/change', {
+      'currentPassword': currentPassword,
+      'newPassword': newPassword,
+      'confirmPassword': confirmPassword,
+    }, withAuth: true);
+
+    return response;
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:ecommerce/common/widgets/appbar/appbar.dart';
 import 'package:ecommerce/common/widgets/images/circular_image.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
+import 'package:ecommerce/features/personalization/screens/profile/change_password_screen.dart';
 import 'package:ecommerce/features/personalization/screens/profile/update_profile_screen.dart';
 import 'package:ecommerce/features/personalization/screens/profile/widgets/profile_menu.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
@@ -195,6 +196,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Divider(),
               SizedBox(width: CSizes.spaceBtwItems),
+
+              SizedBox(width: CSizes.spaceBtwItems / 2),
+              Divider(),
+              SizedBox(width: CSizes.spaceBtwItems),
+
+              // -- Change Password
+              CSectorHeading(
+                title: 'Password Settings',
+                buttonTitle: 'Change Password',
+                padding: 0,
+                showActionButton: true,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => ChangePasswordScreen()),
+                  );
+                },
+              ),
+              SizedBox(width: CSizes.spaceBtwItems),
+
+              // -- Password Info
+              CProfileMenu(
+                onPressed: () {},
+                title: 'Password',
+                value: '******',
+                icon: Iconsax.copy_copy,
+              ),
 
               // -- Close Account Button
               Center(
