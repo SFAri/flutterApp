@@ -1,3 +1,4 @@
+import 'package:ecommerce/utils/formatters/formatter.dart';
 import 'package:flutter/material.dart';
 
 class CBlockSimple extends StatelessWidget {
@@ -31,7 +32,7 @@ class CBlockSimple extends StatelessWidget {
         spacing: 10,
         children: [
           Text(title, style: TextStyle(color: Colors.grey)),
-          Text(isMoney ? '${description} VND' : description.toString(), style: TextStyle(color: isProfit? Colors.red : Colors.blue),)
+          Text(isMoney ? CFormatter.formatMoney(description.toString()) : description.toString(), style: TextStyle(color: isProfit? Colors.red : Colors.blue),)
         ],
       ),
     );
