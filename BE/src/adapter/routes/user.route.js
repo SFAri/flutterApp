@@ -16,6 +16,9 @@ router
   .put(authUser, UserController.updateUser);
 
 router
+  .route("/address/isDefault")
+  .get(authUser, UserController.getAddressDefault);
+router
   .route("/address")
   .get(authUser, UserController.getAddress)
   .post(authUser, UserController.createAddress);

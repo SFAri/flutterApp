@@ -6,7 +6,6 @@ export default class CouponRepository {
       code,
       discountAmount = 0,
       usageLimit = 10,
-      createdBy,
       isActive = true,
     } = input;
 
@@ -15,8 +14,8 @@ export default class CouponRepository {
       discountAmount,
       usageLimit,
       isActive,
-      createdBy,
     });
+    console.log("🚀 ~ CouponRepository ~ CreateCoupon ~ newCoupon:", newCoupon);
 
     await newCoupon.save();
     return newCoupon;
@@ -25,6 +24,11 @@ export default class CouponRepository {
   async FindByCode(code) {
     const coupon = await CouponModel.findOne({ code });
     return coupon;
+  }
+
+  async FilterCoupon(filter = {}, sortBy = {}) {
+    const couponList = await CouponModel.find(filter).sort(sortBy).lean();
+    return couponList;
   }
 
   async IncrementUsage(code) {

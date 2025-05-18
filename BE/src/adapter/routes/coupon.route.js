@@ -10,7 +10,7 @@ router
   .get(CouponController.getListCoupon)
   .post(authUser, checkRole(["admin", "write"]), CouponController.createCoupon);
 
-// router.route("/filter").post(CouponController.filterProduct);
+router.route("/filter").post(CouponController.filterCoupon);
 router
   .route("/:code")
   .get(CouponController.getCouponDetail)

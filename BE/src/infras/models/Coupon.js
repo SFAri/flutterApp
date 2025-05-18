@@ -19,13 +19,8 @@ const CouponSchema = Schema(
     },
     usedCount: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
-    createdBy: {
-      type: Schema.Types.ObjectId,
-      ref: "User", // assuming admin is a user
-    },
   },
   {
-    _id: false,
     timestamps: true,
   }
 );

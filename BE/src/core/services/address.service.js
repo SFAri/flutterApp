@@ -6,6 +6,23 @@ class AddressService {
     this.userRepository = new UserRepository();
   }
 
+  async GetAddressDefaultByUserId(userId) {
+    const user = await this.userRepository.FindById(userId);
+    if (!user) ThrowNewError("UserError", "User does not exist");
+
+    const addresses = await Promise.all(
+      user.addresses.map((address) =>
+        this.repository.FindAddressById(address._id)
+      )
+    );
+
+    const addressDefault = addresses.find((address) => address.isDefault);
+    if (!addressDefault)
+      ThrowNewError("AddressError", "Address does not exist");
+
+    return FormatData(addressDefault);
+  }
+
   async GetAllAddressByUserId(userId) {
     const user = await this.userRepository.FindById(userId);
     if (!user) ThrowNewError("UserError", "User does not exist");

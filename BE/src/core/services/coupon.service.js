@@ -7,7 +7,7 @@ class CouponService {
   }
 
   async CreateCoupon(input) {
-    const { code, discountAmount, usageLimit, createdBy, isActive } = input;
+    const { code, discountAmount, usageLimit, isActive } = input;
 
     const existing = await this.repository.FindByCode(code);
     if (existing) ThrowNewError("CouponError", "Coupon code already exists");
@@ -19,7 +19,6 @@ class CouponService {
       code,
       discountAmount,
       usageLimit,
-      createdBy,
       isActive,
     });
 
@@ -35,6 +34,11 @@ class CouponService {
     const coupon = await this.repository.FindByCode(code);
     if (!coupon) ThrowNewError("CouponError", "Coupon not found");
     return FormatData(coupon);
+  }
+
+  async GetCouponByFilter(filter = {}, sortBy = {}) {
+    const couponList = await this.repository.FilterCoupon(filter, sortBy);
+    return FormatData(couponList);
   }
 
   async UpdateCoupon(code, input) {

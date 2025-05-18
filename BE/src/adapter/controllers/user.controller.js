@@ -141,6 +141,17 @@ class UserController {
     }
   }
 
+  async getAddressDefault(req, res, next) {
+    const { _id } = req.user;
+
+    try {
+      const data = await AddressService.GetAddressDefaultByUserId(_id);
+      res.status(200).json(FormatResult("success", data));
+    } catch (err) {
+      next(createError(400, err));
+    }
+  }
+
   async updateAddress(req, res, next) {
     try {
       const id = req.params.id;

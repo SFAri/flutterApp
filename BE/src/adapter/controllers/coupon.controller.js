@@ -18,7 +18,6 @@ class CouponController {
         code,
         discountAmount,
         usageLimit,
-        createdBy: req.user._id,
         isActive,
       };
 
@@ -49,16 +48,16 @@ class CouponController {
     }
   }
 
-  // async filterCoupon(req, res, next) {
-  //   const { sortBy, filter } = req.body || {};
+  async filterCoupon(req, res, next) {
+    const { sortBy, filter } = req.body || {};
 
-  //   try {
-  //     const data = await CouponService.GetCouponByFilter(filter, sortBy);
-  //     res.status(200).json(FormatResult("success", data));
-  //   } catch (err) {
-  //     next(createError(400, err));
-  //   }
-  // }
+    try {
+      const data = await CouponService.GetCouponByFilter(filter, sortBy);
+      res.status(200).json(FormatResult("success", data));
+    } catch (err) {
+      next(createError(400, err));
+    }
+  }
 
   async updateCoupon(req, res, next) {
     const code = req.params.code;
