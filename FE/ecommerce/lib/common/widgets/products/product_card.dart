@@ -146,21 +146,22 @@ class CProductCard extends StatelessWidget {
                           onRatingUpdate: ((rating) {
                             print(rating);
                           })),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: SizedBox(
-                          width: CSizes.iconLg * 1.2,
-                          height: CSizes.iconLg * 1.2,
-                          child: IconButton(
-                            onPressed: (){},
-                            icon: Icon(Icons.shopping_cart),
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
+                      // Container(
+                      //   decoration: BoxDecoration(
+                      //       color: Colors.black,
+                      //       borderRadius: BorderRadius.circular(10),
+                      //   ),
+                      //   child: SizedBox(
+                      //     width: CSizes.iconLg * 1.2,
+                      //     height: CSizes.iconLg * 1.2,
+                      //     child: IconButton(
+                      //       onPressed: (){},
+                      //       icon: Icon(Icons.shopping_cart),
+                      //       color: Colors.white,
+                      //     ),
+                      //   ),
+                      // )
+                      SizedBox(width: 10)
                     ],
                   )
                 ],

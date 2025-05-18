@@ -1,5 +1,6 @@
 import 'package:ecommerce/features/admin/responsive.dart';
 import 'package:ecommerce/features/admin/screens/userManagement/detailUser/detail_user.dart';
+import 'package:ecommerce/features/auth/controllers/user_controller.dart';
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
@@ -14,43 +15,80 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  final List<Map<String, dynamic>> users = [
-    {
-      'name': 'Mokhasiemov',
-      'email': 'mokhasiemov@gmail.com',
-      'phone': '123-456-7890',
-      'points': 100,
-      'addresses': ['123 Main St', '456 Elm St'],
-      'orders': [
-        {
-          'id': '001',
-          'orderDate': '2023-01-01',
-          'deliveryDate': '2023-01-05',
-          'status': 'Delivered',
-          'total': '250.00'
-        },
-      ],
-      'status': 'Active'
-    },
-    {
-      'name': 'Jayden_Cr',
-      'email': 'jaydencr@example.com',
-      'phone': '987-654-3210',
-      'points': 150,
-      'addresses': ['789 Oak St'],
-      'orders': [
-        {
-          'id': '002',
-          'orderDate': '2023-02-01',
-          'deliveryDate': '2023-02-05',
-          'status': 'Pending',
-          'total': '150.00'
-        },
-      ],
-      'status': 'Active'
-    },
-    // Thêm người dùng khác ở đây
-  ];
+  // final List<Map<String, dynamic>> users = [
+  //   {
+  //     'name': 'Mokhasiemov',
+  //     'email': 'mokhasiemov@gmail.com',
+  //     'phone': '123-456-7890',
+  //     'points': 100,
+  //     'addresses': ['123 Main St', '456 Elm St'],
+  //     'orders': [
+  //       {
+  //         'id': '001',
+  //         'orderDate': '2023-01-01',
+  //         'deliveryDate': '2023-01-05',
+  //         'status': 'Delivered',
+  //         'total': '250.00'
+  //       },
+  //     ],
+  //     'status': 'Active'
+  //   },
+  //   {
+  //     'name': 'Jayden_Cr',
+  //     'email': 'jaydencr@example.com',
+  //     'phone': '987-654-3210',
+  //     'points': 150,
+  //     'addresses': ['789 Oak St'],
+  //     'orders': [
+  //       {
+  //         'id': '002',
+  //         'orderDate': '2023-02-01',
+  //         'deliveryDate': '2023-02-05',
+  //         'status': 'Pending',
+  //         'total': '150.00'
+  //       },
+  //     ],
+  //     'status': 'Active'
+  //   },
+  //   // Thêm người dùng khác ở đây
+  // ];
+  List<dynamic> users = [];
+  // String selectedStatus = 'All';
+  bool isLoading = true;
+  String searchQuery = '';
+  final UserAdminController userAdminController = UserAdminController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
+  }
+
+  // Fetch data:
+  Future<void> fetchUsers() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await userAdminController.getUsers();
+      if (response['status'] == 'success') {
+        setState(() {
+          users = response['data'];
+        });
+        print("users: ${users.join(',')}");
+      } else {
+        print('error');
+      }
+      
+    } catch (e) {
+      print('Error: $e'); // Handle errors here
+    }
+    finally{
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   final DataTableSource _data = MyData();
 

@@ -6,17 +6,19 @@ class PaginatedTable extends StatefulWidget{
   const PaginatedTable({
     super.key, 
     required this.lists,
-    required this.removeFunction,
+    this.removeFunction,
     this.viewFunction,
     required this.columns,
-    this.header = 'Table'
+    this.header = 'Table', 
+    required this.columnKeys
   });
 
-  final List<Map<String, dynamic>> lists;
-  final VoidCallback removeFunction;
-  final Function(Map<String, dynamic>)? viewFunction;
+  final List<dynamic> lists;
+  final Function(dynamic)? removeFunction;
+  final Function(dynamic)? viewFunction;
   final List<DataColumn> columns;
   final String header;
+  final List<String> columnKeys;
 
   @override
   State<PaginatedTable> createState() => _PaginatedTableState();
@@ -29,10 +31,12 @@ class _PaginatedTableState extends State<PaginatedTable> {
   @override
   void initState() {
     super.initState();
-    _data = MyData(widget.lists, widget.removeFunction, widget.viewFunction ?? (item) {
-      // Hàm mặc định, có thể để trống hoặc hiển thị thông báo
-      print("Xem chi tiết cho: $item");
-    });
+    // print('PREVIEEEEE: ${widget.lists.join(',')}');
+    _data = MyData(
+      widget.lists, widget.removeFunction, 
+      widget.viewFunction,
+      widget.columnKeys
+    );
     scrollController = ScrollController();
   }
 
@@ -57,12 +61,7 @@ class _PaginatedTableState extends State<PaginatedTable> {
                   controller: scrollController,
                   scrollbarOrientation: ScrollbarOrientation.bottom,
                   thumbVisibility: true,
-                  // trackVisibility: true,
-                  // notificationPredicate: (ScrollNotification notification) {
-                  //   return notification.depth == 0; // Chỉ hiển thị scrollbar cho scroll depth 0
-                  // },
                   interactive: true,
-
                   child: PaginatedDataTable(
                       controller: scrollController,
                       rowsPerPage: 10,
@@ -78,44 +77,48 @@ class _PaginatedTableState extends State<PaginatedTable> {
 }
 
 class MyData extends DataTableSource {
-  MyData(this.lists ,this.removeFunction, this.viewFunction);
-  final List<Map<String, dynamic>> lists;
-  final VoidCallback removeFunction;
-  final Function(Map<String, dynamic>) viewFunction;
+  MyData(this.lists ,this.removeFunction, this.viewFunction, this.columnKeys);
+  final List<dynamic> lists;
+  final Function(Map<String, dynamic>)? removeFunction;
+  final Function(Map<String, dynamic>)? viewFunction;
   // final VoidCallback viewFunction;
+  final List<String> columnKeys;
+  
 
   @override
   DataRow? getRow(int index) {
-    // Lấy dữ liệu cho dòng hiện tại
+
     final item = lists[index];
 
-    // Tạo danh sách DataCell tự động
     List<DataCell> cells = [];
 
-    item.forEach((key, value) {
-      // Kiểm tra nếu giá trị không phải là danh sách
-      if (value is! List) {
-        cells.add(DataCell(Text(value.toString()))); // Tạo DataCell cho mỗi giá trị
-      }
-    });
+    // Duyệt qua các khóa để lấy giá trị
+    for (var key in columnKeys) {
+      var value = item[key];
+      cells.add(DataCell(Text(value?.toString() ?? ''))); // Thêm DataCell
+    }
 
     // Thêm DataCell cho các hành động
-    cells.add(
-      DataCell(
-        Row(
-          children: [
-            IconButton(
-              onPressed: () => viewFunction(item),
-              icon: Icon(Icons.remove_red_eye),
-            ),
-            IconButton(
-              onPressed: () => removeFunction(), // Hành động xóa
-              icon: Icon(Icons.delete),
-            ),
-          ],
+    if (viewFunction != null || removeFunction != null){
+      cells.add(
+        DataCell(
+          Row(
+            children: [
+              if (viewFunction != null)
+                IconButton(
+                  onPressed: () => viewFunction!(item),
+                  icon: Icon(Icons.remove_red_eye)
+                ),
+              if (removeFunction != null)
+                IconButton(
+                  onPressed: () => removeFunction!(item), // Hành động xóa
+                  icon: Icon(Icons.delete),
+                ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     // Trả về DataRow với danh sách cells đã tạo
     return DataRow(cells: cells);
@@ -128,7 +131,7 @@ class MyData extends DataTableSource {
   int get rowCount => lists.length;
 
   @override
-  // TODO: implement selectedRowCount
+  
   int get selectedRowCount => 0;
   
 }
