@@ -13,7 +13,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formRegisterKey = GlobalKey<FormState>();
   final loginController = LoginController();
   bool isLoading = false;
 
@@ -123,7 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _handleSignup(context) async{
-    if (_formKey.currentState!.validate()) {
+    if (_formRegisterKey.currentState!.validate()) {
       setState(() {
         isLoading = true; // Set loading state to true
       });
@@ -185,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
-        key: _formKey,
+        key: _formRegisterKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SingleChildScrollView(
           child: Container(

@@ -16,7 +16,7 @@ import 'package:ecommerce/utils/constants/sizes.dart';
 
 class CheckoutScreen extends StatelessWidget {
   final double totalPrice;
-  final _formKey = GlobalKey<FormState>();
+  final _formCheckoutKey = GlobalKey<FormState>();
 
   CheckoutScreen({super.key, required this.cart, required this.totalPrice});
 

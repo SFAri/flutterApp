@@ -53,8 +53,8 @@ class DetailCouponScreenState extends State<DetailCouponScreen> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Header(title: 'Detail coupon'),
-            Divider(),
+            // Header(title: 'Detail coupon'),
+            // Divider(),
 
             // Information of coupon
             // Code, value, total usage, used count, createdDate

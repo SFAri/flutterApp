@@ -249,8 +249,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       mainAxisSize: MainAxisSize.min,
       spacing: 20,
       children: [
-        Header(title: 'Product Detail:'),
-        Divider(),
+        // Header(title: 'Product Detail:'),
+        // Divider(),
 
         // List view image strings:
         SizedBox(

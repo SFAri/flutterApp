@@ -66,8 +66,8 @@ class _ProductManagementState extends State<ProductManagement>{
       spacing: 10,
       children: [
         // Header:
-        Header(title: 'Product Management',),
-        Divider(),
+        // Header(title: 'Product Management',),
+        // Divider(),
 
         // Filter Row:
         Wrap(

@@ -70,8 +70,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       spacing: 20,
       children: [
         // Header:
-        Header(),
-        Divider(),
+        // Header(),
+        // Divider(),
         // Main board
         // 1. Filter row:
         Wrap(

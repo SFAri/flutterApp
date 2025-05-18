@@ -20,7 +20,7 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formUpdateProfileKey = GlobalKey<FormState>();
   final ProfileController _profileController = ProfileController();
   late TextEditingController _fullNameController;
   late TextEditingController _usernameController;
@@ -87,7 +87,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _saveProfile(context) async {
-    if (_formKey.currentState!.validate()) {
+    if (_formUpdateProfileKey.currentState!.validate()) {
       // Save the profile data
       try {
         // Call the API to save the profile data
@@ -137,7 +137,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         child: Padding(
           padding: EdgeInsets.all(CSizes.defaultSpace),
           child: Form(
-            key: _formKey,
+            key: _formUpdateProfileKey,
             child: Column(
               children: [
                 // -- Profile Picture

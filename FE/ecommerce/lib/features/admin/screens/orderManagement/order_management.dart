@@ -81,8 +81,8 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
           mainAxisSize: MainAxisSize.min,
           spacing: 20,
           children: [
-            Header(title: 'Order Management'),
-            Divider(),
+            // Header(title: 'Order Management'),
+            // Divider(),
 
             Padding(
               padding: EdgeInsets.all(16.0),

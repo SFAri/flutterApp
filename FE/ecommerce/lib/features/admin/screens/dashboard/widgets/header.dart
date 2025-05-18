@@ -10,10 +10,12 @@ import 'package:provider/provider.dart';
 class Header extends StatefulWidget {
   const Header({
     super.key,
-    this.title = 'Dashboard'
+    this.title = 'Dashboard', 
+    required this.onMenuButtonPressed
   });
 
   final String title;
+  final VoidCallback onMenuButtonPressed;
 
   @override
   State<Header> createState() => _HeaderState();
@@ -44,7 +46,7 @@ class _HeaderState extends State<Header> {
         if (!Responsive.isDesktop(context))
           IconButton(
             icon: Icon(Icons.menu),
-            onPressed: context.read<MenuAppController>().controlMenu,
+            onPressed: widget.onMenuButtonPressed,
           ),
         
         Text(

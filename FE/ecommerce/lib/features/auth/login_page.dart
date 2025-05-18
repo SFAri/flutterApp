@@ -281,7 +281,6 @@ class _LoginPageState extends State<LoginPage>
                     });
                   },
                   children: <Widget>[
-                    // ✅ Sửa ở đây: dùng SingleChildScrollView bao Column
                     SingleChildScrollView(
                       child: Column(
                         children: [

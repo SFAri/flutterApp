@@ -97,8 +97,8 @@ class _VariantScreenState extends State<VariantScreen> {
     return Column(
       spacing: 20,
       children: [
-        Header(title: 'Variant Management'),
-        Divider(),
+        // Header(title: 'Variant Management'),
+        // Divider(),
 
         // Category management:
         Row(

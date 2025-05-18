@@ -63,8 +63,8 @@ class _UserScreenState extends State<UserScreen> {
     return Column(
       spacing: 20,
       children: [
-        Header(title: 'User management'),
-        Divider(),
+        // Header(title: 'User management'),
+        // Divider(),
         // Filter row:
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,

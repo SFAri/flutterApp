@@ -71,8 +71,8 @@ class CouponScreenState extends State<CouponScreen> {
           mainAxisSize: MainAxisSize.min,
           spacing: 20,
           children: [
-            Header(title: 'Coupon'),
-            Divider(),
+            // Header(title: 'Coupon'),
+            // Divider(),
         
             // Filter row:
             Wrap(

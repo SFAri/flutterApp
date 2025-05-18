@@ -41,8 +41,8 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
     return Column(
       spacing: 20,
       children: [
-        Header(title: 'Detail user'),
-        Divider(),
+        // Header(title: 'Detail user'),
+        // Divider(),
         CircleAvatar(
           radius: 50,
           child: Image.asset(CImages.avatar),
