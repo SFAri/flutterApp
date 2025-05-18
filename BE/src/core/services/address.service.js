@@ -36,6 +36,14 @@ class AddressService {
     return FormatData(addresses);
   }
 
+  async GetAddressDetail(id) {
+    const address = await this.repository.FindAddressById(id);
+    if (!address) {
+      ThrowNewError("AddressError", "Address does not exist");
+    }
+    return FormatData(address);
+  }
+
   async AddNewAddress(userId, input) {
     const existingUser = await this.userRepository.FindById(userId);
 

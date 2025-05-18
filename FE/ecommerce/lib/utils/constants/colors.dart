@@ -18,6 +18,12 @@ class CColors {
   static const Color dark = Colors.black;
   static const Color primaryBackground = Colors.black;
 
+  // Status order colors;
+  static const Color success = Colors.green;
+  static const Color error = Colors.red;
+  static const Color warning = Colors.orange;
+  static const Color info = Colors.blue;
+
   // Gradient colors:
   static const Gradient linearGradient = LinearGradient(
       begin: Alignment(0.0, 0.0),

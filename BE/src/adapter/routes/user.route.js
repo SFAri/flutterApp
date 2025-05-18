@@ -25,6 +25,7 @@ router
 
 router
   .route("/address/:id")
+  .get(UserController.getAddressDetail)
   .put(authUser, UserController.updateAddress)
   .delete(authUser, UserController.deleteAddress);
 

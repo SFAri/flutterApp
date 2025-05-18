@@ -164,7 +164,6 @@ class _CCartItemState extends State<CCartItem> {
                                 ? CColors.grey
                                 : CColors.lightGrey,
                         onPressed: () {
-                          _handleVariantProps(widget.item);
                           _confirmationRemove(widget.item);
                         },
                       )
@@ -182,38 +181,29 @@ class _CCartItemState extends State<CCartItem> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Text(
-                  //   'Variant: ',
-                  //   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  //     color:
-                  //         CHelperFunctions.isDarkMode(context)
-                  //             ? CColors.textWhite
-                  //             : CColors.dark,
-                  //   ),
-                  // ),
                   GestureDetector(
-                    onTap: () {
-                      // Show color picker or dropdown dialog here
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color:
-                              CHelperFunctions.isDarkMode(context)
-                                  ? CColors.textWhite
-                                  : CColors.dark,
+                    onTap: () {},
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 220),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
                         ),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Flexible(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color:
+                                CHelperFunctions.isDarkMode(context)
+                                    ? CColors.textWhite
+                                    : CColors.dark,
+                          ),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                         child: Text(
                           _handleVariantProps(widget.item),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
                           softWrap: true,
-                          overflow: TextOverflow.visible,
                           style: Theme.of(
                             context,
                           ).textTheme.bodyLarge?.copyWith(

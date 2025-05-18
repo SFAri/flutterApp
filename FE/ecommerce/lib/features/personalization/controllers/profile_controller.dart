@@ -44,6 +44,12 @@ class ProfileController {
     }
   }
 
+  // Get address detail
+  Future<Map<String, dynamic>> fetchAddressDetail(String id) async {
+    final response = await CHttpHelper.get('users/address/$id');
+    return response.containsKey('data') ? response['data'] : response;
+  }
+
   // Get user address default
   Future<Map<String, dynamic>> fetchUserAddressDefault() async {
     final response = await CHttpHelper.get(
@@ -98,7 +104,7 @@ class ProfileController {
     return response.containsKey('data') ? response['data'] : response;
   }
 
-  // Update address
+  // Set default address
   Future<Map<String, dynamic>> setDefaultAddress(
     String id,
     bool isDefault,

@@ -10,6 +10,7 @@ class SettingsProvider with ChangeNotifier {
 
   Map<String, dynamic>? _userData;
   List<Map<String, dynamic>>? _userAddress;
+  List<Map<String, dynamic>>? _userOrders;
 
   static const String _currencyKey = 'selected_currency';
   static const String _localeKey = 'selected_locale';
@@ -17,6 +18,7 @@ class SettingsProvider with ChangeNotifier {
   static const String _themeKey = 'selected_theme';
   static const String _userDataKey = 'user_profile';
   static const String _userAddressKey = 'user_address';
+  static const String _userOrderKey = 'user_order';
 
   Locale get appLocale => _appLocale;
   String get selectedCurrency => _selectedCurrency;
@@ -24,6 +26,7 @@ class SettingsProvider with ChangeNotifier {
   String get selectedTheme => _selectedTheme;
   Map<String, dynamic>? get userData => _userData;
   List<Map<String, dynamic>>? get userAddress => _userAddress;
+  List<Map<String, dynamic>>? get userOrder => _userOrders;
 
   SettingsProvider() {
     _loadSettings();
@@ -50,6 +53,12 @@ class SettingsProvider with ChangeNotifier {
     if (addressString != null && addressString.isNotEmpty) {
       final List<dynamic> decoded = json.decode(addressString);
       _userAddress = decoded.cast<Map<String, dynamic>>();
+    }
+
+    final String? orderString = prefs.getString(_userOrderKey);
+    if (orderString != null && orderString.isNotEmpty) {
+      final List<dynamic> decoded = json.decode(orderString);
+      _userOrders = decoded.cast<Map<String, dynamic>>();
     }
 
     notifyListeners();
@@ -111,6 +120,12 @@ class SettingsProvider with ChangeNotifier {
 
   Future<void> setUserAddress(List<Map<String, dynamic>>? data) async {
     _userAddress = data;
+    await _saveSettings();
+    notifyListeners();
+  }
+
+  Future<void> setUserOrder(List<Map<String, dynamic>>? data) async {
+    _userOrders = data;
     await _saveSettings();
     notifyListeners();
   }

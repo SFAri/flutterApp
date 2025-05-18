@@ -151,6 +151,15 @@ class UserController {
       next(createError(400, err));
     }
   }
+  async getAddressDetail(req, res, next) {
+    const id = req.params.id;
+    try {
+      const data = await AddressService.GetAddressDetail(id);
+      res.status(200).json(FormatResult("success", data));
+    } catch (err) {
+      next(createError(400, err));
+    }
+  }
 
   async updateAddress(req, res, next) {
     try {

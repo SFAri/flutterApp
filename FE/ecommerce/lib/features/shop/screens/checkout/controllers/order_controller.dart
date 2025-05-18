@@ -1,9 +1,15 @@
 import 'package:ecommerce/utils/http/http_client.dart';
 
 class OrderController {
-  Future<Map<String, dynamic>> fetchOrderByUser() async {
+  Future<List<Map<String, dynamic>>> fetchOrderByUser() async {
     final response = await CHttpHelper.get('orders/user', withAuth: true);
-    return response.containsKey('data') ? response['data'] : response;
+    if (response.containsKey('data')) {
+      final rawList = response['data'];
+
+      return (rawList as List).map((e) => e as Map<String, dynamic>).toList();
+    } else {
+      throw Exception('No address data found');
+    }
   }
 
   // Add new address
