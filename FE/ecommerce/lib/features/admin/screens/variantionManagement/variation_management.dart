@@ -1,6 +1,5 @@
 import 'package:ecommerce/common/widgets/form/custom_dialogform.dart';
 import 'package:ecommerce/common/widgets/form/custom_textformfield.dart';
-import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:flutter/material.dart';
 
 class VariantScreen extends StatefulWidget {

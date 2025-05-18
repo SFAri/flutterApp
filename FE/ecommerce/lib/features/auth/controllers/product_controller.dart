@@ -23,7 +23,21 @@ class ProductController {
 
   Future<Map<String, dynamic>> getProductDetail(String id) async {
     final response = await CHttpHelper.get('products/$id');
-    // return response.containsKey('data') ? response['data'] : response;
+    return response;
+  }
+
+  Future<Map<String, dynamic>> createProduct(Map<String, dynamic> productData) async {
+    final response = await CHttpHelper.post('products', productData, withAuth: true);
+    return response;
+  }
+
+  Future<Map<String, dynamic>> updateProduct(String id, Map<String, dynamic> productData) async {
+    final response = await CHttpHelper.put('products/$id', productData, withAuth: true);
+    return response;
+  }
+
+  Future<Map<String, dynamic>> deleteProduct(String id) async {
+    final response = await CHttpHelper.delete('products/$id', withAuth: true);
     return response;
   }
 }

@@ -1,17 +1,13 @@
 import 'dart:ui';
 
-import 'package:ecommerce/features/admin/controller/menu_controller.dart';
 import 'package:ecommerce/features/admin/responsive.dart';
-import 'package:ecommerce/features/admin/screens/couponManagement/allCoupons/coupon_screen.dart';
 import 'package:ecommerce/features/admin/screens/couponManagement/detailCoupon/detail_coupon.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/dashboard.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/orderManagement/orderDetail/order_details.dart';
 import 'package:ecommerce/features/admin/screens/productManagement/productDetail/product_detail.dart';
 import 'package:ecommerce/features/admin/widgets/side_drawer.dart';
-import 'package:ecommerce/features/shop/screens/product_details/product_detail.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'dart:async';
 
 class AdminHome extends StatefulWidget {

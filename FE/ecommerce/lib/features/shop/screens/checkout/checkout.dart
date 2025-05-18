@@ -1,5 +1,4 @@
 import 'package:ecommerce/common/widgets/products/product_card.dart';
-import 'package:ecommerce/common/widgets/texts/section_heading.dart';
 import 'package:ecommerce/features/shop/screens/cart/widgets/cart_items.dart';
 import 'package:ecommerce/features/shop/screens/checkout/widgets/billing_address_section.dart';
 import 'package:ecommerce/features/shop/screens/checkout/widgets/billing_information.dart';

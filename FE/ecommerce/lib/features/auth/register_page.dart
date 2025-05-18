@@ -186,7 +186,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: Form(
         key: _formRegisterKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        // autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SingleChildScrollView(
           child: Container(
             width: MediaQuery.of(context).size.width,
@@ -484,6 +484,7 @@ class CustomTextFormFieldRegister extends StatelessWidget {
         controller: controller,
         obscureText: isObscure ? obscureText : false,
         validator: validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           filled: true,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),

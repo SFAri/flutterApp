@@ -5,7 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:ecommerce/common/widgets/form/custom_dialogform.dart';
 import 'package:ecommerce/common/widgets/form/custom_textformfield.dart';
 import 'package:ecommerce/features/admin/responsive.dart';
-import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
+import 'package:ecommerce/features/auth/controllers/product_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -41,7 +41,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   List<File> selectedImagesMobile = [];
   final ImagePicker _picker = ImagePicker();
   List<dynamic> variants = [];
-  String testImgUrl = '';
+  List<String> testImgUrl = [];
+  final GlobalKey<FormState> _formProductKey = GlobalKey<FormState>();
+  bool isLoading = false;
+  final productController = ProductController();
 
   @override
   void initState() {
@@ -62,6 +65,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       _selectedBrand = widget.item!['brand'];
       _selectedCategory = widget.item!['category'];
       _discountController.text = widget.item!['discount'].toString();
+    }
+    else {
+      isLoading = false;
     }
   } 
 
@@ -91,6 +97,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final screenSizeController = TextEditingController(text: variant?['specs']['screenSize']?.toString() ?? '');
     final refreshRateController = TextEditingController(text: variant?['specs']['refreshRate']?.toString() ?? '');
     final resolutionController = TextEditingController(text: variant?['specs']['resolution']?.toString() ?? '');
+    final socketController = TextEditingController(text: variant?['specs']['socket']?.toString() ?? '');
+    final chipsetController = TextEditingController(text: variant?['specs']['chipset']?.toString() ?? '');
+    final interfaceController = TextEditingController(text: variant?['specs']['interface']?.toString() ?? '');
+    final formFactorController = TextEditingController(text: variant?['specs']['formFactor']?.toString() ?? '');
     final inventoryController = TextEditingController(text: variant?['inventory']?.toString() ?? '');
 
     return showDialog<void>(
@@ -106,21 +116,57 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   label: 'Variant Id', 
                   hintText: 'Enter Variant Id', 
                   controller: variantIdController, 
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a Variant ID'; // Thông báo lỗi nếu không có giá trị
+                    }
+                    return null; // Trả về null nếu không có lỗi
+                  },
                 ),
                 CTextFormField(
                   label: 'Import price', 
                   hintText: 'Enter import price', 
                   controller: importPriceController, 
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter import price'; 
+                    }
+                    return null; 
+                  },
                 ),
                 CTextFormField(
                   label: 'Sale price', 
                   hintText: 'Enter sale price', 
                   controller: salePriceController, 
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter sale price'; 
+                    }
+                    return null; 
+                  },
                 ),
                 CTextFormField(
                   label: 'Color', 
                   hintText: 'Choose color', 
                   controller: colorController, 
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter color'; 
+                    }
+                    return null; 
+                  },
+                ),
+                CTextFormField(
+                  keyboardType: TextInputType.number,
+                  label: 'Inventory', 
+                  hintText: 'Enter Inventory number', 
+                  controller: inventoryController, 
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter valid inventory amount'; 
+                    }
+                    return null; 
+                  },
                 ),
                 Row(
                   spacing: 10,
@@ -165,15 +211,49 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   controller: resolutionController, 
                 ),
                 CTextFormField(
-                  keyboardType: TextInputType.number,
-                  label: 'Inventory', 
-                  hintText: 'Enter Inventory number', 
-                  controller: inventoryController, 
+                  label: 'Socket', 
+                  hintText: 'Enter Socket', 
+                  controller: socketController, 
+                ),
+                CTextFormField(
+                  label: 'Chipset', 
+                  hintText: 'Enter Chipset', 
+                  controller: chipsetController, 
+                ),
+                CTextFormField(
+                  label: 'Interface', 
+                  hintText: 'Enter Interface', 
+                  controller: interfaceController, 
+                ),
+                CTextFormField(
+                  label: 'Form Factor', 
+                  hintText: 'Enter Form Factor', 
+                  controller: formFactorController, 
                 ),
               ],
             ),
           ), 
-          acceptFunction: acceptFunction,
+          acceptFunction: () {
+            final updatedVariant = {
+              'variantId': variantIdController.text,
+              'importPrice': double.tryParse(importPriceController.text) ?? 0.0,
+              'salePrice': double.tryParse(salePriceController.text) ?? 0.0,
+              'color': colorController.text,
+              'specs': {
+                'processor': processorController.text,
+                'gpu': gpuController.text,
+                'ram': ramController.text,
+                'storage': storageController.text,
+                'screenSize': screenSizeController.text,
+                'refreshRate': refreshRateController.text,
+                'resolution': resolutionController.text,
+              },
+              'inventory': int.tryParse(inventoryController.text) ?? 0,
+            };
+
+            acceptFunction(updatedVariant); // Gọi hàm với biến thể đã cập nhật
+            // Navigator.of(context).pop(); // Đóng dialog
+          },
         );
       },
     );
@@ -199,58 +279,167 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
-  Future<void> _uploadImage() async{
+  Future<List<String>> _uploadImage() async{
     final url = Uri.parse('https://api.cloudinary.com/v1_1/dfgfyxjfx/upload/');
-
-    final request = http.MultipartRequest('POST', url)
-      ..fields['upload_preset'] = 'dldndst';
-      // ..files.add(await http.MultipartFile.fromPath('file', !kIsWeb ? selectedImagesMobile[0].path : ''));
+    final List<String> imageUrls = [];
+    try {
       if (kIsWeb) {
         // Xử lý cho trường hợp web
         for (var imageFuture in selectedImagesWeb) {
-          Uint8List imageData = await imageFuture; // Chờ cho Future hoàn thành
-          request.files.add(http.MultipartFile.fromBytes(
-            'file', 
-            imageData,
-            filename: 'image_${DateTime.now().millisecondsSinceEpoch}.png', // Tạo tên file
-          ));
+          // Chờ cho Future hoàn thành
+          Uint8List imageData = await imageFuture as Uint8List; 
+
+          final request = http.MultipartRequest('POST', url)
+            ..fields['upload_preset'] = 'dldndst'
+            ..files.add(http.MultipartFile.fromBytes(
+              'file',
+              imageData,
+              filename: 'image_${DateTime.now().millisecondsSinceEpoch}.png', // Tạo tên file
+            ));
+
+          final response = await request.send();
+          if (response.statusCode == 200) {
+            final responseData = await response.stream.toBytes();
+            final responseString = String.fromCharCodes(responseData);
+            final jsonMap = jsonDecode(responseString);
+            final String imageUrl = jsonMap['url'];
+            
+            imageUrls.add(imageUrl); // Thêm URL vào danh sách
+          } else {
+            print('ERROR WHILE UPLOADING IMAGE: ${response.statusCode}');
+          }
         }
       } else {
         // Xử lý cho trường hợp mobile
-        request.files.add(await http.MultipartFile.fromPath('file', selectedImagesMobile[0].path));
+        for (var image in selectedImagesMobile) {
+          Uint8List imageData = await File(image.path).readAsBytes(); // Đọc dữ liệu từ file
+
+          final request = http.MultipartRequest('POST', url)
+            ..fields['upload_preset'] = 'dldndst'
+            ..files.add(http.MultipartFile.fromBytes(
+              'file',
+              imageData,
+              filename: 'image_${DateTime.now().millisecondsSinceEpoch}.png', // Tạo tên file
+            ));
+
+          final response = await request.send();
+          if (response.statusCode == 200) {
+            final responseData = await response.stream.toBytes();
+            final responseString = String.fromCharCodes(responseData);
+            final jsonMap = jsonDecode(responseString);
+            final String imageUrl = jsonMap['url'];
+            
+            imageUrls.add(imageUrl); // Thêm URL vào danh sách
+          } else {
+            print('ERROR WHILE UPLOADING IMAGE: ${response.statusCode}');
+          }
+        }
       }
-      final response = await request.send();
-      if (response.statusCode == 200) {
-        final responseData = await response.stream.toBytes();
-        final responseString = String.fromCharCodes(responseData);
-        final jsonMap = jsonDecode(responseString);
-        setState(() {
-          final url = jsonMap['url'];
-          testImgUrl = url;
-          print("URL -----$url");
-        });
-      }
-      else {
-        print('ERROR WHILE UPLOADING IMAGE');
-      }
+    } catch (e) {
+      print('Exception: $e');
+    }
+    print(imageUrls);
+    setState(() {
+      testImgUrl = imageUrls;
+    });
+    return imageUrls; // Trả về danh sách URL
   }
 
-  void handleUpdate (){
+  Future<void> handleSubmit (context, isUpdate) async {
+    // _uploadImage();
+    // Kiểm tra danh sách variants
+    if (variants.isEmpty) {
+      // Hiển thị Snackbar nếu variants rỗng
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please add at least one variant.')),
+      );
+      return;
+    }
 
-  }
+    // Kiểm tra danh sách hình ảnh
+    int totalImages = (imagePath.length) + 
+                    (selectedImagesMobile.length) + 
+                    (selectedImagesWeb.length);
 
-  void handleCreate (){
-    _uploadImage();
+    if (totalImages == 0) {
+      // Hiển thị Snackbar nếu không có hình ảnh
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select at least one image.')),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+    // CALL API HERE:
+    // Call api upload ảnh lên:
+    await _uploadImage();
+    print('URL FROM upload: ' + testImgUrl.join('\n'));
+    
+    List<Map> updatedVariants = variants.map((variant) {
+      return {
+        ...variant,
+        'type': _selectedCategory, // Thêm trường "type"
+      };
+    }).toList();
+    Map<String, dynamic> productData = {
+      'name': _nameController.text,
+      'brand': _selectedBrand,
+      'description': _descriptionController.text,
+      'category': _selectedCategory,
+      'images': imagePath + testImgUrl, 
+      'variants': updatedVariants, 
+      'discount': double.parse(_discountController.text), 
+    };
+
+    // Cập nhật sản phẩm:
+    if (isUpdate){
+      final response = await productController.updateProduct(widget.item?['_id'],productData);
+      if (response['status'] == 'success') {
+        // Xử lý thành công
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Product update successfully.')),
+        );
+        print('Product update successfully: ${response['data']}');
+      } else {
+        // Xử lý lỗi
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating product.')),
+        );
+        print('Error updating product: ${response['message']}');
+      }
+    }
+    else {
+      final response = await productController.createProduct(productData);
+      if (response['status'] == 'success') {
+        // Xử lý thành công
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Product created successfully.')),
+        );
+        print('Product created successfully: ${response['data']}');
+      } else {
+        // Xử lý lỗi
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error creating product.')),
+        );
+        print('Error creating product: ${response['message']}');
+      }
+    }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return isLoading 
+    ? Center(child: CircularProgressIndicator())
+    : Column(
       mainAxisSize: MainAxisSize.min,
       spacing: 20,
       children: [
-        // Header(title: 'Product Detail:'),
-        // Divider(),
 
         // List view image strings:
         SizedBox(
@@ -391,107 +580,150 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
         // Form chứa thông tin của product: 
         // Thông tin trong các textfield gồm: ID, Code, name, description, imageStrings[], brand, category, discount
-        Wrap(
-          direction: Axis.horizontal,
-          runSpacing: 10,
-          spacing: 50,
-          children: [
-            Column(
-              spacing: 10,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: 450,
-                  child: CTextFormField(
-                    controller: _codeController,
-                    label: 'Product Id',
+        Form(
+          key: _formProductKey,
+          child: Column(
+            children: [
+              Wrap(
+                direction: Axis.horizontal,
+                runSpacing: 10,
+                spacing: 50,
+                children: [
+                  Column(
+                    spacing: 10,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 450,
+                        // child: CTextFormField(
+                        //   controller: _codeController,
+                        //   label: 'Product Id',
+                        // ),
+                        child: TextFormField(
+                          controller: _codeController,
+                          decoration: InputDecoration(
+                            label: Text('Product Id'),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabled: false
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 450,
+                        child: CTextFormField(
+                          controller: _nameController,
+                          label: 'Product Name',
+                          hintText: 'Enter product name',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a Product Name'; // Thông báo lỗi nếu không có giá trị
+                            }
+                            return null; // Trả về null nếu không có lỗi
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(
-                  width: 450,
-                  child: CTextFormField(
-                    controller: _nameController,
-                    label: 'Product Name',
-                    hintText: 'Enter product name',
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              spacing: 10,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: 450,
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedBrand,
-                    decoration: InputDecoration(
-                      labelText: 'Brand',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: brands.map((String brand) {
-                      return DropdownMenuItem<String>(
-                        value: brand,
-                        child: Text(brand),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedBrand = newValue;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 450,
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedCategory,
-                    decoration: InputDecoration(
-                      labelText: 'Category',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: categories.map((String category) {
-                      return DropdownMenuItem<String>(
-                        value: category,
-                        child: Text(category),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedCategory = newValue;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 450,
-                  child: CTextFormField(
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
-                    controller: _discountController,
-                    label: 'Discount',
-                    onChanged: (value) {
-                      
-                    },
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-
-        SizedBox(
-          width: Responsive.isDesktop(context) ? 950 : 450,
-          child: TextFormField(
-            controller: _descriptionController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                  Column(
+                    spacing: 10,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 450,
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedBrand,
+                          decoration: InputDecoration(
+                            labelText: 'Brand',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: brands.map((String brand) {
+                            return DropdownMenuItem<String>(
+                              value: brand,
+                              child: Text(brand),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedBrand = newValue;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a brand'; // Thông báo lỗi nếu không có giá trị
+                            }
+                            return null; // Trả về null nếu không có lỗi
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 450,
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedCategory,
+                          decoration: InputDecoration(
+                            labelText: 'Category',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: categories.map((String category) {
+                            return DropdownMenuItem<String>(
+                              value: category,
+                              child: Text(category),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedCategory = newValue;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a category'; // Thông báo lỗi nếu không có giá trị
+                            }
+                            return null; // Trả về null nếu không có lỗi
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 450,
+                        child: CTextFormField(
+                          keyboardType: TextInputType.numberWithOptions(decimal: true),
+                          controller: _discountController,
+                          label: 'Discount',
+                          onChanged: (value) {
+                            
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter discount for this product'; // Thông báo lỗi nếu không có giá trị
+                            }
+                            return null; // Trả về null nếu không có lỗi
+                          },
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
-              hintText: '',
-              labelText: 'Description',
-            ),
-            maxLines: 10,
-          ),
+
+              SizedBox(height: 10,),
+
+              SizedBox(
+                width: Responsive.isDesktop(context) ? 950 : 450,
+                child: TextFormField(
+                  controller: _descriptionController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    hintText: '',
+                    labelText: 'Description',
+                  ),
+                  maxLines: 10,
+                ),
+              ),
+            ],
+          )
         ),
 
         // Dưới là 1 cái listview động chứa thông tin variants: [code, name, type ,retail price, sale price, inStock]
@@ -504,6 +736,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 'Add new variant', 
                 (data) {
                   // Handle adding the new variant data here
+                  setState(() {
+                    variants.add(data);
+                  });
                 },
               );
             },
@@ -551,12 +786,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           context, 
                           'Edit Variant: ${variants[index]['variantId']}', //----- SKU of variant here syntax: Edit Variant: SKU -$skuCode ----------
                           (data) {
-                            // Handle updating the existing variant with the provided data
+                            setState(() {
+                              variants[index] = data;
+                            });
                           },
                           variant: variants[index],
                         );
                       }, 
                       icon: Icon(Icons.edit)
+                    ),
+                    IconButton(
+                      onPressed: (){
+                        setState(() {
+                          variants.removeAt(index); // Xóa biến thể tại chỉ số index
+                        });
+                      }, 
+                      icon: Icon(Icons.delete, color: Colors.red,)
                     ),
                   ],
                 ),
@@ -582,7 +827,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.all(5)
                 ),
-                onPressed: widget.item != null ? handleUpdate : handleCreate, 
+                onPressed: (){
+                  if (_formProductKey.currentState?.validate() ?? false) {
+                    // Nếu form hợp lệ, thực hiện hành động
+                    // widget.item != null ? handleUpdate(context) : handleCreate(context);
+                    handleSubmit(context, widget.item != null ? true : false);
+                  }
+                }, 
                 child: Text(widget.item != null ? 'Update' : 'Create')
               ),
             ],

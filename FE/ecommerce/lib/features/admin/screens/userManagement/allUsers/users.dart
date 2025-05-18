@@ -1,5 +1,4 @@
 import 'package:ecommerce/features/admin/responsive.dart';
-import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/userManagement/detailUser/detail_user.dart';
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';

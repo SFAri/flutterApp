@@ -7,7 +7,8 @@ class CTextFormField extends StatelessWidget {
     this.hintText = '',
     this.keyboardType = TextInputType.text,
     this.onChanged,
-    required this.controller
+    required this.controller,
+    this.validator,
   });
 
   final String label;
@@ -15,12 +16,14 @@ class CTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
   final ValueChanged<String>? onChanged;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         label: Text(label),
         hintText: hintText,
@@ -29,6 +32,7 @@ class CTextFormField extends StatelessWidget {
         ),
       ),
       onChanged: onChanged,
+      validator: validator,
     );
   }
 }

@@ -1,11 +1,9 @@
-import 'package:ecommerce/features/admin/controller/menu_controller.dart';
 import 'package:ecommerce/features/admin/responsive.dart';
 import 'package:ecommerce/navigation_menu.dart';
 import 'package:ecommerce/services/auth_service.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
 import 'package:ecommerce/utils/local_storage/storage_utility.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Header extends StatefulWidget {
   const Header({

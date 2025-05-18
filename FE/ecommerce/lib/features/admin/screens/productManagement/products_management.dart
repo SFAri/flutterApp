@@ -1,4 +1,3 @@
-import 'package:ecommerce/features/admin/screens/dashboard/widgets/header.dart';
 import 'package:ecommerce/features/admin/screens/productManagement/productDetail/product_detail.dart';
 import 'package:ecommerce/features/auth/controllers/product_controller.dart';
 import 'package:ecommerce/main.dart';
@@ -20,10 +19,13 @@ class _ProductManagementState extends State<ProductManagement>{
   String selectedBrand = 'All Brand';
   String searchQuery = '';
   bool isDesc = true;
+  bool isLoading = false;
 
   @override
   void initState() {
+    isLoading = true;
     fetchProducts();
+    isLoading = false;
     super.initState();
   }
 
@@ -37,7 +39,7 @@ class _ProductManagementState extends State<ProductManagement>{
         setState(() {
           products = response['data'];
         });
-        print("Products: " + products.join(','));
+        print("Products: ${products.join(',')}");
       } else {
         print('error');
       }
@@ -60,9 +62,36 @@ class _ProductManagementState extends State<ProductManagement>{
     }).toList();
   }
 
+  // Delete product:
+  Future<void> handleDelete (context, id) async {
+    setState(() {
+      isLoading = true;
+    });
+    final response = await productController.deleteProduct(id);
+    if (response['status'] == 'success') {
+      // Xử lý thành công
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Product deleted successfully.')),
+      // );
+      print('Product deleted successfully: ${response['data']}');
+    } else {
+      // Xử lý lỗi
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Error deleted product.')),
+      // );
+      print('Error deleted product: ${response['message']}');
+    }
+    fetchProducts();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return isLoading
+    ? Center(child: CircularProgressIndicator(),)
+    : Column(
       spacing: 10,
       children: [
         // Header:
@@ -211,7 +240,9 @@ class _ProductManagementState extends State<ProductManagement>{
                   ],
                 ),
                 trailing: IconButton(
-                  onPressed: (){}, 
+                  onPressed: (){
+                    handleDelete(context, filteredProducts[index]['_id']);
+                  } , 
                   icon: Icon(Icons.delete, color: Colors.red,)
                 ),
               ),
