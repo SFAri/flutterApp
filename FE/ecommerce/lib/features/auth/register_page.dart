@@ -289,7 +289,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.black,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -322,7 +322,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.black,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -354,7 +354,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Colors.black,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -378,12 +378,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      fillColor: Colors.white,
+                      fillColor: Colors.black,
                       hintText: 'Enter your address',
                       labelText: 'Address',
                       prefixIcon: Icon(
                         Icons.location_city,
-                        color: Colors.black,
+                        color: Colors.grey,
                       ),
                     ),
                     validator: (value) {
@@ -488,7 +488,7 @@ class CustomTextFormFieldRegister extends StatelessWidget {
         decoration: InputDecoration(
           filled: true,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          fillColor: Colors.white,
+          fillColor: Colors.black,
           hintText: hint,
           labelText: label,
           prefixIcon: icon,
