@@ -150,7 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
           wardName,
           detailAddressController.text
         ];
-        print("TEST ====" + test.join(', '));
+        // print("TEST ====" + test.join(', '));
         final result = await loginController.register(
           nameController.text,
           emailController.text,
