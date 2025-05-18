@@ -56,7 +56,7 @@ class ProductController {
   }
 
   async getFilterProduct(req, res, next) {
-    const { page, limit, sortBy, filter } = req.body || {};
+    const { searchText, page, limit, sortBy, filter } = req.body || {};
     const pageQuery = parseInt(page) || null;
     const perPage = parseInt(limit) || null;
 
@@ -64,6 +64,7 @@ class ProductController {
       const data = await ProductService.GetProductByFilter(
         filter,
         sortBy,
+        searchText,
         pageQuery,
         perPage
       );

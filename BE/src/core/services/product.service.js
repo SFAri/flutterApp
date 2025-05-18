@@ -34,6 +34,7 @@ class ProductService {
   async GetProductByFilter(
     filter = {},
     sortBy = {},
+    searchText = null,
     page = null,
     perpage = null
   ) {
@@ -53,6 +54,10 @@ class ProductService {
     }
     if (category) {
       filterQuery.category = category; // Assuming category is a single value
+    }
+
+    if (searchText) {
+      filterQuery.name = { $regex: searchText, $options: "i" };
     }
 
     const products = await this.repository.FindByFilter(
