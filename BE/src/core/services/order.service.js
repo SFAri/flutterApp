@@ -100,7 +100,7 @@ class OrderService {
     page = null,
     perpage = null
   ) {
-    const { couponCode, status, minTotal, maxTotal, ...filterQuery } = filter;
+    const { couponCode, status, minTotal, maxTotal,startDate, endDate,  ...filterQuery } = filter;
 
     if (minTotal != null && maxTotal != null) {
       filterQuery.totalAmount = { $gte: minTotal, $lte: maxTotal };
@@ -116,6 +116,16 @@ class OrderService {
 
     if (couponCode) {
       filterQuery["coupon.code"] = couponCode;
+    }
+
+    if (startDate || endDate) {
+      filterQuery.createdAt = {};
+      if (startDate) {
+        filterQuery.createdAt.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        filterQuery.createdAt.$lte = new Date(endDate);
+      }
     }
 
     const products = await this.repository.FindByFilter(

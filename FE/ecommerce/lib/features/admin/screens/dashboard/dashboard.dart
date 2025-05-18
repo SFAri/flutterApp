@@ -1,5 +1,9 @@
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/block_simple.dart';
 import 'package:ecommerce/features/admin/screens/dashboard/widgets/indicator.dart';
+import 'package:ecommerce/features/admin/screens/userManagement/widgets/paginated_table.dart';
+import 'package:ecommerce/features/auth/controllers/order_controller_admin.dart';
+import 'package:ecommerce/features/auth/controllers/product_controller.dart';
+import 'package:ecommerce/features/auth/controllers/user_controller.dart';
 import 'package:ecommerce/utils/formatters/formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -12,12 +16,16 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final List<String> list = <String>['This Year', 'This month', 'This week', 'Custom'];
+  final List<String> list = <String>['This Year', 'This Month', 'This Week', 'Custom'];
   late String dropdownValue;
+  List<dynamic> orders = [];
+  List<dynamic> users = [];
+  List<dynamic> products = [];
+  bool isLoading = true;
   
 
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
+  late DateTime startDate;
+  late DateTime endDate;
 
   // For graph line:
   final bool isShowingMainData = true;
@@ -25,6 +33,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // For bar graph:
   int touchedIndex = -1;
   final DataTableSource _data = MyData();
+  final OrderAdminController orderAdminController = OrderAdminController();
+  final UserAdminController userAdminController = UserAdminController();
+  final ProductController productController = ProductController();
+
+
+  Future<void> _fetchData() async {
+    try {
+      // final fetchedOrders = await orderAdminController.getOrders();
+      // setState(() {
+      //   orders = fetchedOrders['data'];
+      //   // _filteredOrders = fetchedOrders;
+      //   isLoading = false;
+      // });
+      final results = await Future.wait([
+        orderAdminController.getOrders(),
+        userAdminController.getUsers(),
+        productController.getProducts(),
+      ]);
+
+      final fetchedOrders = results[0];
+      final fetchedUsers = results[1];
+      final fetchedProducts = results[2];
+
+      setState(() {
+        orders = fetchedOrders['data'];
+        users = fetchedUsers['data'];
+        products = fetchedProducts['data'];
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Lỗi khi fetch orders: $e');
+    }
+    finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   void updateStartDate (DateTime newValue) {
     setState(() {
@@ -38,11 +84,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  void _updateDateRange(String selected) {
+    final now = DateTime.now();
+    DateTime start, end;
+
+    switch (selected) {
+      case 'This Year':
+        start = DateTime(now.year, 1, 1);
+        end = DateTime(now.year, 12, 31, 23, 59, 59, 999);
+        break;
+      case 'This Month':
+        start = DateTime(now.year, now.month, 1);
+        final lastDay = DateTime(now.year, now.month + 1, 0).day;
+        end = DateTime(now.year, now.month, lastDay, 23, 59, 59, 999);
+        break;
+      case 'This Week':
+        final weekday = now.weekday; // 1 = Mon, ..., 7 = Sun
+        start = now.subtract(Duration(days: weekday - 1));
+        end = start.add(const Duration(days: 6));
+        end = DateTime(end.year, end.month, end.day, 23, 59, 59, 999);
+        break;
+      case 'Custom':
+        return; // không chỉnh range ở đây
+      default:
+        return;
+    }
+
+    setState(() {
+      startDate = start;
+      endDate = end;
+    });
+  }
+
+
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime(2021, 7, 25),
-      firstDate: DateTime(2021),
+      initialDate: DateTime(2025,5,7),
+      firstDate: DateTime(2024),
       lastDate: DateTime(2100),
     );
 
@@ -60,17 +139,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     dropdownValue = list[0];
+    final now = DateTime.now();
+    startDate = DateTime(now.year, 1, 1);
+    endDate = DateTime(now.year, 12, 31, 23, 59, 59, 999);
+    _fetchData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return isLoading 
+    ? Center(child: CircularProgressIndicator(),)
+    : Column(
       spacing: 20,
       children: [
-        // Header:
-        // Header(),
-        // Divider(),
         // Main board
         // 1. Filter row:
         Wrap(
@@ -91,11 +173,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 
                 style: const TextStyle(color: Colors.deepPurple),
                 borderRadius: BorderRadius.circular(10),
-                // padding: EdgeInsets.all(5),
                 onChanged: (value) {
-                  // This is called when the user selects an item.
                   setState(() {
                     dropdownValue = value!;
+                    if (value != 'Custom') {
+                      _updateDateRange(value);
+                    }
                   });
                 },
                 items:
@@ -112,7 +195,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   side: BorderSide(color: Colors.white)
                 ),
-                onPressed: ()=> _selectDate(context, true), 
+                onPressed: (dropdownValue == 'Custom') ? () => _selectDate(context, true) : null,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -131,7 +214,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   side: BorderSide(color: Colors.white)
                 ),
-                onPressed: ()=> _selectDate(context, false), 
+                onPressed: (dropdownValue == 'Custom') ? () => _selectDate(context, false) : null, 
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -158,10 +241,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           runSpacing: 10,
           spacing: 10,
           children: [
-            CBlockSimple(title: 'Total users',description: 250),
-            CBlockSimple(title: 'Total orders',description: 10),
-            CBlockSimple(title: 'Total revenues',description: 880000, isMoney: true,),
-            CBlockSimple(title: 'Overall profit',description: 250000, isMoney: true, isProfit: true,)
+            CBlockSimple(title: 'Total users',description: double.parse(users.length.toString())),
+            CBlockSimple(title: 'Total orders',description: double.parse(orders.length.toString())),
+            CBlockSimple(title: 'Total revenues',description: 88000000, isMoney: true,),
+            CBlockSimple(title: 'Overall profit',description: 25000000, isMoney: true, isProfit: true,)
           ],
         ),
         // 3. Advanced dashboard: 1 pie graph, 1 line graph + bar graph
@@ -240,7 +323,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           children: <Widget>[
                             Indicator(
                               color: Colors.blueAccent,
-                              text: 'First',
+                              text: 'Laptop',
                               isSquare: true,
                             ),
                             SizedBox(
@@ -248,7 +331,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             Indicator(
                               color: Colors.yellowAccent,
-                              text: 'Second',
+                              text: 'RAM',
                               isSquare: true,
                             ),
                             SizedBox(
@@ -256,7 +339,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             Indicator(
                               color: Colors.purpleAccent,
-                              text: 'Third',
+                              text: 'CPU',
                               isSquare: true,
                             ),
                             SizedBox(
@@ -264,7 +347,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             Indicator(
                               color: Colors.green,
-                              text: 'Fourth',
+                              text: 'Motherboard',
                               isSquare: true,
                             ),
                             SizedBox(
@@ -290,9 +373,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: EdgeInsets.all(20),
           child: Container(
             width: 1000,
-            child: PaginatedDataTable(
-              rowsPerPage: 10,
-              source: _data,
+            child: PaginatedTable(
+              lists: orders, 
+              viewFunction: (order) {},
               columns: [
                 DataColumn(label: Text('OrderId')),
                 DataColumn(label: Text('User')),
@@ -300,8 +383,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 DataColumn(label: Text('Total')),
                 DataColumn(label: Text('Actions')),
               ], 
-              header: const Center(child: Text('List Order')),
+              columnKeys: ['_id' , 'userId', 'createdAt', 'totalAmount']
             ),
+            // child: PaginatedDataTable(
+            //   rowsPerPage: 10,
+            //   source: _data,
+            //   columns: [
+            //     DataColumn(label: Text('OrderId')),
+            //     DataColumn(label: Text('User')),
+            //     DataColumn(label: Text('Date')),
+            //     DataColumn(label: Text('Total')),
+            //     DataColumn(label: Text('Actions')),
+            //   ], 
+            //   header: const Center(child: Text('List Order')),
+            // ),
           )
         ),
       ],
@@ -409,13 +504,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Widget text;
     switch (value.toInt()) {
       case 2: 
-        text = const Text('2020', style: style);
+        text = const Text('2025 March', style: style);
         break;
       case 7: 
-        text = const Text('2021', style: style);
+        text = const Text('2025 April', style: style);
         break;
       case 12: 
-        text = const Text('2022', style: style);
+        text = const Text('2025 May', style: style);
         break;
       default:
         text = const Text('');
