@@ -4,6 +4,7 @@ import 'package:ecommerce/features/shop/screens/cart/models/Cart.dart';
 import 'package:ecommerce/features/shop/screens/chat/chat_screen.dart';
 import 'package:ecommerce/utils/constants/colors.dart';
 import 'package:ecommerce/utils/constants/sizes.dart';
+import 'package:ecommerce/utils/providers/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:provider/provider.dart';
@@ -39,8 +40,9 @@ class CHomeAppBar extends StatelessWidget {
             onEditingComplete: () {
               if (onCategorySelected != null){
                 onCategorySelected?.call({
-                  'name': searchController.text,
+                  // 'name': searchController.text,
                 });
+                Provider.of<CategoryFilterProvider>(context, listen: false).setSearchText(searchController.text);
               }
               else {
                 onSearchCompleted?.call(searchController.text);

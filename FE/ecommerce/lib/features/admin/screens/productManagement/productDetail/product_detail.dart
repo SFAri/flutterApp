@@ -383,6 +383,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         'type': _selectedCategory, // Thêm trường "type"
       };
     }).toList();
+
     Map<String, dynamic> productData = {
       'name': _nameController.text,
       'brand': _selectedBrand,

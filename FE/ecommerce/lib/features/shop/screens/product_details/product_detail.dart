@@ -170,7 +170,7 @@ class ProductDetailState extends State<ProductDetail> {
       color: selectedVariantData["color"].toString(),
       inventory: int.tryParse(selectedVariantData["inventory"].toString()) ?? 0,
       salePrice:
-          double.tryParse(selectedVariantData["price"].toString()) ?? 0.0,
+          double.tryParse(selectedVariantData["salePrice"].toString()) ?? 0.0,
     );
 
     // Create Product object
@@ -355,7 +355,7 @@ class ProductDetailState extends State<ProductDetail> {
                             if (productData["discount"] != 0)
                               Text(
                                 CFormatter.formatMoney(
-                                  productData["price"].toString(),
+                                  productData["variants"][configChoice]["salePrice"].toString(),
                                 ),
                                 style: TextStyle(
                                   fontSize: CSizes.fontSizeLg,
@@ -367,11 +367,11 @@ class ProductDetailState extends State<ProductDetail> {
                             Text(
                               CFormatter.formatMoney(
                                 productData["discount"] != 0
-                                    ? (productData["price"] -
-                                            productData["price"] *
+                                    ? (productData["variants"][configChoice]["salePrice"] -
+                                            productData["variants"][configChoice]["salePrice"] *
                                                 productData["discount"])
                                         .toString()
-                                    : productData["price"].toString(),
+                                    : productData["variants"][configChoice]["salePrice"].toString(),
                               ),
                               style: TextStyle(
                                 fontSize: CSizes.fontSizeLg,
@@ -456,7 +456,7 @@ class ProductDetailState extends State<ProductDetail> {
                           isSelected: configChoice == index,
                           title: title,
                           price: CFormatter.formatMoney(
-                            variant["price"].toString(),
+                            variant["salePrice"].toString(),
                           ),
                           onSelect: () {
                             setState(() {

@@ -3,6 +3,7 @@ import 'package:ecommerce/common/widgets/layout/custom_gridview.dart';
 import 'package:ecommerce/common/widgets/texts/section_heading.dart';
 import 'package:ecommerce/features/shop/screens/home/widgets/home_appbar.dart';
 import 'package:ecommerce/utils/device/device_utility.dart';
+import 'package:ecommerce/utils/formatters/formatter.dart';
 import 'package:ecommerce/utils/providers/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -11,6 +12,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../utils/data/brands_data.dart';
 import '../../../../utils/data/categories_data.dart';
+import '../../../../utils/data/ram_data.dart';
+import '../../../../utils/data/storage_data.dart';
 
 class CategoryHomeScreen extends StatefulWidget {
   // final List<dynamic>? firstFilter;
@@ -23,6 +26,8 @@ class CategoryHomeScreen extends StatefulWidget {
 class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
   late List<String> selectedBrands;
   late List<String> selectedCategories;
+  late List<String> selectedRAM;
+  late List<String> selectedStorage;
   late RangeValues selectedRange;
   late double rating;
   List<dynamic> products = [];
@@ -30,15 +35,17 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
   Map<String,dynamic>? sortBy;
   bool isLoading = false;
   String search = '';
+  List<String> filteredBrands = brands.sublist(1);
+  List<String> filteredCategories = categories.sublist(1);
 
   final ProductController productController = ProductController();
-  Future<void> fetchProducts({Map<String, dynamic>? filter, Map<String, dynamic>? sortBy}) async {
+  Future<void> fetchProducts({Map<String, dynamic>? filter, Map<String, dynamic>? sortBy, String? searchText}) async {
     print("Filters: $filters");
     setState(() {
       isLoading = true;
     });
     try {
-      final response = await productController.filterProducts(filter: filter, sortBy: sortBy);
+      final response = await productController.filterProducts(filter: filter, sortBy: sortBy, searchText: searchText);
       if (response['status'] == 'success') {
         setState(() {
           // products = List.from(response['data']).take(4).toList();
@@ -63,11 +70,15 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
   void initState() {
     selectedBrands = [];
     selectedCategories =[];
-    selectedRange = RangeValues(1000000, 99000000);
+    selectedRange = RangeValues(0,9999999);
     rating = 0;
     filters = Provider.of<CategoryFilterProvider>(context, listen: false).filter;
     sortBy = Provider.of<CategoryFilterProvider>(context, listen: false).sortBy;
-    fetchProducts(filter: filters, sortBy: sortBy);
+    search = Provider.of<CategoryFilterProvider>(context, listen: false).searchText ?? '';  
+    selectedCategories = filters?['category'] != null 
+    ? [filters!['category']]  
+    : [];
+    fetchProducts(filter: filters, sortBy: sortBy, searchText: search);
     super.initState();
 
   }
@@ -81,6 +92,51 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
     setState(() {
       search = value;
     });
+    fetchProducts(filter: filters, sortBy: sortBy, searchText: value);
+  }
+
+  void applyFilters() {
+    Map<String, dynamic> filter = {};
+    Map<String, dynamic> sort = {};
+
+    // Thêm bộ lọc cho các thương hiệu đã chọn
+    if (selectedBrands.isNotEmpty) {
+      filter['brand'] = selectedBrands;
+    }
+
+    // Thêm bộ lọc cho các danh mục đã chọn
+    if (selectedCategories.isNotEmpty) {
+      filter['category'] = selectedCategories;
+    }
+
+    // Thêm bộ lọc cho RAM nếu có
+    // if (selectedRAM.isNotEmpty) {
+    //   filter['ram'] = selectedRAM;
+    // }
+
+    // // Thêm bộ lọc cho bộ nhớ lưu trữ nếu có
+    // if (selectedStorage.isNotEmpty) {
+    //   filter['storage'] = selectedStorage;
+    // }
+
+    // filter['minPrice'] = selectedRange.start.toInt();
+    // filter['maxPrice'] = selectedRange.end.toInt();
+
+    // Thêm bộ lọc cho đánh giá
+    if (rating >= 0) {
+      filter['averageRating'] = rating;
+      sort['averageRating'] = -1;
+    }
+
+    // Gọi hàm fetchProducts với bộ lọc đã tạo
+    fetchProducts(filter: {...?filters, ...filter}, sortBy: {...?sortBy,...sort}, searchText: search);
+    setState(() {
+      filters = {...?filters, ...filter}; 
+      sortBy = {...?sortBy,...sort};
+    });
+    print('-.-.-.-.-Filters: ${filters}');
+    print('-.-.-.-.-SortBy: ${sortBy}');
+
   }
 
   @override
@@ -95,7 +151,7 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
               listWidgets: [
                 SizedBox(height: 2),
                 CHomeAppBar(onSearchCompleted: handleSearch),
-                CSectorHeading(title: 'Tiêu chí lọc'),
+                CSectorHeading(title: 'Filter'),
                 Container(
                   padding: EdgeInsets.only(left: 14, right: 14),
                   child: SingleChildScrollView(
@@ -104,17 +160,17 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
                       // Use Wrap for children with spacing to avoid manual spacing widgets if preferred
                       // spacing: 14, // if using Row's spacing
                       children: [
-                        CFilterButton(title: 'Danh mục', onPressed: () => _showFilterModal('Danh mục', categories, selectedCategories)),
+                        CFilterButton(title: 'Category', onPressed: () => _showFilterModal('Category', filteredCategories, selectedCategories)),
                         SizedBox(width: 14), // Manual spacing if not using Row's spacing
-                        CFilterButton(title: 'Hãng', onPressed: () => _showFilterModal('Hãng', brands, selectedBrands)),
+                        CFilterButton(title: 'Brand', onPressed: () => _showFilterModal('Brand', filteredBrands, selectedBrands)),
                         SizedBox(width: 14),
-                        CFilterButton(title: 'Mức giá', onPressed: () => _showFilterMoney('Mức giá')),
+                        CFilterButton(title: 'Price', onPressed: () => _showFilterMoney('Range Price')),
                         SizedBox(width: 14),
-                        CFilterButton(title: 'Đánh giá', onPressed: () => _showFilterRate('Đánh giá')),
+                        CFilterButton(title: 'Rating', onPressed: () => _showFilterRate('Rating')),
                         SizedBox(width: 14),
-                        CFilterButton(title: 'CPU', onPressed: () {}),
+                        CFilterButton(title: 'RAM', onPressed: () => _showFilterModal("RAM", rams, selectedRAM)),
                         SizedBox(width: 14),
-                        CFilterButton(title: 'RAM', onPressed: () {}),
+                        CFilterButton(title: 'Storage', onPressed: () => _showFilterModal("Storage", storages, selectedStorage)),
                       ],
                     ),
                   ),
@@ -206,6 +262,7 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
                             setState(() {
                               selected = List.from(selectedItems);
                             });
+                            applyFilters();
                             Navigator.pop(context); // Đóng modal
                           },
                         ),
@@ -245,7 +302,7 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
                       min: 0,
                       max: 100000000,
                       divisions: 100,
-                      labels: RangeLabels('${innerValues.start}', '${innerValues.end}'),
+                      labels: RangeLabels(CFormatter.formatMoney(innerValues.start.toString()), CFormatter.formatMoney(innerValues.end.toString())),
                       onChanged: (RangeValues values) {
                         print('===== fi $innerValues');
                         print('===== $innerValues');
@@ -259,8 +316,8 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${innerValues.start}'),
-                      Text('${innerValues.end}'),
+                      Text(CFormatter.formatMoney(innerValues.start.toString())),
+                      Text(CFormatter.formatMoney(innerValues.end.toString())),
                     ]
                   ),
                   Expanded(
@@ -276,6 +333,7 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
                             setState(() {
                               selectedRange = innerValues;
                             });
+                            applyFilters();
                             Navigator.pop(context); // Đóng modal
                           },
                         ),
@@ -310,18 +368,21 @@ class _CategoryHomeScreenState extends State<CategoryHomeScreen> {
                   ),
                   SizedBox(height: 20),
                   Center(
-                    child: Expanded(
-                      child: RatingBar.builder(
-                        itemCount: 5,
-                        initialRating: rating,
-                        itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
-                        onRatingUpdate: (value){
-                          setState(() {
-                            rating = value;
+                    child: Row(
+                      children: [
+                        RatingBar.builder(
+                          itemCount: 5,
+                          initialRating: rating,
+                          itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
+                          onRatingUpdate: (value){
+                            setState(() {
+                              rating = (value == 1 && rating == 1) ? 0 : value;
+                              applyFilters();
+                            });
                             Navigator.pop(context);
-                          });
-                        }
-                      )
+                          }
+                        ),
+                      ],
                     ),
                   ),
                 ],

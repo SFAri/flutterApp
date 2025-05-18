@@ -33,9 +33,9 @@ class CGridView extends StatelessWidget {
           productName: items[index]["name"]!, 
           imageProduct: items[index]["images"][0]!, 
           productBrand: items[index]["brand"]!, 
-          price: items[index]["price"]!.toString(), 
+          price: items[index]["variants"][0]["salePrice"]!.toString(), 
           salePrice: items[index]["discount"] != null ? items[index]["discount"]!.toString() : '0',
-          rateStar: items[index]["ratings"].length != 0 ? double.parse(items[index]['averageRating'].toString()) : 5,
+          rateStar: items[index]["ratings"].length != 0 ? items[index]['averageRating'] : 5,
         ),
       ),
     );

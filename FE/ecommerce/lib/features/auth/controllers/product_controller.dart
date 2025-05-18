@@ -9,15 +9,17 @@ class ProductController {
   Future<Map<String, dynamic>> filterProducts({
     Map<String, dynamic>? filter,
     Map<String, dynamic>? sortBy,
+    String? searchText
   }) async {
     final body = <String, dynamic>{};
 
     if (filter != null) body['filter'] = filter;
     if (sortBy != null) body['sortBy'] = sortBy;
+    if (searchText != null && searchText.isNotEmpty) body['searchText'] = searchText;
 
     print("=========body filter: $body" );
 
-    final response = await CHttpHelper.post('products/filter', body);
+    final response = await CHttpHelper.post('products/filter', body, withAuth: true);
     return response;
   }
 

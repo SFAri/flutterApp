@@ -50,11 +50,20 @@ class ProductService {
 
     // Add brand and category filters if they exist
     if (brand) {
-      filterQuery.brand = brand; // Assuming brand is a single value
+      // filterQuery.brand = brand; // Assuming brand is a single value
+      if (Array.isArray(brand)) {
+        filterQuery.brand = { $in: brand };
+      }
+      else {
+        filterQuery.brand = brand; // Nếu là một giá trị đơn
+      }
     }
     if (category) {
       if (Array.isArray(category)) {
         filterQuery.category = { $in: category };
+      }
+      else {
+        filterQuery.category = category; // Nếu là một giá trị đơn
       }
     }
 
