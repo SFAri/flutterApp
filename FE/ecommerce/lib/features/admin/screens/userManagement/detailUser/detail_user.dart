@@ -1,4 +1,6 @@
+import 'package:ecommerce/features/auth/controllers/user_controller.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
+import 'package:ecommerce/utils/formatters/formatter.dart';
 import 'package:flutter/material.dart';
 
 class DetailUserScreen extends StatefulWidget {
@@ -14,8 +16,38 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
   late TextEditingController nameController;
   late TextEditingController emailController;
   late TextEditingController phoneController;
-  late TextEditingController pointController;
+  // late TextEditingController pointController;
+  // late TextEditingController dobController;
+  bool isLoading = true;
+  final UserAdminController userAdminController = UserAdminController();
+  List<dynamic> addresses = [];
   // late TextEditingController nameController;
+
+  // Fetch data address:
+  Future<void> fetchAddress() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await userAdminController.getAddresses();
+      if (response['status'] == 'success') {
+        setState(() {
+          addresses = response['data'];
+        });
+        print("addresses: ${addresses.join(',')}");
+      } else {
+        print('error: $response');
+      }
+      
+    } catch (e) {
+      print('Error: $e'); // Handle errors here
+    }
+    finally{
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -23,7 +55,14 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
     nameController = TextEditingController();
     emailController = TextEditingController();
     phoneController = TextEditingController();
-    pointController = TextEditingController();
+    // dobController = TextEditingController();
+
+    nameController.text = widget.user['fullName'] ?? '';
+    emailController.text = widget.user['email'] ?? '';
+    phoneController.text = widget.user['phone'] ?? '';
+    // dobController.text = widget.user['dob'];
+    // pointController = TextEditingController();
+    fetchAddress();
   }
 
   @override
@@ -32,12 +71,15 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
-    pointController.dispose();
+    // dobController.dispose();
+    // pointController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return isLoading
+    ? Center(child: CircularProgressIndicator())
+    : Column(
       spacing: 20,
       children: [
         // Header(title: 'Detail user'),
@@ -71,6 +113,7 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
                     controller: nameController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
+                      enabled: false,
                       contentPadding: EdgeInsets.all(8),
                       hintText: 'Enter fullname',
                       label: Text('Fullname'),
@@ -82,9 +125,10 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
                   height: 50,
                   width: 450,
                   child: TextFormField(
-                    controller: nameController,
+                    controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      enabled: false,
                       contentPadding: EdgeInsets.all(8),
                       hintText: 'Enter Email',
                       label: Text('Email'),
@@ -96,9 +140,10 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
                   height: 50,
                   width: 450,
                   child: TextFormField(
-                    controller: nameController,
+                    controller: phoneController,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
+                      enabled: false,
                       contentPadding: EdgeInsets.all(8),
                       hintText: 'Enter Phone number',
                       label: Text('Phone Num'),
@@ -106,6 +151,21 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
                     ),
                   ),
                 ),
+                // SizedBox(
+                //   height: 50,
+                //   width: 450,
+                //   child: TextFormField(
+                //     controller: dobController,
+                //     keyboardType: TextInputType.datetime,
+                //     decoration: InputDecoration(
+                //       enabled: false,
+                //       contentPadding: EdgeInsets.all(8),
+                //       hintText: 'Enter Date of birth',
+                //       label: Text('Date of birth'),
+                //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))
+                //     ),
+                //   ),
+                // ),
               ],
             ),
             Column(
@@ -121,53 +181,59 @@ class _DetailUserScreenState extends State<DetailUserScreen>{
                     Expanded(child: Divider(thickness: 2))
                   ],
                 ),
-                WAddressCard(address: '123 Tran Hung Dao', type: 'Home',),
-                WAddressCard(address: '456 Quang Trung', type: 'Company',),
-                WAddressCard(address: '789 Nguyen Thi Thap', type: 'Home',),
+                // WAddressCard(address: '123 Tran Hung Dao', type: 'Home',),
+                // WAddressCard(address: '456 Quang Trung', type: 'Company',),
+                // WAddressCard(address: '789 Nguyen Thi Thap', type: 'Home',),
+                ...addresses.map((address) { // Sử dụng ... để triển khai danh sách
+                  return WAddressCard(
+                    address: '${address['detailAddress']} \n${address['ward']} \n${address['district']} \n${address['province']}',
+                    type: address['isDefault'] ? 'Default' : '',
+                  );
+                }).toList(),
               ],
             ),
           ],
         ),
         // Row button:
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 20,
-          children: [
-            SizedBox(
-              width: 100,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: (){}, 
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  )
-                ),
-                child: Text('Cancel')
-              ),
-            ),
-            SizedBox(
-              width: 150,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: (){}, 
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  )
-                ),
-                child: Row(
-                  spacing: 10,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.upload_outlined),
-                    Text('Update'),
-                  ],
-                )
-              ),
-            ),
-          ],
-        )
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   spacing: 20,
+        //   children: [
+        //     SizedBox(
+        //       width: 100,
+        //       height: 50,
+        //       child: ElevatedButton(
+        //         onPressed: (){}, 
+        //         style: ElevatedButton.styleFrom(
+        //           shape: RoundedRectangleBorder(
+        //             borderRadius: BorderRadius.circular(10),
+        //           )
+        //         ),
+        //         child: Text('Cancel')
+        //       ),
+        //     ),
+        //     SizedBox(
+        //       width: 150,
+        //       height: 50,
+        //       child: ElevatedButton(
+        //         onPressed: (){}, 
+        //         style: ElevatedButton.styleFrom(
+        //           shape: RoundedRectangleBorder(
+        //             borderRadius: BorderRadius.circular(10),
+        //           )
+        //         ),
+        //         child: Row(
+        //           spacing: 10,
+        //           mainAxisAlignment: MainAxisAlignment.center,
+        //           children: [
+        //             Icon(Icons.upload_outlined),
+        //             Text('Update'),
+        //           ],
+        //         )
+        //       ),
+        //     ),
+        //   ],
+        // )
       ]
     );
   }
@@ -191,23 +257,11 @@ class WAddressCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: Colors.grey)
         ),
-        onTap: (){},
+        // onTap: (){},
         leading: Icon(Icons.holiday_village),
         title: Text(address),
         subtitle: Text(type),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              onPressed: (){},
-              icon: Icon(Icons.edit) 
-            ),
-            IconButton(
-              onPressed: (){},
-              icon: Icon(Icons.delete, color: Colors.red,) 
-            ),
-          ],
-        ),
+        // R,
       ),
     );
   }

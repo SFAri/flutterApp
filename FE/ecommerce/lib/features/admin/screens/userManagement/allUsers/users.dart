@@ -1,5 +1,6 @@
 import 'package:ecommerce/features/admin/responsive.dart';
 import 'package:ecommerce/features/admin/screens/userManagement/detailUser/detail_user.dart';
+import 'package:ecommerce/features/admin/screens/userManagement/widgets/paginated_table.dart';
 import 'package:ecommerce/features/auth/controllers/user_controller.dart';
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/utils/constants/image_strings.dart';
@@ -15,45 +16,7 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  // final List<Map<String, dynamic>> users = [
-  //   {
-  //     'name': 'Mokhasiemov',
-  //     'email': 'mokhasiemov@gmail.com',
-  //     'phone': '123-456-7890',
-  //     'points': 100,
-  //     'addresses': ['123 Main St', '456 Elm St'],
-  //     'orders': [
-  //       {
-  //         'id': '001',
-  //         'orderDate': '2023-01-01',
-  //         'deliveryDate': '2023-01-05',
-  //         'status': 'Delivered',
-  //         'total': '250.00'
-  //       },
-  //     ],
-  //     'status': 'Active'
-  //   },
-  //   {
-  //     'name': 'Jayden_Cr',
-  //     'email': 'jaydencr@example.com',
-  //     'phone': '987-654-3210',
-  //     'points': 150,
-  //     'addresses': ['789 Oak St'],
-  //     'orders': [
-  //       {
-  //         'id': '002',
-  //         'orderDate': '2023-02-01',
-  //         'deliveryDate': '2023-02-05',
-  //         'status': 'Pending',
-  //         'total': '150.00'
-  //       },
-  //     ],
-  //     'status': 'Active'
-  //   },
-  //   // Thêm người dùng khác ở đây
-  // ];
   List<dynamic> users = [];
-  // String selectedStatus = 'All';
   bool isLoading = true;
   String searchQuery = '';
   final UserAdminController userAdminController = UserAdminController();
@@ -90,18 +53,19 @@ class _UserScreenState extends State<UserScreen> {
     }
   }
 
-  final DataTableSource _data = MyData();
+  // final DataTableSource _data = MyData();
 
   Map<String, dynamic>? selectedUser;
 
   @override
   Widget build(BuildContext context) {
     
-    return Column(
+    return isLoading 
+    ? Center(child: CircularProgressIndicator(),)
+    : Column(
       spacing: 20,
       children: [
-        // Header(title: 'User management'),
-        // Divider(),
+
         // Filter row:
         Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -135,23 +99,23 @@ class _UserScreenState extends State<UserScreen> {
               ),
             ),
             // 2. button desc/asc
-            SizedBox(
-              height: 50,
-              width: 100,
-              child: TextButton(
-                onPressed: (){},
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.sort),
-                    Text('Desc'),
-                  ],
-                )
-              ),
-            ),
+            // SizedBox(
+            //   height: 50,
+            //   width: 100,
+            //   child: TextButton(
+            //     onPressed: (){},
+            //     style: TextButton.styleFrom(
+            //       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //     ),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Icon(Icons.sort),
+            //         Text('Desc'),
+            //       ],
+            //     )
+            //   ),
+            // ),
             // 3. button best-friend of shops desc according points
             SizedBox(
               height: 50,
@@ -179,17 +143,20 @@ class _UserScreenState extends State<UserScreen> {
             padding: EdgeInsets.all(20),
             child: Container(
               width: 1000,
-              child: PaginatedDataTable(
-                rowsPerPage: 10,
-                source: _data,
+              child: PaginatedTable(
+                lists: users, 
+                viewFunction: (item) {
+                  streamController.add(DetailUserScreen(user: item));
+                },
                 columns: [
                   DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Email')),
                   DataColumn(label: Text('Phone')),
-                  DataColumn(label: Text('Points')),
+                  DataColumn(label: Text('Gender')),
+                  // DataColumn(label: Text('Points')),
                   DataColumn(label: Text('Actions')),
                 ], 
-                header: const Center(child: Text('List users')),
+                columnKeys: ['fullName', 'email', 'phone', 'gender']
               ),
             )
           ),
@@ -211,43 +178,43 @@ class _UserScreenState extends State<UserScreen> {
                         streamController.add(DetailUserScreen(user:  users[index]));
                       },
                       internalAddSemanticForOnTap: false,
-                      title: Text(user['name']!),
+                      title: Text(user['fullName']!),
                       leading: Image.asset(CImages.avatar, width: 30,),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Text(user['email']!), // Existing email field
                           Text('${user['phone'] ?? 'N/A'}'), // New phone number field
-                          Text('Points: ${user['points'] ?? 0}'), // New points field
+                          // Text('Points: ${user['points'] ?? 0}'), // New points field
                         ],
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          DropdownButton<String>(
-                            value: user['status'],
-                            onChanged: (String? newValue) {
-                              // Cập nhật trạng thái người dùng
-                            },
-                            items: <String>['Active', 'Banned']
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                          IconButton(
-                            iconSize: 16,
-                            style: IconButton.styleFrom(
+                      // trailing: Row(
+                      //   mainAxisSize: MainAxisSize.min,
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     DropdownButton<String>(
+                      //       value: user['status'],
+                      //       onChanged: (String? newValue) {
+                      //         // Cập nhật trạng thái người dùng
+                      //       },
+                      //       items: <String>['Active', 'Banned']
+                      //           .map<DropdownMenuItem<String>>((String value) {
+                      //         return DropdownMenuItem<String>(
+                      //           value: value,
+                      //           child: Text(value),
+                      //         );
+                      //       }).toList(),
+                      //     ),
+                      //     IconButton(
+                      //       iconSize: 16,
+                      //       style: IconButton.styleFrom(
                               
-                            ),
-                            onPressed: (){}, 
-                            icon: Icon(Icons.delete, color: Colors.red,)
-                          )
-                        ],
-                      ),
+                      //       ),
+                      //       onPressed: (){}, 
+                      //       icon: Icon(Icons.delete, color: Colors.red,)
+                      //     )
+                      //   ],
+                      // ),
                     ),
                   );
                 },
@@ -256,84 +223,4 @@ class _UserScreenState extends State<UserScreen> {
       ],
     );
   }
-}
-
-class MyData extends DataTableSource {
-  final List<Map<String, dynamic>> users = [
-    {
-      'name': 'Mokhasiemov',
-      'email': 'mokhasiemov@gmail.com',
-      'phone': '123-456-7890',
-      'points': 100,
-      'addresses': ['123 Main St', '456 Elm St'],
-      'orders': [
-        {
-          'id': '001',
-          'orderDate': '2023-01-01',
-          'deliveryDate': '2023-01-05',
-          'status': 'Delivered',
-          'total': '250.00'
-        },
-      ],
-      'status': 'Active'
-    },
-    {
-      'name': 'Jayden_Cr',
-      'email': 'jaydencr@example.com',
-      'phone': '987-654-3210',
-      'points': 150,
-      'addresses': ['789 Oak St'],
-      'orders': [
-        {
-          'id': '002',
-          'orderDate': '2023-02-01',
-          'deliveryDate': '2023-02-05',
-          'status': 'Pending',
-          'total': '150.00'
-        },
-      ],
-      'status': 'Active'
-    },
-    // Thêm người dùng khác ở đây
-  ];
-
-  @override
-  DataRow? getRow(int index) {
-    return DataRow(
-      cells: [
-        DataCell(Text(users[index]['name'])),
-        DataCell(Text(users[index]['email'])),
-        DataCell(Text(users[index]['phone'])),
-        DataCell(Text(users[index]['points'].toString())),
-        DataCell(
-          Row(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: (){
-                  streamController.add(DetailUserScreen(user: users[index]));
-                },
-                icon: Icon(Icons.remove_red_eye)
-              ),
-              IconButton(
-                onPressed: (){},
-                icon: Icon(Icons.delete)
-              )
-            ]
-          ),
-        ),
-      ]
-    );
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => users.length;
-
-  @override
-  // TODO: implement selectedRowCount
-  int get selectedRowCount => 0;
-  
 }
