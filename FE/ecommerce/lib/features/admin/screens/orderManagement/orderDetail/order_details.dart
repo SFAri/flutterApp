@@ -99,15 +99,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-<<<<<<< HEAD
             // Header(title: 'Order Details:'),
             // Divider(),
             
-=======
-            Header(title: 'Order Details:'),
-            const Divider(),
-
->>>>>>> 67520c02a0e4e28683efe4fb31b53940b7cf73be
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(

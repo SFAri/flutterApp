@@ -85,14 +85,9 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-<<<<<<< HEAD
             // Header(title: 'Order Management'),
             // Divider(),
 
-=======
-            Header(title: 'Order Management'),
-            const Divider(),
->>>>>>> 67520c02a0e4e28683efe4fb31b53940b7cf73be
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
