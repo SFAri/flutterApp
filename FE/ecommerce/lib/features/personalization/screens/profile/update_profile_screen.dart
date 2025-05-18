@@ -368,7 +368,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             ? const CircularProgressIndicator(
                               color: Colors.white,
                             )
-                            : const Text('Change Password'),
+                            : const Text('Update Profile'),
                   ),
                 ),
 
