@@ -56,7 +56,7 @@ export default class CouponRepository {
 
   async DeleteByCode(code) {
     const coupon = await CouponModel.findOne({ code });
-
+    await CouponModel.findByIdAndDelete(coupon._id);
     return coupon;
   }
 

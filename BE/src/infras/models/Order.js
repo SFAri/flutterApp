@@ -21,7 +21,6 @@ const OrderSchema = Schema(
     },
     loyaltyPointsUsed: { type: Number, default: 0 },
     shippingFee: { type: Number, required: true },
-    taxAmount: { type: Number, required: true },
     totalAmount: { type: Number, required: true },
     shippingAddress: { type: Schema.Types.ObjectId, ref: "address" },
     paymentMethod: {

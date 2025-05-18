@@ -28,6 +28,8 @@ class OrderService {
     let discount = 0;
     if (couponCode) {
       const coupon = await this.couponRepository.FindByCode(couponCode);
+      console.log("🚀 ~ OrderService ~ CreateOrder ~ coupon:", coupon);
+
       if (!coupon || !coupon.isActive || coupon.usageLimit < 0) {
         ThrowNewError("CouponError", "Invalid or expired coupon");
       }
@@ -49,9 +51,8 @@ class OrderService {
       (sum, item) => sum + item.unitPrice * item.quantity,
       0
     );
-    const taxAmount = subtotal * 0.1;
-    const shippingFee = 5;
-    const totalAmount = subtotal + taxAmount + shippingFee - discount;
+    const shippingFee = 100000;
+    const totalAmount = subtotal + shippingFee - discount;
 
     const order = await this.repository.CreateOrder({
       userId,
@@ -62,7 +63,6 @@ class OrderService {
         discountAmount: discount,
       },
       shippingFee,
-      taxAmount,
       totalAmount,
       shippingAddress: shippingAddress.id,
       paymentMethod,

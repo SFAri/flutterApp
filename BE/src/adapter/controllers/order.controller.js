@@ -12,7 +12,6 @@ class OrderController {
 
       CheckMissingFields({
         cartItems,
-        couponCode,
         shippingAddressId,
         paymentMethod,
       });
