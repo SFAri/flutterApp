@@ -170,7 +170,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   ElevatedButton(
                     onPressed: _confirmUpdateStatus,
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
-                    child: const Text('Cập nhật trạng thái'),
+                    child: const Text('Modify order status'),
                   ),
                 ],
               ),

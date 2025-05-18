@@ -155,10 +155,6 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                               streamController.add(OrderDetailScreen(order: order));
                             },
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.white70),
-                            onPressed: () {},
-                          ),
                         ],
                       )),
                     ]);
